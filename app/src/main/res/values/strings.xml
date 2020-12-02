@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">PiAndroid</string>
+    <string name="email">Email :</string>
+    <string name="mauricio_di">mauricio@divelement.io</string>
+    <string name="forgot_pass">Forgot password?</string>
+    <string name="create_new_account">create new account</string>
+    <string name="password">Password :</string>
+    <string name="registration">Registration</string>
+    <string name="username">Username :</string>
+    <string name="birthday">Birth Date :</string>
+    <string name="adress">Adress :</string>
+    <string name="phone">Phone Number :</string>
+    <string name="name">Name :</string>
+
+</resources>

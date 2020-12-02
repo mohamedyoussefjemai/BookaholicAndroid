@@ -1,0 +1,103 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="email">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#042335</item>
+    </style>
+
+    <style name="mauricio_di">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#CC000000</item>
+    </style>
+
+    <style name="forgot_pass">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#CC000000</item>
+    </style>
+
+    <style name="create_new_account">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#13497B</item>
+    </style>
+
+    <style name="password">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#042335</item>
+    </style>
+
+    <style name="registration">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">#042335</item>
+    </style>
+
+    <style name="username">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#042335</item>
+    </style>
+
+    <style name="birthday">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#042335</item>
+    </style>
+
+    <style name="adress">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#042335</item>
+    </style>
+
+    <style name="phone">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#042335</item>
+    </style>
+
+    <style name="name">
+        <item name="android:textSize">28sp</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
+    <style name="title">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="titleAccount">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="titre_de_li">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">#042335</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="author">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="home_text">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#042335</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="etat_book2">
+        <item name="android:textSize">13sp</item>
+        <item name="android:letterSpacing">-0.03</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:radius">20dp</item>
+
+        32D296
+    </style>
+</resources>

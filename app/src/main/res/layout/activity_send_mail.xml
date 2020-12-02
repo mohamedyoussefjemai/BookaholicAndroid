@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    tools:context=".SendMailActivity">
+
+    <LinearLayout
+        android:id="@+id/page"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+    <!-- bg orange -->
+    <LinearLayout
+        android:id="@+id/bg_orange"
+        android:layout_width="425dp"
+        android:layout_height="155dp"
+        android:background="@color/colorOrange"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="91dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            app:srcCompat="@mipmap/logo_white_mini" />
+    </LinearLayout>
+
+        <TextView
+            android:id="@+id/email_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20.5dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="25.5dp"
+            android:text="Write your email :"
+            android:textAppearance="@style/email" />
+
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="340dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="20.5dp"
+            android:layout_marginEnd="39.5dp"
+            android:background="@drawable/rectangle"
+            android:drawableEnd="@mipmap/email"
+            android:hint="Email :"
+            android:inputType="textEmailAddress"
+            android:shadowRadius="10"
+
+            />
+        <TextView
+            android:id="@+id/code_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20.5dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="25.5dp"
+            android:text="Write your code :"
+            android:textAppearance="@style/email"
+            android:visibility="invisible"
+            />
+
+        <EditText
+            android:id="@+id/code"
+            android:layout_width="340dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="20.5dp"
+            android:layout_marginEnd="39.5dp"
+            android:background="@drawable/rectangle"
+            android:drawableEnd="@mipmap/coding"
+            android:hint="Your code"
+            android:inputType="text"
+            android:shadowRadius="10"
+            android:visibility="invisible"
+
+            />
+
+        <TextView
+            android:id="@+id/password_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20.5dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="25.5dp"
+            android:text="Write your password :"
+            android:textAppearance="@style/password"
+            android:visibility="invisible"
+            />
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/password_design"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintEnabled="false"
+            app:passwordToggleEnabled="true"
+            android:visibility="invisible"
+            >
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="340dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="20.5dp"
+            android:layout_marginEnd="39.5dp"
+            android:background="@drawable/rectangle"
+            android:drawableEnd="@mipmap/padlock"
+            android:hint="Your new password"
+            android:inputType="text"
+            android:shadowRadius="10"
+            android:visibility="invisible" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <TextView
+            android:id="@+id/confirm_password_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20.5dp"
+            android:layout_marginEnd="39.5dp"
+            android:gravity="top"
+            android:text="@string/password"
+            android:textAppearance="@style/password"
+            android:visibility="invisible"
+            />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/confirm_password_design"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintEnabled="false"
+            app:passwordToggleEnabled="true"
+            android:visibility="invisible"
+
+            >
+        <EditText
+            android:id="@+id/confirm_password"
+            android:layout_width="340dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="20.5dp"
+            android:layout_marginEnd="39.5dp"
+            android:background="@drawable/rectangle"
+            android:hint="Confirm password :"
+            android:inputType="textPassword"
+            android:shadowRadius="10"
+            android:visibility="invisible"
+            />
+        </com.google.android.material.textfield.TextInputLayout>
+    <LinearLayout
+        android:id="@+id/buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button
+            android:id="@+id/send"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="20.5dp"
+            android:layout_marginEnd="39.5dp"
+            android:background="@drawable/rectanglelogin"
+            android:text="Send"
+            android:layout_weight="1"
+            android:textColor="@color/colorWhite" />
+        <Button
+            android:id="@+id/valid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/rectanglelogin"
+            android:text="Valid code"
+            android:textColor="@color/colorWhite"
+            android:visibility="invisible"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/change"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/rectanglelogin"
+            android:text="Change password"
+            android:textColor="@color/colorWhite"
+            android:visibility="invisible" />
+
+
+    </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
