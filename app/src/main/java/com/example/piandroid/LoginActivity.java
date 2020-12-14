@@ -48,7 +48,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         forgotPassword = (TextView) findViewById(R.id.forgot_pass);
         newAccount = (TextView) findViewById(R.id.create_account);
@@ -180,7 +179,7 @@ public class LoginActivity extends AppCompatActivity {
                             toast.show();
 
                             //intent
-                            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
                             startActivity(intent);
 
 

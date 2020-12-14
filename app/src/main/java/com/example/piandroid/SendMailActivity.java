@@ -218,7 +218,7 @@ public class SendMailActivity extends AppCompatActivity {
                                     Toast toast = Toast.makeText(SendMailActivity.this, "Password changed !", Toast.LENGTH_SHORT);
                                     toast.show();
                                     if (mPreferences.contains("id")) {
-                                        Intent intent = new Intent(SendMailActivity.this, ProfileActivity.class);
+                                        Intent intent = new Intent(SendMailActivity.this, MenuActivity.class);
                                         startActivity(intent);
                                     } else {
                                         Intent intent = new Intent(SendMailActivity.this, LoginActivity.class);
@@ -280,10 +280,10 @@ public class SendMailActivity extends AppCompatActivity {
     }
 
     public static String random() {
-        String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"; // Tu supprimes les lettres dont tu ne veux pas
+        String chars = "1234567890"; // Tu supprimes les lettres dont tu ne veux pas
         String pass = "";
         for (int x = 0; x < MAX_LENGTH; x++) {
-            int i = (int) Math.floor(Math.random() * 62); // Si tu supprimes des lettres tu diminues ce nb
+            int i = (int) Math.floor(Math.random() * 10); // Si tu supprimes des lettres tu diminues ce nb
             pass += chars.charAt(i);
         }
         System.out.println(pass);

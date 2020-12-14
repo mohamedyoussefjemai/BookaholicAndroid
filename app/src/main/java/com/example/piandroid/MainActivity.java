@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
         //condition connected or not
         if (mPreferences.contains("id")) {
-            Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+            Intent intent = new Intent(MainActivity.this, MenuActivity.class);
             startActivity(intent);
         }
 

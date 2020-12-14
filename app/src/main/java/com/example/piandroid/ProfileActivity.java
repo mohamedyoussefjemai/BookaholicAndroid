@@ -1,6 +1,8 @@
 package com.example.piandroid;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -60,8 +62,6 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         btn_edit = (ImageButton) findViewById(R.id.btn_edit);
-
-
 
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
 builder.setTitle("Update Username");

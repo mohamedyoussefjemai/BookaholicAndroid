@@ -74,10 +74,10 @@
             android:background="@drawable/rectangle"
             android:drawableEnd="@mipmap/coding"
             android:hint="Your code"
-            android:inputType="text"
             android:shadowRadius="10"
             android:visibility="invisible"
-
+            android:digits="0123456789"
+            android:inputType="phone"
             />
 
         <TextView

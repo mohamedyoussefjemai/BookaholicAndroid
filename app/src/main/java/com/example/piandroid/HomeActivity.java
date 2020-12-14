@@ -32,7 +32,7 @@ public class HomeActivity extends AppCompatActivity {
     CardViewAdapter cardViewAdapter;
     private ArrayList<MainBook> mainbooks = new ArrayList<>();
     RecyclerView recyclerView2;
-
+    ArrayList<String> TabFavoris = new ArrayList<>();
     RecyclerView recyclerView;
     ArrayList<MainCategory> mainCategories;
     MainAdapter mainAdapter;
@@ -84,7 +84,7 @@ public class HomeActivity extends AppCompatActivity {
                         book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
                         book.setUser(jsonArray.getJSONObject(i).get("user").toString());
                         book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
-                        book.setBookimage(R.drawable.book3);
+//                        book.setBookimage(R.drawable.book3);
                         Log.i("book =======================>", book.getCategory());
 
                         mainbooks.add(book);
@@ -121,7 +121,7 @@ public class HomeActivity extends AppCompatActivity {
                             HomeActivity.this, LinearLayoutManager.VERTICAL, false
                     );
                     mainAdapter = new MainAdapter(HomeActivity.this, mainCategories);
-                    cardViewAdapter = new CardViewAdapter(HomeActivity.this, mainbooks);
+                    cardViewAdapter = new CardViewAdapter(HomeActivity.this, mainbooks,TabFavoris);
 
                     recyclerView.setAdapter(mainAdapter);
                     recyclerView2.setAdapter(cardViewAdapter);

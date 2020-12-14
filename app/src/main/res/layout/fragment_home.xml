@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="top"
+    android:orientation="vertical"
+    android:paddingTop="30dp"
+    tools:context=".FragmentHome">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Category"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal"
+
+                android:padding="10dp">
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/all"
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="20sp"
+                        android:layout_marginRight="20sp"
+                        android:src="@drawable/bookeducation" />
+
+                    <TextView
+                        android:id="@+id/all_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="All"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/comics_mangas"
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="20sp"
+                        android:layout_marginRight="20sp"
+                        android:src="@drawable/superheroo" />
+
+                    <TextView
+                        android:id="@+id/comics_mangas_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/comics_mangas"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/health_cooking"
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="25sp"
+                        android:layout_marginRight="20sp"
+                        android:src="@drawable/chef" />
+
+                    <TextView
+                        android:id="@+id/health_cooking_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/health_cooking"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/romance_newadult"
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="25sp"
+                        android:layout_marginRight="20sp"
+                        android:src="@drawable/hearts" />
+
+                    <TextView
+                        android:id="@+id/romance_newadult_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center"
+                        android:text="@string/romance_newadult"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/tourism_travel"
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="25sp"
+                        android:layout_marginRight="20sp"
+                        android:src="@drawable/travel" />
+
+                    <TextView
+                        android:id="@+id/tourism_travel_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center"
+                        android:text="@string/tourism_travel"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/adventure"
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="25sp"
+                        android:layout_marginRight="20sp"
+                        android:src="@drawable/traveler" />
+
+                    <TextView
+                        android:id="@+id/adventure_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center"
+                        android:text="@string/adventure"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/literature"
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="25sp"
+                        android:layout_marginRight="20sp"
+                        android:src="@drawable/papyrus" />
+
+                    <TextView
+                        android:id="@+id/literature_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center"
+                        android:text="@string/literature"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/personal_devlopment"
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="25sp"
+                        android:layout_marginRight="20sp"
+                        android:src="@drawable/personaldevelopment" />
+
+                    <TextView
+                        android:id="@+id/personal_devlopment_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center"
+                        android:text="@string/personal_devlopment"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/history"
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="25sp"
+                        android:layout_marginRight="20sp"
+                        android:src="@drawable/parchment" />
+
+                    <TextView
+                        android:id="@+id/history_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center"
+                        android:text="@string/history"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/youth"
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="25sp"
+                        android:layout_marginRight="20sp"
+                        android:src="@drawable/youth" />
+
+                    <TextView
+                        android:id="@+id/youth_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center"
+                        android:text="@string/youth"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/social_science"
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="25sp"
+                        android:layout_marginRight="20sp"
+                        android:src="@drawable/psychology" />
+
+                    <TextView
+                        android:id="@+id/social_science_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center"
+                        android:text="@string/social_science"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/artmusic_cinema"
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="25sp"
+                        android:layout_marginRight="20sp"
+                        android:src="@drawable/violin" />
+
+                    <TextView
+                        android:id="@+id/artmusic_cinema_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center"
+                        android:text="@string/artmusic_cinema"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/humor"
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="25sp"
+                        android:layout_marginRight="20sp"
+                        android:src="@drawable/humor" />
+
+                    <TextView
+                        android:id="@+id/humor_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center"
+                        android:text="@string/humor"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/police_thrillers"
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="25sp"
+                        android:layout_marginRight="20sp"
+                        android:src="@drawable/villian" />
+
+                    <TextView
+                        android:id="@+id/police_thrillers_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center"
+                        android:text="@string/police_thrillers"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/religion_spirituality"
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="25sp"
+                        android:layout_marginRight="20sp"
+                        android:src="@drawable/yinyang" />
+
+                    <TextView
+                        android:id="@+id/religion_spirituality_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center"
+                        android:text="@string/religion_spirituality"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/school"
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="25sp"
+                        android:layout_marginRight="20sp"
+                        android:src="@drawable/whiteboard" />
+
+                    <TextView
+                        android:id="@+id/school_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center"
+                        android:text="@string/school"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/sport_leisure"
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="25sp"
+                        android:layout_marginRight="20sp"
+                        android:src="@drawable/barbell" />
+
+                    <TextView
+                        android:id="@+id/sport_leisure_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center"
+                        android:text="@string/sport_leisure"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/theater"
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="25sp"
+                        android:layout_marginRight="20sp"
+                        android:src="@drawable/theater" />
+
+                    <TextView
+                        android:id="@+id/theater_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center"
+                        android:text="@string/theater"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_books"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</FrameLayout>

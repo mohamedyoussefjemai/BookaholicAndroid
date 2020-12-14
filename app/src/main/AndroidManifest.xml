@@ -3,21 +3,51 @@
     package="com.example.piandroid">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/logo_white_mini"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/logo_white_mini"
+        android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".HomeActivity"></activity>
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".SendMailActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".ShowBookActivity"></activity>
+        <activity android:name=".ShowUserActivity" />
+        <activity android:name=".UpdateBookActivity" />
+        <activity
+            android:name=".AddBookActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MenuActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".HomeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ProfileActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SendMailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RegisterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

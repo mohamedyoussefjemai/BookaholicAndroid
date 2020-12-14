@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="vertical"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+
+            <LinearLayout
+                android:id="@+id/cardsView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="5">
+
+                <ImageView
+                    android:id="@+id/bookimage"
+                    android:layout_width="96dp"
+                    android:layout_height="156dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginTop="20px"
+                    android:layout_marginRight="20px"
+                    android:layout_marginBottom="20px"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:weightSum="2" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/bookimage"
+                    android:layout_marginTop="20dp"
+                    android:orientation="vertical"
+                    android:weightSum="3">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <TextView
+                            android:id="@+id/price"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_gravity="left"
+                            android:textStyle="bold"
+                            android:textColor="#000000"
+                            android:gravity="right"
+                            android:layout_weight="1"
+                            android:textSize="20dp"/>
+                        <View
+                            android:id="@+id/trash"
+                            android:layout_marginTop="10dp"
+                            android:layout_width="80dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="right"
+                            android:layout_marginLeft="30dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/delete" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="left"
+                        android:textAppearance="@style/titre_de_li" />
+
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="left"
+                        android:textAppearance="@style/author" />
+
+                    <TextView
+                        android:id="@+id/price3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="left"
+                        android:textAppearance="@style/home_text"
+                        android:textSize="14sp"
+                        android:textStyle="normal" />
+                    <TextView
+                        android:id="@+id/langue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="left"
+                        android:textAppearance="@style/author"
+                        android:textColor="@color/colorOrange" />
+
+
+                    <TextView
+                        android:id="@+id/name2"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="150dp"
+                        android:layout_marginRight="10dp"
+                        android:textColor="#FFFFFF"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:id="@+id/price2"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="150dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
+                        android:gravity="center"
+                        android:textAppearance="@style/home_text"
+                        android:textSize="14sp"
+                        android:textStyle="normal" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+</RelativeLayout>

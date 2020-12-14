@@ -11,13 +11,13 @@ public class MainBook {
     String image;
     String user;
     String language;
-    Integer bookimage;
+    String bookimage;
     String username;
 
     public MainBook() {
     }
 
-    public MainBook(String id, String title, String author, String price, String category, String visible, String status, String image, String user, String language, Integer bookimage,String username) {
+    public MainBook(String id, String title, String author, String price, String category, String visible, String status, String image, String user, String language, String bookimage,String username) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -121,11 +121,11 @@ public class MainBook {
         this.language = language;
     }
 
-    public Integer getBookimage() {
+    public String getBookimage() {
         return bookimage;
     }
 
-    public void setBookimage(Integer bookimage) {
+    public void setBookimage(String bookimage) {
         this.bookimage = bookimage;
     }
 }

@@ -11,5 +11,71 @@
     <string name="adress">Adress :</string>
     <string name="phone">Phone Number :</string>
     <string name="name">Name :</string>
+    <string name="Addbook">Add Book</string>
+    <string name="UpdateBook">Update Book</string>
+
+    <string name="category__prompt">Choose a category</string>
+    <string name="and"> &amp;</string>
+
+    <string-array name="category__arrays">
+        <item>Please select a category</item>
+        <item>romance &#38; new adult</item>
+        <item>adventure</item>
+        <item>literature</item>
+        <item>comic &#38; mangas</item>
+        <item>Personal development</item>
+        <item>Health &#38; cooking</item>
+        <item>History</item>
+        <item>youth</item>
+        <item>social Sciences</item>
+        <item>art music &#38; cinema</item>
+        <item>humor</item>
+        <item>police &#38; thrillers</item>
+        <item>Religion &#38; spirituality</item>
+        <item>school</item>
+        <item>sport &#38; leisure</item>
+        <item>theater</item>
+        <item>tourism &#38; travel</item>
+    </string-array>
+
+    <string name="status__prompt">Choose a category</string>
+
+    <string-array name="status__arrays">
+        <item>Please select a status</item>
+        <item>new</item>
+        <item>satisfying</item>
+        <item>old</item>
+    </string-array>
+
+    <string name="language__prompt">Choose a category</string>
+
+    <string-array name="language__arrays">
+        <item>Please select a language</item>
+        <item>french</item>
+        <item>arabic</item>
+        <item>english</item>
+        <item>other</item>
+
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="comics_mangas">comic &#38; mangas</string>
+    <string name="health_cooking">Health &#38; cooking</string>
+    <string name="romance_newadult">romance &#38; new adult</string>
+    <string name="tourism_travel">tourism &#38; travel</string>
+    <string name="adventure">adventure</string>
+    <string name="literature">literature</string>
+    <string name="personal_devlopment">Personal development</string>
+    <string name="history">History</string>
+    <string name="youth">youth</string>
+    <string name="social_science">social Sciences</string>
+    <string name="artmusic_cinema">art music &#38; cinema</string>
+    <string name="humor">humor</string>
+    <string name="police_thrillers">police &#38; thrillers</string>
+    <string name="religion_spirituality">Religion &#38; spirituality</string>
+    <string name="school">school</string>
+    <string name="sport_leisure">sport &#38; leisure</string>
+    <string name="theater">theater</string>
+
 
 </resources>
