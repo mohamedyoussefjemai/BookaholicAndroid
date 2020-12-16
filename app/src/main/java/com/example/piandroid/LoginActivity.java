@@ -139,6 +139,7 @@ public class LoginActivity extends AppCompatActivity {
                                         prefEditor.putString("trade", jsonObj.get("trade").toString());
                                         prefEditor.putString("image", jsonObj.get("image").toString());
                                         prefEditor.commit();
+                                        Log.i("connexion data ",jsonObj.toString());
 
 
                                     } catch (JSONException e) {

@@ -54,7 +54,6 @@
                     android:id="@+id/bookimage"
                     android:layout_width="192dp"
                     android:layout_height="180dp"
-                    android:background="@drawable/image"
                     android:layout_gravity="center" />
 
                 <TextView

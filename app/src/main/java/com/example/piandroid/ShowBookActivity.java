@@ -2,8 +2,11 @@ package com.example.piandroid;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -49,6 +52,20 @@ public class ShowBookActivity extends AppCompatActivity {
         status = findViewById(R.id.status);
         language = findViewById(R.id.language);
         price = findViewById(R.id.price);
+
+
+        username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String idUser = getIntent().getExtras().getString("idUser");
+                Context context = v.getContext();
+                Intent intent = new Intent(context, ShowUserActivity.class);
+                intent.putExtra("idUser", idUser);
+                context.startActivity(intent);
+
+            }
+        });
 
         String idBook = getIntent().getExtras().getString("idBook");
         RequestQueue requestQueue = Volley.newRequestQueue(ShowBookActivity.this);

@@ -240,6 +240,8 @@ public class RegisterActivity extends AppCompatActivity {
                     jsonBody.put("trade", 0);
                     jsonBody.put("password", password.getText().toString());
                     jsonBody.put("birthdate", birthday.getText().toString());
+                    jsonBody.put("image", "null");
+
 
                     final String mRequestBody = jsonBody.toString();
 

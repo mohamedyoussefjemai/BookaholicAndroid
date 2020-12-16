@@ -60,7 +60,7 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHo
         this.mainbooks = mainbooks;
         this.TabFavoris = tab;
         // Request option for Glide
-        option = new RequestOptions().centerCrop().placeholder(R.drawable.eye).error(R.drawable.eye);
+        option = new RequestOptions().centerCrop().placeholder(R.mipmap.logo_mini).error(R.mipmap.logo_mini);
     }
 
     @NonNull
@@ -111,7 +111,6 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHo
         holder.textView3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 String idUser = mainbooks.get(position).getUser();
                 Context context = v.getContext();
                 Intent intent = new Intent(context, ShowUserActivity.class);
@@ -129,6 +128,7 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHo
                 Context context = v.getContext();
                 Intent intent = new Intent(context, ShowBookActivity.class);
                 intent.putExtra("idBook", idBook);
+                intent.putExtra("idUser",mainbooks.get(position).getUser());
                 context.startActivity(intent);
 
             }

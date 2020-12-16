@@ -4,6 +4,7 @@ package com.example.piandroid;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -69,7 +70,6 @@ public class CardViewFavoriteAdapter extends RecyclerView.Adapter<CardViewFavori
     }
 
 
-
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
 
@@ -86,6 +86,32 @@ public class CardViewFavoriteAdapter extends RecyclerView.Adapter<CardViewFavori
         holder.textView2.setText(mainbooks.get(position).getStatus());
         holder.textView7.setText(mainbooks.get(position).getUsername());
 
+
+//////
+        holder.textView7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String idUser = mainbooks.get(position).getUser();
+                Context context = v.getContext();
+                Intent intent = new Intent(context, ShowUserActivity.class);
+                intent.putExtra("idUser", idUser);
+                context.startActivity(intent);
+
+            }
+        });
+
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String idBook = mainbooks.get(position).getId();
+                Context context = v.getContext();
+                Intent intent = new Intent(context, ShowBookActivity.class);
+                intent.putExtra("idBook", idBook);
+                context.startActivity(intent);
+
+            }
+        });
 
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,7 +133,7 @@ public class CardViewFavoriteAdapter extends RecyclerView.Adapter<CardViewFavori
                                 final String mRequestBody = jsonBody.toString();
 
 
-                                String url = "http://10.0.2.2:3000/favoris/delete-favoris/" + mPreferences.getString("id", null)+"/"+ idBook;
+                                String url = "http://10.0.2.2:3000/favoris/delete-favoris/" + mPreferences.getString("id", null) + "/" + idBook;
                                 StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url, new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String response) {
@@ -154,12 +180,12 @@ public class CardViewFavoriteAdapter extends RecyclerView.Adapter<CardViewFavori
 
                                 requestQueue.add(stringRequest);
                                 ////
-                                Log.i("taille avant delete ===================================================>",String.valueOf(mainbooks.size()));
+                                Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
                                 mainbooks.remove(position);
                                 notifyItemRemoved(position);
                                 notifyItemRangeChanged(position, mainbooks.size());
                                 notifyDataSetChanged();
-                                Log.i("taille aprés delete ===================================================>",String.valueOf(mainbooks.size()));
+                                Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
 
 ////
                             }

@@ -1,15 +1,24 @@
 package com.example.piandroid;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,25 +59,57 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.app.Activity.RESULT_OK;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
 public class ProfileFragment extends Fragment {
 
+    ApiService apiService;
+
     private TextView name_text;
-    //private TextView email_txt;
-    //  private TextView adresse_txt;
-    //private TextView phone_txt;
+    private ImageButton btn_image;
     private TextView change_password;
     private TextView logout;
     private EditText phone, email, address, input;
     private ImageButton btn_email, btn_phone, btn_address, btn_edit;
     private TextView icon_trade, icon_sale;
-    private TextView icon_trade_text,icon_sale_text;
+    private TextView icon_trade_text, icon_sale_text;
     private SharedPreferences mPreferences;
     final String filename = "BookaholicLogin";
     private Button btn_update_all;
 
+    int SELECT_PHOTO = 1;
+    Uri uri;
+    Bitmap bitmap;
+    private String name = "image";
+    private static final int STORAGE_PERMISSION_CODE = 2342;
+    private static final int PICK_IMAGE_REQUEST = 22;
+
+    private ArrayList<String> permissionsToRequest;
+    private ArrayList<String> permissionsRejected = new ArrayList<>();
+    private ArrayList<String> permissions = new ArrayList<>();
+    private final static int ALL_PERMISSIONS_RESULT = 107;
+    private final static int IMAGE_RESULT = 200;
+    RequestOptions option= new RequestOptions().centerCrop().placeholder(R.drawable.bookmale2).error(R.drawable.bookmale2);
 
     @Nullable
     @Override
@@ -88,7 +129,32 @@ public class ProfileFragment extends Fragment {
 
         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+
+        mPreferences = getActivity().getSharedPreferences(filename, Context.MODE_PRIVATE);
+
+
+        //request permission
+        requestStoragePermission();
+        //end request permission
+
+        this.askPermissions();
+        this.initRetrofitClient();
+
         btn_edit = (ImageButton) view.findViewById(R.id.btn_edit);
+        btn_image = (ImageButton) view.findViewById(R.id.btn_image);
+
+        //choose image
+
+        if(mPreferences.getString("image",null) == null)
+        {
+            btn_image.setBackgroundResource(R.drawable.bookmale2);
+        }
+        else {
+            String nameImage = mPreferences.getString("image", null);
+            Glide.with(getActivity()).load("http://10.0.2.2:3000/get/image/"+nameImage).apply(option).into(btn_image);
+
+        }
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Update Username");
@@ -224,13 +290,13 @@ public class ProfileFragment extends Fragment {
         phone.setHint(mPreferences.getString("phone", null));
 
         //image action
-        icon_trade =  view.findViewById(R.id.icon_trade);
-        icon_sale =  view.findViewById(R.id.icon_sale);
+        icon_trade = view.findViewById(R.id.icon_trade);
+        icon_sale = view.findViewById(R.id.icon_sale);
         btn_update_all = (Button) view.findViewById(R.id.updateall);
-        icon_trade_text =view.findViewById(R.id.icon_trade_text);
-         icon_sale_text =view.findViewById(R.id.icon_sale_text);
-        icon_trade.setText(mPreferences.getString("trade","").toString());
-        icon_sale.setText(mPreferences.getString("sale","").toString());
+        icon_trade_text = view.findViewById(R.id.icon_trade_text);
+        icon_sale_text = view.findViewById(R.id.icon_sale_text);
+        icon_trade.setText(mPreferences.getString("trade", "").toString());
+        icon_sale.setText(mPreferences.getString("sale", "").toString());
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -564,20 +630,24 @@ public class ProfileFragment extends Fragment {
             }
 
         });
+        btn_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), UserImageActivity.class);
+                startActivity(intent);
+            }
+        });
+
         btn_update_all.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (email.getText().toString().length() == 0) {
                     email.setError("email is required!");
-                } else
-                    if (phone.getText().toString().length() != 8) {
-                        phone.setError("phone is required!");
-                    }
-else
-                if (address.getText().toString().length() == 0) {
+                } else if (phone.getText().toString().length() != 8) {
+                    phone.setError("phone is required!");
+                } else if (address.getText().toString().length() == 0) {
                     address.setError("address is required!");
-                }
-                 else {
+                } else {
                     try {
                         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
                         JSONObject jsonBody = new JSONObject();
@@ -653,5 +723,103 @@ else
         });
     }
 
+    private boolean hasPermission(String permission) {
+     /*   if (canMakeSmores()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED);
+            }
+        }*/
+        return true;
+    }
 
+    private ArrayList<String> findUnAskedPermissions(ArrayList<String> wanted) {
+        ArrayList<String> result = new ArrayList<String>();
+
+        for (String perm : wanted) {
+            if (!hasPermission(perm)) {
+                result.add(perm);
+            }
+        }
+
+        return result;
+    }
+
+
+    private void askPermissions() {
+        permissions.add(CAMERA);
+        permissions.add(WRITE_EXTERNAL_STORAGE);
+        permissions.add(READ_EXTERNAL_STORAGE);
+        permissionsToRequest = findUnAskedPermissions(permissions);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+
+            if (permissionsToRequest.size() > 0)
+                requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
+        }
+    }
+
+    private void initRetrofitClient() {
+        OkHttpClient client = new OkHttpClient.Builder().build();
+
+        apiService = new Retrofit.Builder().baseUrl("http://10.0.2.2:3000/upload/").client(client).build().create(ApiService.class);
+    }
+
+
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SELECT_PHOTO && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            uri = data.getData();
+            Log.i("uri ==========>", uri.toString());
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                btn_image.setImageBitmap(bitmap);
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    private String getPath(Uri uri) {
+        Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        String document_id = cursor.getString(0);
+        document_id = document_id.substring(document_id.lastIndexOf(":") + 1);
+        cursor.close();
+        cursor = getActivity().getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null
+        );
+        cursor.moveToFirst();
+        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+        cursor.close();
+        return path;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if (requestCode == STORAGE_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(getActivity(), "permission granted", Toast.LENGTH_LONG).show();
+
+            } else {
+                Toast.makeText(getActivity(), "permission not granted", Toast.LENGTH_LONG).show();
+
+            }
+        }
+    }
+
+    private void requestStoragePermission() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+            return;
+        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+    }
 }

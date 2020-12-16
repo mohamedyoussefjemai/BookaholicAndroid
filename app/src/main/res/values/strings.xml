@@ -12,6 +12,8 @@
     <string name="phone">Phone Number :</string>
     <string name="name">Name :</string>
     <string name="Addbook">Add Book</string>
+    <string name="changeimageuser">Change Image User</string>
+
     <string name="UpdateBook">Update Book</string>
 
     <string name="category__prompt">Choose a category</string>

@@ -2,10 +2,12 @@ package com.example.piandroid;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +22,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +32,10 @@ import java.io.UnsupportedEncodingException;
 public class ShowUserActivity extends AppCompatActivity {
 
     TextView username, email, phone, address, trade, sale;
-
+    private SharedPreferences mPreferences;
+    final String filename = "BookaholicLogin";
+    ImageView image;
+    RequestOptions option= new RequestOptions().centerCrop().placeholder(R.drawable.bookmale2).error(R.drawable.bookmale2);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,14 +43,19 @@ public class ShowUserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_show_user);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        mPreferences = getSharedPreferences(filename, Context.MODE_PRIVATE);
+
         username = findViewById(R.id.username);
         email = findViewById(R.id.email);
         phone = findViewById(R.id.phone);
         address = findViewById(R.id.address);
         trade = findViewById(R.id.trade);
         sale = findViewById(R.id.sale);
+        image = findViewById(R.id.bookimage);
+
 
         String idUser = getIntent().getExtras().getString("idUser");
+
 
 
         RequestQueue requestQueue = Volley.newRequestQueue(ShowUserActivity.this);
@@ -74,6 +85,14 @@ public class ShowUserActivity extends AppCompatActivity {
                     trade.setText("Trade : " + jsonObj.get("trade").toString());
 
                     sale.setText("Sale : " + jsonObj.get("sale").toString());
+
+                    if (mPreferences.getString("image", null) == null) {
+                        image.setBackgroundResource(R.drawable.bookmale2);
+                    } else {
+                        String nameImage = mPreferences.getString("image", null);
+                        Glide.with(ShowUserActivity.this).load("http://10.0.2.2:3000/get/image/" + jsonObj.get("image").toString()).apply(option).into(image);
+
+                    }
 
 
                 } catch (JSONException e) {
