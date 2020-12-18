@@ -109,7 +109,7 @@ public class LibFragment extends Fragment implements OnTouchListener {
                 prefEditor.commit();
                 mainbooks.clear();
                 getActivity().getSupportFragmentManager()
-                        .beginTransaction().replace(R.id.fragment_container, new PostFragment())
+                        .beginTransaction().replace(R.id.fragment_container, new LibFragment())
                         .commit();
                 Toast.makeText(getContext(), "storage cleaned ", Toast.LENGTH_SHORT).show();
 

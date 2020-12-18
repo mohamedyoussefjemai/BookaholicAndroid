@@ -469,7 +469,7 @@ public class FragmentHome extends Fragment {
                 final String mRequestBody2 = jsonBody.toString();
 
 
-                String url = "http://10.0.2.2:3000/books/read-book-category/" + categoryChoosed;
+                String url = "http://10.0.2.2:3000/books/read-book-category/romance";
 
 
                 StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -583,7 +583,7 @@ public class FragmentHome extends Fragment {
                 final String mRequestBody2 = jsonBody.toString();
 
 
-                String url = "http://10.0.2.2:3000/books/read-book-category/" + categoryChoosed;
+                String url = "http://10.0.2.2:3000/books/read-book-category/travel";
 
 
                 StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -925,7 +925,7 @@ public class FragmentHome extends Fragment {
                 final String mRequestBody2 = jsonBody.toString();
 
 
-                String url = "http://10.0.2.2:3000/books/read-book-category/" + categoryChoosed;
+                String url = "http://10.0.2.2:3000/books/read-book-category/devper";
 
 
                 StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -1267,7 +1267,7 @@ public class FragmentHome extends Fragment {
                 final String mRequestBody2 = jsonBody.toString();
 
 
-                String url = "http://10.0.2.2:3000/books/read-book-category/" + categoryChoosed;
+                String url = "http://10.0.2.2:3000/books/read-book-category/social";
 
 
                 StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -1381,7 +1381,7 @@ public class FragmentHome extends Fragment {
                 final String mRequestBody2 = jsonBody.toString();
 
 
-                String url = "http://10.0.2.2:3000/books/read-book-category/" + categoryChoosed;
+                String url = "http://10.0.2.2:3000/books/read-book-category/art";
 
 
                 StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -1609,7 +1609,7 @@ public class FragmentHome extends Fragment {
                 final String mRequestBody2 = jsonBody.toString();
 
 
-                String url = "http://10.0.2.2:3000/books/read-book-category/" + categoryChoosed;
+                String url = "http://10.0.2.2:3000/books/read-book-category/police";
 
 
                 StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -1723,7 +1723,7 @@ public class FragmentHome extends Fragment {
                 final String mRequestBody2 = jsonBody.toString();
 
 
-                String url = "http://10.0.2.2:3000/books/read-book-category/" + categoryChoosed;
+                String url = "http://10.0.2.2:3000/books/read-book-category/religion";
 
 
                 StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -1951,7 +1951,7 @@ public class FragmentHome extends Fragment {
                 final String mRequestBody2 = jsonBody.toString();
 
 
-                String url = "http://10.0.2.2:3000/books/read-book-category/" + categoryChoosed;
+                String url = "http://10.0.2.2:3000/books/read-book-category/sport";
 
 
                 StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {

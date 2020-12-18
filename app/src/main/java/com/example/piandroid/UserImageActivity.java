@@ -185,9 +185,6 @@ public class UserImageActivity extends AppCompatActivity {
                         int length = response.raw().request().url().toString().length();
                         final String imagenamefinal = response.raw().request().url().toString().substring(29, length);
 
-                        Toast.makeText(getApplicationContext(), imagenamefinal, Toast.LENGTH_SHORT).show();
-
-
                         ////////////////////////////////
 
                         try {
@@ -212,7 +209,7 @@ public class UserImageActivity extends AppCompatActivity {
 
                                     prefEditor.commit();
                                     Log.i("LOG_RESPONSE", response);
-                                    Toast toast = Toast.makeText(UserImageActivity.this, "Add book Done !", Toast.LENGTH_SHORT);
+                                    Toast toast = Toast.makeText(UserImageActivity.this, "Update profile image Done !", Toast.LENGTH_SHORT);
                                     toast.show();
                                     Intent intent = new Intent(UserImageActivity.this, MenuActivity.class);
                                     startActivity(intent);
@@ -222,7 +219,7 @@ public class UserImageActivity extends AppCompatActivity {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
                                     Log.e("LOG_RESPONSE", error.toString());
-                                    Toast toast = Toast.makeText(UserImageActivity.this, "Add book Failed !", Toast.LENGTH_SHORT);
+                                    Toast toast = Toast.makeText(UserImageActivity.this, "Update profile image Failed !", Toast.LENGTH_SHORT);
                                     toast.show();
 
 
