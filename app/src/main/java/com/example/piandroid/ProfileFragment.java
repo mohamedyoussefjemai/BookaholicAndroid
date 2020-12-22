@@ -96,6 +96,7 @@ public class ProfileFragment extends Fragment {
     private SharedPreferences mPreferences;
     final String filename = "BookaholicLogin";
     private Button btn_update_all;
+    private View icon_message;
 
     int SELECT_PHOTO = 1;
     Uri uri;
@@ -142,7 +143,7 @@ public class ProfileFragment extends Fragment {
 
         btn_edit = (ImageButton) view.findViewById(R.id.btn_edit);
         btn_image = (ImageButton) view.findViewById(R.id.btn_image);
-
+        icon_message = (View) view .findViewById(R.id.icon_message);
         //choose image
 
         if(mPreferences.getString("image",null) == null)
@@ -321,6 +322,14 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), SendMailActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        icon_message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ChatActivity.class);
                 startActivity(intent);
             }
         });

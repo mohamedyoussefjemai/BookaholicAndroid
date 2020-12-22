@@ -21,7 +21,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".UserImageActivity"></activity>
+        <activity android:name=".ChatActivity"></activity>
+        <activity android:name=".UserImageActivity" />
         <activity android:name=".ShowBookActivity" />
         <activity android:name=".ShowUserActivity" />
         <activity android:name=".UpdateBookActivity" />
