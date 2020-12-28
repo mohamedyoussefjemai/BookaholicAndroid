@@ -55,10 +55,11 @@ public class LibFragment extends Fragment implements OnTouchListener {
     ArrayList<MainCategory> mainCategories;
     ArrayList<String> stringArrayList;
     private SharedPreferences mPreferences;
+    final String filename = "BookaholicLogin";
     private ImageView sw;
     private TextView clean;
 
-    final String filename = "BookaholicLogin";
+
 
     @Nullable
     @Override

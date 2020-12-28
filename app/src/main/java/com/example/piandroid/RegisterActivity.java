@@ -9,8 +9,11 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -41,7 +44,10 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText confirmPassword;
     private EditText adresse;
     private EditText phone;
+    private EditText messenger;
     private Button btnRegister;
+    private Switch visible;
+    int visible_int = 0;
     private ArrayList<String> useremail = new ArrayList<>();
 
     private boolean test;
@@ -66,8 +72,30 @@ public class RegisterActivity extends AppCompatActivity {
         confirmPassword = findViewById(R.id.confirm_password);
         adresse = findViewById(R.id.adresse);
         phone = findViewById(R.id.phone);
+        messenger = findViewById(R.id.messenger);
         btnRegister = findViewById(R.id.Register);
         ArrayList<String> stringArrayList;
+
+        TextView messenger_txt = findViewById(R.id.messenger_txt);
+
+        visible = (Switch) findViewById(R.id.switch1);
+
+        //switch visisble
+        visible.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    messenger.setVisibility(View.VISIBLE);
+                    messenger_txt.setVisibility(View.VISIBLE);
+                    visible_int = 1;
+                } else {
+                    messenger.setVisibility(View.INVISIBLE);
+                    messenger_txt.setVisibility(View.INVISIBLE);
+                    visible_int = 0;
+
+                }
+            }
+        });
+
 
         birthday.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -225,89 +253,89 @@ public class RegisterActivity extends AppCompatActivity {
                 toast.show();
             } else if(
 */
-          if  (verifFields())
+                if (verifFields()) {
 
-            {
-
-                try {
-                    RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
-                    JSONObject jsonBody = new JSONObject();
-                    jsonBody.put("username", username.getText().toString());
-                    jsonBody.put("email", email.getText().toString());
-                    jsonBody.put("address", adresse.getText().toString());
-                    jsonBody.put("phone", phone.getText().toString());
-                    jsonBody.put("sale", 0);
-                    jsonBody.put("trade", 0);
-                    jsonBody.put("password", password.getText().toString());
-                    jsonBody.put("birthdate", birthday.getText().toString());
-                    jsonBody.put("image", "null");
-
-
-                    final String mRequestBody = jsonBody.toString();
-
-                    String url = "http://10.0.2.2:3000/users/add-user";
-                    StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            Log.i("LOG_RESPONSE", response);
-                            Toast toast = Toast.makeText(RegisterActivity.this, "Registration Done !", Toast.LENGTH_SHORT);
-                            toast.show();
-                            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                            startActivity(intent);
+                    try {
+                        RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
+                        JSONObject jsonBody = new JSONObject();
+                        jsonBody.put("username", username.getText().toString());
+                        jsonBody.put("email", email.getText().toString());
+                        jsonBody.put("address", adresse.getText().toString());
+                        jsonBody.put("phone", phone.getText().toString());
+                        jsonBody.put("sale", 0);
+                        jsonBody.put("trade", 0);
+                        jsonBody.put("password", password.getText().toString());
+                        jsonBody.put("birthdate", birthday.getText().toString());
+                        jsonBody.put("image", "null");
+                        if (visible_int == 0) {
+                            jsonBody.put("messenger", "null");
+                        } else {
+                            jsonBody.put("messenger", messenger.getText().toString());
 
                         }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e("LOG_RESPONSE", error.toString());
-                            Toast toast = Toast.makeText(RegisterActivity.this, "Register Failed !", Toast.LENGTH_SHORT);
-                            toast.show();
+                        final String mRequestBody = jsonBody.toString();
 
+                        String url = "http://10.0.2.2:3000/users/add-user";
+                        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                Log.i("LOG_RESPONSE", response);
+                                Toast toast = Toast.makeText(RegisterActivity.this, "Registration Done !", Toast.LENGTH_SHORT);
+                                toast.show();
+                                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                startActivity(intent);
 
-                        }
-                    }) {
-                        @Override
-                        public String getBodyContentType() {
-                            return "application/json; charset=utf-8";
-                        }
-
-                        @Override
-                        public byte[] getBody() throws AuthFailureError {
-                            try {
-                                return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                            } catch (UnsupportedEncodingException uee) {
-                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                                return null;
                             }
-                        }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("LOG_RESPONSE", error.toString());
+                                Toast toast = Toast.makeText(RegisterActivity.this, "Register Failed !", Toast.LENGTH_SHORT);
+                                toast.show();
 
-                        @Override
-                        protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                            String responseString = "";
-                            if (response != null) {
-                                responseString = String.valueOf(response.statusCode);
+
                             }
-                            return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-                        }
-                    };
+                        }) {
+                            @Override
+                            public String getBodyContentType() {
+                                return "application/json; charset=utf-8";
+                            }
 
-                    requestQueue.add(stringRequest);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                            @Override
+                            public byte[] getBody() throws AuthFailureError {
+                                try {
+                                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                                } catch (UnsupportedEncodingException uee) {
+                                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                                    return null;
+                                }
+                            }
+
+                            @Override
+                            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                                String responseString = "";
+                                if (response != null) {
+                                    responseString = String.valueOf(response.statusCode);
+                                }
+                                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                            }
+                        };
+
+                        requestQueue.add(stringRequest);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast toast = Toast.makeText(RegisterActivity.this, "Register Failed !", Toast.LENGTH_SHORT);
+                    toast.show();
+
                 }
-            } else
-
-            {
-                Toast toast = Toast.makeText(RegisterActivity.this, "Register Failed !", Toast.LENGTH_SHORT);
-                toast.show();
-
             }
-        }
 
 
-    });
+        });
 
-}
+    }
 
     public boolean verifFields() {
         if (username.getText().toString().length() == 0) {

@@ -135,6 +135,7 @@ public class LoginActivity extends AppCompatActivity {
                                         prefEditor.putString("email", jsonObj.get("email").toString());
                                         prefEditor.putString("address", jsonObj.get("address").toString());
                                         prefEditor.putString("phone", jsonObj.get("phone").toString());
+                                        prefEditor.putString("messenger", jsonObj.get("messenger").toString());
                                         prefEditor.putString("sale", jsonObj.get("sale").toString());
                                         prefEditor.putString("trade", jsonObj.get("trade").toString());
                                         prefEditor.putString("image", jsonObj.get("image").toString());

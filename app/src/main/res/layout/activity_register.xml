@@ -200,7 +200,41 @@
             android:inputType="phone"
 
             />
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_width="60dp"
+            android:layout_height="16dp"
+            android:layout_gravity="left"
+            android:text="Visible"
+            android:textColor="@color/colorWhite"
+            android:checked="false"
+            />
+        <TextView
+            android:id="@+id/messenger_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20.5dp"
+            android:layout_marginEnd="39.5dp"
+            android:text="Your Facebook id"
+            android:visibility="invisible"
+            android:textAppearance="@style/phone" />
 
+        <EditText
+            android:id="@+id/messenger"
+            android:layout_width="340dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="20.5dp"
+            android:layout_marginEnd="39.5dp"
+            android:background="@drawable/rectangle"
+            android:drawableEnd="@drawable/facebook"
+            android:hint="Your facebook id :"
+            android:visibility="invisible"
+
+            android:shadowRadius="10"
+
+            />
+
+            />
         <Button
             android:id="@+id/Register"
             android:layout_width="match_parent"

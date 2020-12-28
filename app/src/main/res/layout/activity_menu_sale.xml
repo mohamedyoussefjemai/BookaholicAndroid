@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    tools:context=".MenuSaleActivity">
+
+    <LinearLayout
+        android:id="@+id/page"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical">
+
+
+        <!-- bg orange -->
+        <LinearLayout
+            android:id="@+id/bg_orange"
+            android:layout_width="425dp"
+            android:layout_height="155dp"
+
+            android:background="@color/colorOrange"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/logo"
+                android:layout_width="91dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                app:srcCompat="@mipmap/logo_white_mini" />
+        </LinearLayout>
+
+        <!-- Registration -->
+        <TextView
+            android:id="@+id/menu_message_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal|top"
+            android:text="Menu Messaging"
+            android:textAppearance="@style/registration" />
+
+        <LinearLayout
+            android:id="@+id/lnr2"
+            android:layout_width="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/menu_message_text"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/sended"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:hint="SENDED"
+                android:background="@drawable/my_button_bg"
+                android:textSize="16dp" />
+
+            <Button
+                android:id="@+id/received"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/my_button_bg"
+                android:hint="RECEIVED"
+                android:textColor="@color/colorBlack"
+                android:textSize="16dp" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_height="450dp"
+            android:layout_above="@id/lnr2"
+            app:layout_constraintBottom_toTopOf="@+id/lnr2"
+            app:layout_constraintTop_toBottomOf="@+id/lnr1" />
+
+    </LinearLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

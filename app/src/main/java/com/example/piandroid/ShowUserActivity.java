@@ -3,9 +3,12 @@ package com.example.piandroid;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,11 +34,11 @@ import java.io.UnsupportedEncodingException;
 
 public class ShowUserActivity extends AppCompatActivity {
 
-    TextView username, email, phone, address, trade, sale;
+    TextView username, email, phone, address, trade, sale, contact;
     private SharedPreferences mPreferences;
     final String filename = "BookaholicLogin";
     ImageView image;
-    RequestOptions option= new RequestOptions().centerCrop().placeholder(R.drawable.bookmale2).error(R.drawable.bookmale2);
+    RequestOptions option = new RequestOptions().centerCrop().placeholder(R.drawable.bookmale2).error(R.drawable.bookmale2);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +55,10 @@ public class ShowUserActivity extends AppCompatActivity {
         trade = findViewById(R.id.trade);
         sale = findViewById(R.id.sale);
         image = findViewById(R.id.bookimage);
+        contact = findViewById(R.id.contact);
 
 
         String idUser = getIntent().getExtras().getString("idUser");
-
 
 
         RequestQueue requestQueue = Volley.newRequestQueue(ShowUserActivity.this);
@@ -85,6 +88,28 @@ public class ShowUserActivity extends AppCompatActivity {
                     trade.setText("Trade : " + jsonObj.get("trade").toString());
 
                     sale.setText("Sale : " + jsonObj.get("sale").toString());
+
+
+                    if (mPreferences.getString("messenger", null).equals("null")) {
+                        contact.setVisibility(View.INVISIBLE);
+                    }
+
+
+                    contact.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            try {
+                                String url;
+                                url = "https://www.messenger.com/t/" + jsonObj.get("messenger").toString();
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                i.setData(Uri.parse(url));
+                                startActivity(i);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
 
                     if (mPreferences.getString("image", null) == null) {
                         image.setBackgroundResource(R.drawable.bookmale2);

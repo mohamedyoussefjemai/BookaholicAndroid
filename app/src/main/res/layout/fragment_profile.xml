@@ -263,6 +263,34 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <EditText
+                    android:id="@+id/messenger"
+                    android:layout_width="300dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="20.5dp"
+                    android:layout_marginEnd="39.5dp"
+                    android:background="@drawable/rectangle"
+                    android:hint="Tap to change your facebook id"
+                    android:shadowRadius="10" />
+
+                <ImageButton
+                    android:id="@+id/btn_messenger"
+                    android:layout_width="40dp"
+                    android:layout_height="25dp"
+                    android:clickable="true"
+                    android:paddingRight="40px"
+                    android:background="@color/colorWhite"
+                    android:src="@drawable/iconedit" />
+
+            </LinearLayout>
 
             <Button
                 android:id="@+id/updateall"

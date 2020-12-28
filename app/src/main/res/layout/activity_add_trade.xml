@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    tools:context=".AddTradeActivity">
+
+    <LinearLayout
+        android:id="@+id/page"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <!-- bg orange -->
+        <LinearLayout
+            android:id="@+id/bg_orange"
+            android:layout_width="425dp"
+            android:layout_height="155dp"
+            android:background="@color/colorOrange"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/logo"
+                android:layout_width="91dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                app:srcCompat="@mipmap/logo_white_mini" />
+        </LinearLayout>
+
+        <!-- Registration -->
+        <TextView
+            android:id="@+id/registration_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal|top"
+            android:text="Add Trade Request"
+            android:textAppearance="@style/registration" />
+
+
+
+
+        <TextView
+            android:id="@+id/books_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20.5dp"
+            android:gravity="top"
+            android:text="Choose your book"
+            android:textAppearance="@style/username" />
+        <Spinner
+            android:id="@+id/books"
+            android:layout_width="340dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="20.5dp"
+            android:layout_marginEnd="39.5dp"
+            android:background="@drawable/rectangle"
+            android:shadowRadius="10"
+            android:entries="@array/category__arrays"
+            android:prompt="@string/category__prompt"/>
+
+
+
+
+        <TextView
+            android:id="@+id/visible_text"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20.5dp"
+            android:text="Add a sum"
+            android:textAppearance="@style/username" />
+
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_width="60dp"
+            android:layout_height="16dp"
+            android:layout_gravity="left"
+            android:text="Visible"
+            android:textColor="@color/colorWhite"
+            android:checked="false"
+            />
+        <TextView
+            android:id="@+id/price_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20.5dp"
+            android:gravity="top"
+            android:text="Price :"
+            android:visibility="invisible"
+            android:textAppearance="@style/username" />
+
+        <EditText
+            android:id="@+id/price"
+            android:layout_width="340dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="20.5dp"
+            android:layout_marginEnd="39.5dp"
+            android:background="@drawable/rectangle"
+            android:drawableRight="@mipmap/money"
+            android:hint="Price :"
+            android:visibility="invisible"
+            android:shadowRadius="10" />
+
+        <Button
+            android:id="@+id/AddTrade"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20.5dp"
+            android:layout_marginRight="39.5dp"
+            android:background="@drawable/rectanglelogin"
+            android:text="Send Trade Request"
+            android:textColor="@color/colorWhite" />
+
+    </LinearLayout>
+</ScrollView>

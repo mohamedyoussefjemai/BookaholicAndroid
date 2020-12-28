@@ -1,0 +1,815 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".CategoryActivity">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:stretchColumns="5">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="vertical"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+
+            <LinearLayout
+                android:id="@+id/cardsView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/colorOrange"
+                android:weightSum="5">
+
+                <ImageView
+                    android:id="@+id/comics_mangas"
+                    android:layout_width="111dp"
+                    android:layout_height="85dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginTop="20px"
+                    android:layout_marginRight="20px"
+                    android:layout_marginBottom="20px"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/superheroo"
+                    android:weightSum="2" />
+
+                <TextView
+                    android:id="@+id/menu_message_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal|top"
+                    android:paddingBottom="10dp"
+                    android:text="@string/comics_mangas"
+                    android:textColor="@color/colorWhite"
+                    android:textAppearance="@style/registration" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="vertical"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+
+            <LinearLayout
+                android:id="@+id/cardsView2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/colorOrange"
+                android:weightSum="5">
+
+                <ImageView
+                    android:id="@+id/health_cooking"
+                    android:layout_width="111dp"
+                    android:layout_height="85dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginTop="20px"
+                    android:layout_marginRight="20px"
+                    android:layout_marginBottom="20px"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/chef"
+                    android:weightSum="2" />
+
+                <TextView
+                    android:id="@+id/health_cooking_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal|top"
+                    android:paddingBottom="10dp"
+                    android:text="@string/health_cooking"
+                    android:textColor="@color/colorWhite"
+                    android:textAppearance="@style/registration" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="vertical"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+
+            <LinearLayout
+                android:id="@+id/cardsView3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/colorOrange"
+                android:weightSum="5">
+
+                <ImageView
+                    android:id="@+id/romance_newadult"
+                    android:layout_width="111dp"
+                    android:layout_height="85dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginTop="20px"
+                    android:layout_marginRight="20px"
+                    android:layout_marginBottom="20px"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/hearts"
+                    android:weightSum="2" />
+
+                <TextView
+                    android:id="@+id/romance_newadult_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal|top"
+                    android:paddingBottom="10dp"
+                    android:text="@string/romance_newadult"
+                    android:textColor="@color/colorWhite"
+                    android:textAppearance="@style/registration" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="vertical"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+
+            <LinearLayout
+                android:id="@+id/cardsView4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/colorOrange"
+                android:weightSum="5">
+
+                <ImageView
+                    android:id="@+id/tourism_travel"
+                    android:layout_width="111dp"
+                    android:layout_height="85dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginTop="20px"
+                    android:layout_marginRight="20px"
+                    android:layout_marginBottom="20px"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/travel"
+                    android:weightSum="2" />
+
+                <TextView
+                    android:id="@+id/tourism_travel_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal|top"
+                    android:paddingBottom="10dp"
+                    android:text="@string/tourism_travel"
+                    android:textColor="@color/colorWhite"
+                    android:textAppearance="@style/registration" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="vertical"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+
+            <LinearLayout
+                android:id="@+id/cardsView5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/colorOrange"
+                android:weightSum="5">
+
+                <ImageView
+                    android:id="@+id/adventure"
+                    android:layout_width="111dp"
+                    android:layout_height="85dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginTop="20px"
+                    android:layout_marginRight="20px"
+                    android:layout_marginBottom="20px"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/traveler"
+                    android:weightSum="2" />
+
+                <TextView
+                    android:id="@+id/adventure_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal|top"
+                    android:paddingBottom="10dp"
+                    android:text="@string/adventure"
+                    android:textColor="@color/colorWhite"
+                    android:textAppearance="@style/registration" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="vertical"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+
+            <LinearLayout
+                android:id="@+id/cardsView6"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/colorOrange"
+                android:weightSum="5">
+
+                <ImageView
+                    android:id="@+id/literature"
+                    android:layout_width="111dp"
+                    android:layout_height="85dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginTop="20px"
+                    android:layout_marginRight="20px"
+                    android:layout_marginBottom="20px"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/papyrus"
+                    android:weightSum="2" />
+
+                <TextView
+                    android:id="@+id/literature_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal|top"
+                    android:paddingBottom="10dp"
+                    android:text="@string/literature"
+                    android:textColor="@color/colorWhite"
+                    android:textAppearance="@style/registration" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="vertical"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+
+            <LinearLayout
+                android:id="@+id/cardsView7"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/colorOrange"
+                android:weightSum="5">
+
+                <ImageView
+                    android:id="@+id/personal_devlopment"
+                    android:layout_width="111dp"
+                    android:layout_height="85dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginTop="20px"
+                    android:layout_marginRight="20px"
+                    android:layout_marginBottom="20px"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/personaldevelopment"
+                    android:weightSum="2" />
+
+                <TextView
+                    android:id="@+id/personal_devlopment_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal|top"
+                    android:paddingBottom="10dp"
+                    android:text="@string/personal_devlopment"
+                    android:textColor="@color/colorWhite"
+                    android:textAppearance="@style/registration" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="vertical"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+
+            <LinearLayout
+                android:id="@+id/cardsView8"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/colorOrange"
+                android:weightSum="5">
+
+                <ImageView
+                    android:id="@+id/history"
+                    android:layout_width="111dp"
+                    android:layout_height="85dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginTop="20px"
+                    android:layout_marginRight="20px"
+                    android:layout_marginBottom="20px"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/parchment"
+                    android:weightSum="2" />
+
+                <TextView
+                    android:id="@+id/history_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal|top"
+                    android:paddingBottom="10dp"
+                    android:text="@string/history"
+                    android:textColor="@color/colorWhite"
+                    android:textAppearance="@style/registration" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="vertical"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+
+            <LinearLayout
+                android:id="@+id/cardsView9"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/colorOrange"
+                android:weightSum="5">
+
+                <ImageView
+                    android:id="@+id/youth"
+                    android:layout_width="111dp"
+                    android:layout_height="85dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginTop="20px"
+                    android:layout_marginRight="20px"
+                    android:layout_marginBottom="20px"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/youth"
+                    android:weightSum="2" />
+
+                <TextView
+                    android:id="@+id/youth_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal|top"
+                    android:paddingBottom="10dp"
+                    android:text="@string/youth"
+                    android:textColor="@color/colorWhite"
+                    android:textAppearance="@style/registration" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="vertical"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+
+            <LinearLayout
+                android:id="@+id/cardsView10"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/colorOrange"
+                android:weightSum="5">
+
+                <ImageView
+                    android:id="@+id/social_science"
+                    android:layout_width="111dp"
+                    android:layout_height="85dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginTop="20px"
+                    android:layout_marginRight="20px"
+                    android:layout_marginBottom="20px"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/psychology"
+                    android:weightSum="2" />
+
+                <TextView
+                    android:id="@+id/social_science_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal|top"
+                    android:paddingBottom="10dp"
+                    android:text="@string/social_science"
+                    android:textColor="@color/colorWhite"
+                    android:textAppearance="@style/registration" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="vertical"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+
+            <LinearLayout
+                android:id="@+id/cardsView11"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/colorOrange"
+                android:weightSum="5">
+
+                <ImageView
+                    android:id="@+id/artmusic_cinema"
+                    android:layout_width="111dp"
+                    android:layout_height="85dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginTop="20px"
+                    android:layout_marginRight="20px"
+                    android:layout_marginBottom="20px"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/violin"
+                    android:weightSum="2" />
+
+                <TextView
+                    android:id="@+id/artmusic_cinema_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal|top"
+                    android:paddingBottom="10dp"
+                    android:text="@string/artmusic_cinema"
+                    android:textColor="@color/colorWhite"
+                    android:textAppearance="@style/registration" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="vertical"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+
+            <LinearLayout
+                android:id="@+id/cardsView12"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/colorOrange"
+                android:weightSum="5">
+
+                <ImageView
+                    android:id="@+id/humor"
+                    android:layout_width="111dp"
+                    android:layout_height="85dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginTop="20px"
+                    android:layout_marginRight="20px"
+                    android:layout_marginBottom="20px"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/humor"
+                    android:weightSum="2" />
+
+                <TextView
+                    android:id="@+id/humor_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal|top"
+                    android:paddingBottom="10dp"
+                    android:text="@string/humor"
+                    android:textColor="@color/colorWhite"
+                    android:textAppearance="@style/registration" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="vertical"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+
+            <LinearLayout
+                android:id="@+id/cardsView13"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/colorOrange"
+                android:weightSum="5">
+
+                <ImageView
+                    android:id="@+id/police_thrillers"
+                    android:layout_width="111dp"
+                    android:layout_height="85dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginTop="20px"
+                    android:layout_marginRight="20px"
+                    android:layout_marginBottom="20px"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/villian"
+                    android:weightSum="2" />
+
+                <TextView
+                    android:id="@+id/police_thrillers_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal|top"
+                    android:paddingBottom="10dp"
+                    android:text="@string/police_thrillers"
+                    android:textColor="@color/colorWhite"
+                    android:textAppearance="@style/registration" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="vertical"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+
+            <LinearLayout
+                android:id="@+id/cardsView14"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/colorOrange"
+                android:weightSum="5">
+
+                <ImageView
+                    android:id="@+id/religion_spirituality"
+                    android:layout_width="111dp"
+                    android:layout_height="85dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginTop="20px"
+                    android:layout_marginRight="20px"
+                    android:layout_marginBottom="20px"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/yinyang"
+                    android:weightSum="2" />
+
+                <TextView
+                    android:id="@+id/religion_spirituality_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal|top"
+                    android:paddingBottom="10dp"
+                    android:text="@string/religion_spirituality"
+                    android:textColor="@color/colorWhite"
+                    android:textAppearance="@style/registration" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="vertical"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+
+            <LinearLayout
+                android:id="@+id/cardsView15"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/colorOrange"
+                android:weightSum="5">
+
+                <ImageView
+                    android:id="@+id/school"
+                    android:layout_width="111dp"
+                    android:layout_height="85dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginTop="20px"
+                    android:layout_marginRight="20px"
+                    android:layout_marginBottom="20px"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/whiteboard"
+                    android:weightSum="2" />
+
+                <TextView
+                    android:id="@+id/school_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal|top"
+                    android:paddingBottom="10dp"
+                    android:text="@string/school"
+                    android:textColor="@color/colorWhite"
+                    android:textAppearance="@style/registration" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="vertical"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+
+            <LinearLayout
+                android:id="@+id/cardsView16"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/colorOrange"
+                android:weightSum="5">
+
+                <ImageView
+                    android:id="@+id/sport_leisure"
+                    android:layout_width="111dp"
+                    android:layout_height="85dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginTop="20px"
+                    android:layout_marginRight="20px"
+                    android:layout_marginBottom="20px"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/barbell"
+                    android:weightSum="2" />
+
+                <TextView
+                    android:id="@+id/sport_leisure_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal|top"
+                    android:paddingBottom="10dp"
+                    android:text="@string/sport_leisure"
+                    android:textColor="@color/colorWhite"
+                    android:textAppearance="@style/registration" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="vertical"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+
+            <LinearLayout
+                android:id="@+id/cardsView17"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/colorOrange"
+                android:weightSum="5">
+
+                <ImageView
+                    android:id="@+id/theater"
+                    android:layout_width="111dp"
+                    android:layout_height="85dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginTop="20px"
+                    android:layout_marginRight="20px"
+                    android:layout_marginBottom="20px"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/theater"
+                    android:weightSum="2" />
+
+                <TextView
+                    android:id="@+id/theater_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal|top"
+                    android:paddingBottom="10dp"
+                    android:text="@string/theater"
+                    android:textColor="@color/colorWhite"
+                    android:textAppearance="@style/registration" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </TableLayout>
+</ScrollView>

@@ -34,8 +34,9 @@ import java.io.UnsupportedEncodingException;
 public class ShowBookActivity extends AppCompatActivity {
 
     ImageView bookimage;
-    TextView title, author, category, username, status, language,price;
+    TextView title, author, category, username, status, language, price;
     RequestOptions option;
+    ImageView trade, sale;
 
 
     @Override
@@ -52,7 +53,43 @@ public class ShowBookActivity extends AppCompatActivity {
         status = findViewById(R.id.status);
         language = findViewById(R.id.language);
         price = findViewById(R.id.price);
+        trade = findViewById(R.id.trade);
+        sale = findViewById(R.id.sale);
 
+        if (getIntent().getStringExtra("hide").equals("true")) {
+            trade.setVisibility(View.INVISIBLE);
+            sale.setVisibility(View.INVISIBLE);
+
+        }
+
+
+        trade.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = v.getContext();
+                Intent intent = new Intent(context, AddTradeActivity.class);
+
+                String receiver = getIntent().getStringExtra("receiver");
+                Log.i("receiver : ", receiver);
+                intent.putExtra("receiver", receiver);
+                intent.putExtra("titlechange", getIntent().getStringExtra("titlechange"));
+                context.startActivity(intent);
+            }
+        });
+
+        sale.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = v.getContext();
+                Intent intent = new Intent(context, AddSaleActivity.class);
+
+                String receiver = getIntent().getStringExtra("receiver");
+                Log.i("receiver : ", receiver);
+                intent.putExtra("receiver", receiver);
+                intent.putExtra("titlechange", getIntent().getStringExtra("titlechange"));
+                context.startActivity(intent);
+            }
+        });
 
         username.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +122,7 @@ public class ShowBookActivity extends AppCompatActivity {
                 try {
                     JSONObject jsonObj = new JSONObject(responseFormatted);
                     Glide.with(ShowBookActivity.this).load("http://10.0.2.2:3000/get/image/" + jsonObj.get("image").toString()).apply(option).into(bookimage);
-                    price.setText(jsonObj.get("price").toString()+" DT");
+                    price.setText(jsonObj.get("price").toString() + " DT");
                     username.setText(jsonObj.get("username").toString());
                     title.setText(jsonObj.get("title").toString());
                     category.setText(jsonObj.get("category").toString());
@@ -101,6 +138,7 @@ public class ShowBookActivity extends AppCompatActivity {
                     }
                     language.setText(jsonObj.get("language").toString());
                     language.setBackgroundResource(R.drawable.yellowblock);
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();

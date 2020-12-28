@@ -112,6 +112,7 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHo
             @Override
             public void onClick(View v) {
                 String idUser = mainbooks.get(position).getUser();
+                String receiver = mainbooks.get(position).getUsername();
                 Context context = v.getContext();
                 Intent intent = new Intent(context, ShowUserActivity.class);
                 intent.putExtra("idUser", idUser);
@@ -129,6 +130,10 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHo
                 Intent intent = new Intent(context, ShowBookActivity.class);
                 intent.putExtra("idBook", idBook);
                 intent.putExtra("idUser",mainbooks.get(position).getUser());
+                intent.putExtra("receiver", mainbooks.get(position).getUsername());
+                intent.putExtra("titlechange", mainbooks.get(position).getTitle());
+                intent.putExtra("hide", "false");
+
                 context.startActivity(intent);
 
             }

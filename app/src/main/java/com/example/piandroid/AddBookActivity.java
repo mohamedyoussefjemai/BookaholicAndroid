@@ -79,11 +79,11 @@ public class AddBookActivity extends AppCompatActivity {
 
     private TextView price_text, category_text, status_text, language_text;
     private EditText title, author, price;
-    private Switch visible;
     private Spinner category, status, language;
     private Button AddBook;
     private ImageButton btnchoose;
     private ImageView bookimage;
+    private Switch visible;
     int visible_int = 0;
     private SharedPreferences mPreferences;
     final String filename = "BookaholicLogin";

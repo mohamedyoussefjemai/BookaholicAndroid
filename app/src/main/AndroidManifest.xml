@@ -21,7 +21,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ChatActivity"></activity>
+        <activity android:name=".AddSaleActivity"></activity>
+        <activity android:name=".MenuSaleActivity" />
+        <activity android:name=".MenuTradeActivity" />
+        <activity android:name=".AddTradeActivity" />
+        <activity android:name=".CategoryActivity" />
+        <activity android:name=".MenuMessageActivity" />
+        <activity android:name=".ChatActivity" />
         <activity android:name=".UserImageActivity" />
         <activity android:name=".ShowBookActivity" />
         <activity android:name=".ShowUserActivity" />

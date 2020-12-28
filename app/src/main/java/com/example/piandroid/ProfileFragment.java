@@ -89,10 +89,10 @@ public class ProfileFragment extends Fragment {
     private ImageButton btn_image;
     private TextView change_password;
     private TextView logout;
-    private EditText phone, email, address, input;
-    private ImageButton btn_email, btn_phone, btn_address, btn_edit;
+    private EditText phone, email, address, input, messenger;
+    private ImageButton btn_email, btn_phone, btn_address, btn_edit, btn_messenger;
     private TextView icon_trade, icon_sale;
-    private TextView icon_trade_text, icon_sale_text;
+    private TextView icon_trade_text, icon_sale_text,messenger_text;
     private SharedPreferences mPreferences;
     final String filename = "BookaholicLogin";
     private Button btn_update_all;
@@ -110,7 +110,7 @@ public class ProfileFragment extends Fragment {
     private ArrayList<String> permissions = new ArrayList<>();
     private final static int ALL_PERMISSIONS_RESULT = 107;
     private final static int IMAGE_RESULT = 200;
-    RequestOptions option= new RequestOptions().centerCrop().placeholder(R.drawable.bookmale2).error(R.drawable.bookmale2);
+    RequestOptions option = new RequestOptions().centerCrop().placeholder(R.drawable.bookmale2).error(R.drawable.bookmale2);
 
     @Nullable
     @Override
@@ -130,7 +130,6 @@ public class ProfileFragment extends Fragment {
 
         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-
         mPreferences = getActivity().getSharedPreferences(filename, Context.MODE_PRIVATE);
 
 
@@ -143,16 +142,15 @@ public class ProfileFragment extends Fragment {
 
         btn_edit = (ImageButton) view.findViewById(R.id.btn_edit);
         btn_image = (ImageButton) view.findViewById(R.id.btn_image);
-        icon_message = (View) view .findViewById(R.id.icon_message);
+        icon_message = (View) view.findViewById(R.id.icon_message);
+
         //choose image
 
-        if(mPreferences.getString("image",null) == null)
-        {
+        if (mPreferences.getString("image", null) == null) {
             btn_image.setBackgroundResource(R.drawable.bookmale2);
-        }
-        else {
+        } else {
             String nameImage = mPreferences.getString("image", null);
-            Glide.with(getActivity()).load("http://10.0.2.2:3000/get/image/"+nameImage).apply(option).into(btn_image);
+            Glide.with(getActivity()).load("http://10.0.2.2:3000/get/image/" + nameImage).apply(option).into(btn_image);
 
         }
 
@@ -278,9 +276,15 @@ public class ProfileFragment extends Fragment {
         btn_email = (ImageButton) view.findViewById(R.id.btn_email);
         btn_phone = (ImageButton) view.findViewById(R.id.btn_phone);
         btn_address = (ImageButton) view.findViewById(R.id.btn_addr);
+        btn_messenger = (ImageButton) view.findViewById(R.id.btn_messenger);
+
         phone = (EditText) view.findViewById(R.id.tel);
         email = (EditText) view.findViewById(R.id.email);
         address = (EditText) view.findViewById(R.id.adresse);
+        messenger = (EditText) view.findViewById(R.id.messenger);
+
+        messenger.setHint(mPreferences.getString("messenger", null));
+
 
         name_text.setText(mPreferences.getString("username", null));
         //    email_txt.setText(mPreferences.getString("email", null));
@@ -298,6 +302,7 @@ public class ProfileFragment extends Fragment {
         icon_sale_text = view.findViewById(R.id.icon_sale_text);
         icon_trade.setText(mPreferences.getString("trade", "").toString());
         icon_sale.setText(mPreferences.getString("sale", "").toString());
+
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -311,6 +316,7 @@ public class ProfileFragment extends Fragment {
                 prefEditor.remove("sale");
                 prefEditor.remove("trade");
                 prefEditor.remove("image");
+                prefEditor.remove("messenger");
                 prefEditor.clear();
                 prefEditor.commit();
 
@@ -318,6 +324,8 @@ public class ProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+
         change_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -329,9 +337,161 @@ public class ProfileFragment extends Fragment {
         icon_message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), ChatActivity.class);
+                Intent intent = new Intent(getActivity(), MenuMessageActivity.class);
                 startActivity(intent);
             }
+        });
+        btn_phone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (phone.getText().toString().length() != 8) {
+                    phone.setError("phone length must be 8");
+                } else {
+                    try {
+                        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                        JSONObject jsonBody = new JSONObject();
+                        jsonBody.put("phone", phone.getText().toString());
+                        final String mRequestBody = jsonBody.toString();
+
+                        String url = "http://10.0.2.2:3000/users/update-user-phone/" + mPreferences.getString("id", null);
+                        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                final SharedPreferences.Editor prefEditor = mPreferences.edit();
+
+                                Log.i("LOG_RESPONSE", response);
+                                Toast toast = Toast.makeText(getContext(), "Update Done !", Toast.LENGTH_SHORT);
+                                toast.show();
+                                prefEditor.putString("phone", phone.getText().toString());
+                                prefEditor.commit();
+                                Log.i("shared ==========>", mPreferences.getString("phone", null));
+                                Log.i("text envoyé ==========>", phone.getText().toString());
+
+                                getActivity().getSupportFragmentManager()
+                                        .beginTransaction().replace(R.id.fragment_container, new ProfileFragment())
+                                        .commit();
+
+                            }
+                        }, new Response.ErrorListener() {
+
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("LOG_RESPONSE", error.toString());
+                                Toast toast = Toast.makeText(getContext(), "Update Failed !", Toast.LENGTH_SHORT);
+                                toast.show();
+
+
+                            }
+                        }) {
+                            @Override
+                            public String getBodyContentType() {
+                                return "application/json; charset=utf-8";
+                            }
+
+                            @Override
+                            public byte[] getBody() throws AuthFailureError {
+                                try {
+                                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                                } catch (UnsupportedEncodingException uee) {
+                                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                                    return null;
+                                }
+                            }
+
+                            @Override
+                            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                                String responseString = "";
+                                if (response != null) {
+                                    responseString = String.valueOf(response.statusCode);
+                                }
+                                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                            }
+                        };
+
+                        requestQueue.add(stringRequest);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+
+        });
+        btn_messenger.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (messenger.getText().toString().length() == 0) {
+                    messenger.setError("messenger is required!");
+                } else {
+                    try {
+                        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                        JSONObject jsonBody = new JSONObject();
+                        jsonBody.put("messenger", messenger.getText().toString());
+                        final String mRequestBody = jsonBody.toString();
+
+                        String url = "http://10.0.2.2:3000/users/update-user-messenger/" + mPreferences.getString("id", null);
+                        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                final SharedPreferences.Editor prefEditor = mPreferences.edit();
+
+                                Log.i("LOG_RESPONSE", response);
+                                Toast toast = Toast.makeText(getContext(), "Update Done !", Toast.LENGTH_SHORT);
+                                toast.show();
+                                prefEditor.putString("messenger", messenger.getText().toString());
+                                prefEditor.commit();
+                                Log.i("shared ==========>", mPreferences.getString("address", null));
+                                Log.i("text envoyé ==========>", address.getText().toString());
+
+                                getActivity().getSupportFragmentManager()
+                                        .beginTransaction().replace(R.id.fragment_container, new ProfileFragment())
+                                        .commit();
+
+                            }
+                        }, new Response.ErrorListener() {
+
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("LOG_RESPONSE", error.toString());
+                                Toast toast = Toast.makeText(getContext(), "Update Failed !", Toast.LENGTH_SHORT);
+                                toast.show();
+
+
+                            }
+                        }) {
+                            @Override
+                            public String getBodyContentType() {
+                                return "application/json; charset=utf-8";
+                            }
+
+                            @Override
+                            public byte[] getBody() throws AuthFailureError {
+                                try {
+                                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                                } catch (UnsupportedEncodingException uee) {
+                                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                                    return null;
+                                }
+                            }
+
+                            @Override
+                            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                                String responseString = "";
+                                if (response != null) {
+                                    responseString = String.valueOf(response.statusCode);
+                                }
+                                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                            }
+                        };
+
+                        requestQueue.add(stringRequest);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+
         });
 
         btn_phone.setOnClickListener(new View.OnClickListener() {
@@ -774,8 +934,6 @@ public class ProfileFragment extends Fragment {
 
         apiService = new Retrofit.Builder().baseUrl("http://10.0.2.2:3000/upload/").client(client).build().create(ApiService.class);
     }
-
-
 
 
     @Override

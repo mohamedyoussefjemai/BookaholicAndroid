@@ -78,6 +78,7 @@ public class CardViewLibAdapter extends RecyclerView.Adapter<CardViewLibAdapter.
                 Context context = v.getContext();
                 Intent intent = new Intent(context, ShowBookActivity.class);
                 intent.putExtra("idBook", idBook);
+                intent.putExtra("hide", "true");
                 context.startActivity(intent);
 
             }

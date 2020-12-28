@@ -1,8 +1,11 @@
 package com.example.piandroid;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,11 +27,16 @@ public class MessagerAdapter extends RecyclerView.Adapter {
     private static final int TYPE_MESSAGE_RECEIVED = 1;
     private static final int TYPE_IMAGE_SENT = 2;
     private static final int TYPE_IMAGE_RECEIVED = 3;
+    private final Context context;
+
+    private SharedPreferences mPreferences;
+    final String filename = "BookaholicLogin";
 
     private LayoutInflater inflater;
     private List<JSONObject> messages = new ArrayList<>();
 
-    public MessagerAdapter(LayoutInflater inflater) {
+    public MessagerAdapter(Context context, LayoutInflater inflater) {
+        this.context = context;
         this.inflater = inflater;
     }
 
@@ -110,6 +118,7 @@ public class MessagerAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
         View view;
         switch (viewType) {
             case TYPE_MESSAGE_SENT:
@@ -132,29 +141,50 @@ public class MessagerAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
+        mPreferences = context.getSharedPreferences(filename, Context.MODE_PRIVATE);
+
         JSONObject message = messages.get(position);
         try {
+            String username = mPreferences.getString("username", null);
+
+
             if (message.getBoolean("isSent")) {
                 if (message.has("message")) {
+                    //      Log.i("des_username = ", message.getString("des_user"));
+                    //    Log.i("username sender = ", message.getString("name"));
+
+                    //   if (message.getString("name").equals(username)) {
                     SentMessageHolder messageHolder = (SentMessageHolder) holder;
                     messageHolder.messageTxt.setText(message.getString("message"));
+                    //   }
                 } else {
+                    //   Log.i("des_username = ", message.getString("des_user"));
+                    //   Log.i("username sendeer = ", message.getString("name"));
+
+                    //   if (message.getString("name").equals(username)) {
                     SentImageHolder imageHolder = (SentImageHolder) holder;
                     Bitmap bitmap = getBitmapFromString(message.getString("image"));
                     imageHolder.imageView.setImageBitmap(bitmap);
+                    //   }
                 }
             } else {
                 if (message.has("message")) {
+                    //     Log.i("des_username = ", message.getString("des_user"));
+                    //     Log.i("username sender = ", message.getString("name"));
+
+                    //   if (message.getString("des_user").equals(username)) {
+
                     ReceiveMessageHolder messageHolder = (ReceiveMessageHolder) holder;
                     messageHolder.nameTxt.setText(message.getString("name"));
                     messageHolder.messageTxt.setText(message.getString("message"));
-
+                    //  }
                 } else {
-
+                    //   if (message.getString("des_user").equals(username)) {
                     ReceiveImageHolder imageHolder = (ReceiveImageHolder) holder;
                     imageHolder.nameTxt.setText(message.getString("name"));
                     Bitmap bitmap = getBitmapFromString(message.getString("image"));
                     imageHolder.imageView.setImageBitmap(bitmap);
+                    //  }
                 }
             }
 
