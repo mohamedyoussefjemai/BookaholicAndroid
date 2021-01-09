@@ -275,7 +275,7 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                         final String mRequestBody = jsonBody.toString();
 
-                        String url = "http://10.0.2.2:3000/users/add-user";
+                        String url = "http://192.168.1.4:3000/users/add-user";
                         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {

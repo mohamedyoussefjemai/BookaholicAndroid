@@ -104,7 +104,7 @@ public class SendMailActivity extends AppCompatActivity {
                     final String mRequestBody = jsonBody.toString();
 
 
-                    String url = "http://10.0.2.2:3000/users/forgot";
+                    String url = "http://192.168.1.4:3000/users/forgot";
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -208,7 +208,7 @@ public class SendMailActivity extends AppCompatActivity {
                         final String mRequestBody = jsonBody.toString();
 
 
-                        String url = "http://10.0.2.2:3000/users/update-user-email";
+                        String url = "http://192.168.1.4:3000/users/update-user-email";
                         StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {

@@ -17,7 +17,7 @@
         <!-- bg orange -->
         <LinearLayout
             android:id="@+id/bg_orange"
-            android:layout_width="425dp"
+            android:layout_width="match_parent"
             android:layout_height="155dp"
             android:background="@color/colorOrange"
             android:orientation="vertical">
@@ -27,6 +27,7 @@
                 android:layout_width="91dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
+
                 app:srcCompat="@mipmap/logo_white_mini" />
         </LinearLayout>
 
@@ -37,6 +38,8 @@
             android:layout_height="match_parent"
             android:gravity="center_horizontal|top"
             android:text="@string/Addbook"
+            android:layout_gravity="center"
+
             android:textAppearance="@style/registration" />
 
         <TextView
@@ -46,15 +49,18 @@
             android:layout_marginStart="20.5dp"
             android:gravity="top"
             android:text="Title :"
+            android:layout_gravity="left"
+
             android:textAppearance="@style/username" />
 
         <EditText
             android:id="@+id/title"
-            android:layout_width="340dp"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20.5dp"
             android:layout_marginEnd="39.5dp"
             android:background="@drawable/rectangle"
+            android:layout_gravity="center"
             android:drawableRight="@mipmap/openbook"
             android:hint="Title :"
             android:shadowRadius="10" />
@@ -63,36 +69,42 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20.5dp"
-            android:gravity="top"
+            android:layout_gravity="left"
             android:text="Author :"
+
             android:textAppearance="@style/username" />
 
         <EditText
             android:id="@+id/author"
-            android:layout_width="340dp"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20.5dp"
             android:layout_marginEnd="39.5dp"
             android:background="@drawable/rectangle"
             android:drawableEnd="@mipmap/user"
             android:hint="Author :"
+            android:layout_gravity="center"
+
             android:shadowRadius="10" />
         <TextView
             android:id="@+id/category_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20.5dp"
-            android:gravity="top"
+            android:layout_gravity="left"
+
             android:text="Category :"
             android:textAppearance="@style/username" />
         <Spinner
             android:id="@+id/category"
-            android:layout_width="340dp"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20.5dp"
             android:layout_marginEnd="39.5dp"
             android:background="@drawable/rectangle"
             android:drawableEnd="@mipmap/user"
+            android:layout_gravity="center"
+
             android:shadowRadius="10"
             android:entries="@array/category__arrays"
             android:prompt="@string/category__prompt"/>
@@ -102,18 +114,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20.5dp"
-            android:gravity="top"
+            android:layout_gravity="left"
             android:text="Status :"
+
             android:textAppearance="@style/username" />
         <Spinner
             android:id="@+id/status"
-            android:layout_width="340dp"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20.5dp"
             android:layout_marginEnd="39.5dp"
             android:background="@drawable/rectangle"
             android:drawableEnd="@mipmap/user"
             android:shadowRadius="10"
+            android:layout_gravity="center"
+
             android:entries="@array/status__arrays"
             android:prompt="@string/status__prompt"/>
         <TextView
@@ -121,17 +136,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20.5dp"
-            android:gravity="top"
+            android:layout_gravity="left"
+
             android:text="Langage :"
             android:textAppearance="@style/username" />
         <Spinner
             android:id="@+id/language"
-            android:layout_width="340dp"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20.5dp"
             android:layout_marginEnd="39.5dp"
             android:background="@drawable/rectangle"
             android:drawableEnd="@mipmap/user"
+            android:layout_gravity="center"
+
             android:shadowRadius="10"
             android:entries="@array/language__arrays"
             android:prompt="@string/language__prompt"/>
@@ -139,18 +157,21 @@
 
         <TextView
             android:id="@+id/visible_text"
-            android:layout_width="100dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20.5dp"
             android:text="Show Book :"
+            android:layout_gravity="left"
+
             android:textAppearance="@style/username" />
 
         <Switch
             android:id="@+id/switch1"
-            android:layout_width="60dp"
-            android:layout_height="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:text="Visible"
+
             android:textColor="@color/colorWhite"
             android:checked="false"
             />
@@ -166,8 +187,8 @@
 
         <EditText
             android:id="@+id/price"
-            android:layout_width="340dp"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20.5dp"
             android:layout_marginEnd="39.5dp"
             android:background="@drawable/rectangle"

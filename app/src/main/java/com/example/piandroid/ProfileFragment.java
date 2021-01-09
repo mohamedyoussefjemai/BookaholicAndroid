@@ -10,6 +10,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -92,7 +94,7 @@ public class ProfileFragment extends Fragment {
     private EditText phone, email, address, input, messenger;
     private ImageButton btn_email, btn_phone, btn_address, btn_edit, btn_messenger;
     private TextView icon_trade, icon_sale;
-    private TextView icon_trade_text, icon_sale_text,messenger_text;
+    private TextView icon_trade_text, icon_sale_text, messenger_text;
     private SharedPreferences mPreferences;
     final String filename = "BookaholicLogin";
     private Button btn_update_all;
@@ -126,143 +128,10 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
+
         super.onViewCreated(view, savedInstanceState);
 
         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        mPreferences = getActivity().getSharedPreferences(filename, Context.MODE_PRIVATE);
-
-
-        //request permission
-        requestStoragePermission();
-        //end request permission
-
-        this.askPermissions();
-        this.initRetrofitClient();
-
-        btn_edit = (ImageButton) view.findViewById(R.id.btn_edit);
-        btn_image = (ImageButton) view.findViewById(R.id.btn_image);
-        icon_message = (View) view.findViewById(R.id.icon_message);
-
-        //choose image
-
-        if (mPreferences.getString("image", null) == null) {
-            btn_image.setBackgroundResource(R.drawable.bookmale2);
-        } else {
-            String nameImage = mPreferences.getString("image", null);
-            Glide.with(getActivity()).load("http://10.0.2.2:3000/get/image/" + nameImage).apply(option).into(btn_image);
-
-        }
-
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Update Username");
-        builder.setIcon(R.drawable.psychology);
-        builder.setMessage("Please write your new username to complete the update");
-        input = new EditText(getContext());
-        builder.setView(input);
-
-//SET POSITIVE BUTTON
-        builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String txt = input.getText().toString();
-
-//request update username
-                if (txt.length() == 0) {
-                    input.setError("username must be not null");
-                } else {
-                    try {
-                        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-                        JSONObject jsonBody = new JSONObject();
-                        jsonBody.put("username", input.getText().toString());
-                        final String mRequestBody = jsonBody.toString();
-
-                        String url = "http://10.0.2.2:3000/users/update-user-username/" + mPreferences.getString("id", null);
-                        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                final SharedPreferences.Editor prefEditor = mPreferences.edit();
-
-                                Log.i("LOG_RESPONSE", response);
-                                Toast toast = Toast.makeText(getContext(), "Update Done !", Toast.LENGTH_SHORT);
-                                toast.show();
-                                prefEditor.putString("username", input.getText().toString());
-                                prefEditor.commit();
-                                Log.i("shared ==========>", mPreferences.getString("username", null));
-                                Log.i("text envoyé ==========>", input.getText().toString());
-
-
-                                getActivity().getSupportFragmentManager()
-                                        .beginTransaction().replace(R.id.fragment_container, new ProfileFragment())
-                                        .commit();
-
-
-                            }
-                        }, new Response.ErrorListener() {
-
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
-                                Toast toast = Toast.makeText(getContext(), "Update Failed !", Toast.LENGTH_SHORT);
-                                toast.show();
-
-
-                            }
-                        }) {
-                            @Override
-                            public String getBodyContentType() {
-                                return "application/json; charset=utf-8";
-                            }
-
-                            @Override
-                            public byte[] getBody() throws AuthFailureError {
-                                try {
-                                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                                } catch (UnsupportedEncodingException uee) {
-                                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                                    return null;
-                                }
-                            }
-
-                            @Override
-                            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                                String responseString = "";
-                                if (response != null) {
-                                    responseString = String.valueOf(response.statusCode);
-                                }
-                                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-                            }
-                        };
-
-                        requestQueue.add(stringRequest);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-
-            }
-        });
-        //negative button
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-////////
-
-        //create the dialog
-        final AlertDialog ad = builder.create();
-
-        btn_edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ad.show();
-            }
-        });
 
         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -303,595 +172,787 @@ public class ProfileFragment extends Fragment {
         icon_trade.setText(mPreferences.getString("trade", "").toString());
         icon_sale.setText(mPreferences.getString("sale", "").toString());
 
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final SharedPreferences.Editor prefEditor = mPreferences.edit();
-
-                prefEditor.remove("id");
-                prefEditor.remove("username");
-                prefEditor.remove("birthdate");
-                prefEditor.remove("email");
-                prefEditor.remove("phone");
-                prefEditor.remove("sale");
-                prefEditor.remove("trade");
-                prefEditor.remove("image");
-                prefEditor.remove("messenger");
-                prefEditor.clear();
-                prefEditor.commit();
-
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
-            }
-        });
 
 
-        change_password.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), SendMailActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        icon_message.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), MenuMessageActivity.class);
-                startActivity(intent);
-            }
-        });
-        btn_phone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (phone.getText().toString().length() != 8) {
-                    phone.setError("phone length must be 8");
-                } else {
-                    try {
-                        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-                        JSONObject jsonBody = new JSONObject();
-                        jsonBody.put("phone", phone.getText().toString());
-                        final String mRequestBody = jsonBody.toString();
-
-                        String url = "http://10.0.2.2:3000/users/update-user-phone/" + mPreferences.getString("id", null);
-                        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                final SharedPreferences.Editor prefEditor = mPreferences.edit();
-
-                                Log.i("LOG_RESPONSE", response);
-                                Toast toast = Toast.makeText(getContext(), "Update Done !", Toast.LENGTH_SHORT);
-                                toast.show();
-                                prefEditor.putString("phone", phone.getText().toString());
-                                prefEditor.commit();
-                                Log.i("shared ==========>", mPreferences.getString("phone", null));
-                                Log.i("text envoyé ==========>", phone.getText().toString());
-
-                                getActivity().getSupportFragmentManager()
-                                        .beginTransaction().replace(R.id.fragment_container, new ProfileFragment())
-                                        .commit();
-
-                            }
-                        }, new Response.ErrorListener() {
-
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
-                                Toast toast = Toast.makeText(getContext(), "Update Failed !", Toast.LENGTH_SHORT);
-                                toast.show();
+        mPreferences = getActivity().getSharedPreferences(filename, Context.MODE_PRIVATE);
 
 
-                            }
-                        }) {
-                            @Override
-                            public String getBodyContentType() {
-                                return "application/json; charset=utf-8";
-                            }
+        //request permission
+        requestStoragePermission();
+        //end request permission
 
-                            @Override
-                            public byte[] getBody() throws AuthFailureError {
-                                try {
-                                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                                } catch (UnsupportedEncodingException uee) {
-                                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                                    return null;
+        this.askPermissions();
+        this.initRetrofitClient();
+
+        btn_edit = (ImageButton) view.findViewById(R.id.btn_edit);
+        btn_image = (ImageButton) view.findViewById(R.id.btn_image);
+        icon_message = (View) view.findViewById(R.id.icon_message);
+
+        //choose image
+
+        if (mPreferences.getString("image", null) == null) {
+            btn_image.setBackgroundResource(R.drawable.bookmale2);
+        } else {
+            String nameImage = mPreferences.getString("image", null);
+            Glide.with(getActivity()).load("http://192.168.1.4:3000/get/image/" + nameImage).apply(option).into(btn_image);
+
+        }
+
+        if (isNetworkAvailable() == false) {
+
+            Toast toast = Toast.makeText(getContext(), "Need connexion !", Toast.LENGTH_SHORT);
+
+            Log.i("aaaa",mPreferences.getString("username", null));
+            name_text.setText(mPreferences.getString("username", null));
+            email.setText(mPreferences.getString("email", null));
+            phone.setText(mPreferences.getString("phone", null));
+            email.setText(mPreferences.getString("email", null));
+            address.setText(mPreferences.getString("address", null));
+            messenger.setText(mPreferences.getString("messenger", null));
+
+
+            toast.show();
+        } else {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Update Username");
+            builder.setIcon(R.drawable.psychology);
+            builder.setMessage("Please write your new username to complete the update");
+            input = new EditText(getContext());
+            builder.setView(input);
+
+//SET POSITIVE BUTTON
+            builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    String txt = input.getText().toString();
+
+//request update username
+                    if (txt.length() == 0) {
+                        input.setError("username must be not null");
+                    } else {
+                        try {
+                            RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                            JSONObject jsonBody = new JSONObject();
+                            jsonBody.put("username", input.getText().toString());
+                            jsonBody.put("oldUsername", mPreferences.getString("username", null));
+
+                            final String mRequestBody = jsonBody.toString();
+
+                            String url = "http://192.168.1.4:3000/users/update-user-username/" + mPreferences.getString("id", null);
+                            StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    final SharedPreferences.Editor prefEditor = mPreferences.edit();
+
+                                    Log.i("LOG_RESPONSE", response);
+                                    Toast toast = Toast.makeText(getContext(), "Update Done !", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                    prefEditor.putString("username", input.getText().toString());
+                                    prefEditor.commit();
+                                    Log.i("shared ==========>", mPreferences.getString("username", null));
+                                    Log.i("text envoyé ==========>", input.getText().toString());
+
+
+                                    getActivity().getSupportFragmentManager()
+                                            .beginTransaction().replace(R.id.fragment_container, new ProfileFragment())
+                                            .commit();
+
+
                                 }
-                            }
+                            }, new Response.ErrorListener() {
 
-                            @Override
-                            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                                String responseString = "";
-                                if (response != null) {
-                                    responseString = String.valueOf(response.statusCode);
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
+                                    Toast toast = Toast.makeText(getContext(), "Update Failed !", Toast.LENGTH_SHORT);
+                                    toast.show();
+
+
                                 }
-                                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-                            }
-                        };
+                            }) {
+                                @Override
+                                public String getBodyContentType() {
+                                    return "application/json; charset=utf-8";
+                                }
 
-                        requestQueue.add(stringRequest);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                                @Override
+                                public byte[] getBody() throws AuthFailureError {
+                                    try {
+                                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                                    } catch (UnsupportedEncodingException uee) {
+                                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                                        return null;
+                                    }
+                                }
+
+                                @Override
+                                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                                    String responseString = "";
+                                    if (response != null) {
+                                        responseString = String.valueOf(response.statusCode);
+                                    }
+                                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                                }
+                            };
+
+                            requestQueue.add(stringRequest);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                     }
 
+
                 }
-            }
+            });
+            //negative button
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
 
-        });
-        btn_messenger.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (messenger.getText().toString().length() == 0) {
-                    messenger.setError("messenger is required!");
-                } else {
-                    try {
-                        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-                        JSONObject jsonBody = new JSONObject();
-                        jsonBody.put("messenger", messenger.getText().toString());
-                        final String mRequestBody = jsonBody.toString();
+                }
+            });
+////////
 
-                        String url = "http://10.0.2.2:3000/users/update-user-messenger/" + mPreferences.getString("id", null);
-                        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                final SharedPreferences.Editor prefEditor = mPreferences.edit();
+            //create the dialog
+            final AlertDialog ad = builder.create();
 
-                                Log.i("LOG_RESPONSE", response);
-                                Toast toast = Toast.makeText(getContext(), "Update Done !", Toast.LENGTH_SHORT);
-                                toast.show();
-                                prefEditor.putString("messenger", messenger.getText().toString());
-                                prefEditor.commit();
-                                Log.i("shared ==========>", mPreferences.getString("address", null));
-                                Log.i("text envoyé ==========>", address.getText().toString());
+            btn_edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ad.show();
+                }
+            });
 
-                                getActivity().getSupportFragmentManager()
-                                        .beginTransaction().replace(R.id.fragment_container, new ProfileFragment())
-                                        .commit();
+            getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-                            }
-                        }, new Response.ErrorListener() {
+            name_text = (TextView) view.findViewById(R.id.name_text);
+            //  email_txt = (TextView) view.findViewById(R.id.email_txt);
+            //  adresse_txt = (TextView) view.findViewById(R.id.adresse_txt);
+            // phone_txt = (TextView) view.findViewById(R.id.phone_txt);
+            change_password = (TextView) view.findViewById(R.id.change_password);
+            logout = (TextView) view.findViewById(R.id.logout);
+            mPreferences = getActivity().getSharedPreferences(filename, Context.MODE_PRIVATE);
+            btn_email = (ImageButton) view.findViewById(R.id.btn_email);
+            btn_phone = (ImageButton) view.findViewById(R.id.btn_phone);
+            btn_address = (ImageButton) view.findViewById(R.id.btn_addr);
+            btn_messenger = (ImageButton) view.findViewById(R.id.btn_messenger);
 
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
-                                Toast toast = Toast.makeText(getContext(), "Update Failed !", Toast.LENGTH_SHORT);
-                                toast.show();
+            phone = (EditText) view.findViewById(R.id.tel);
+            email = (EditText) view.findViewById(R.id.email);
+            address = (EditText) view.findViewById(R.id.adresse);
+            messenger = (EditText) view.findViewById(R.id.messenger);
+
+            messenger.setHint(mPreferences.getString("messenger", null));
 
 
-                            }
-                        }) {
-                            @Override
-                            public String getBodyContentType() {
-                                return "application/json; charset=utf-8";
-                            }
+            name_text.setText(mPreferences.getString("username", null));
+            //    email_txt.setText(mPreferences.getString("email", null));
+            email.setHint(mPreferences.getString("email", null));
+            //   adresse_txt.setText(mPreferences.getString("address", null));
+            address.setHint(mPreferences.getString("address", null));
+            //  phone_txt.setText(mPreferences.getString("phone", null));
+            phone.setHint(mPreferences.getString("phone", null));
 
-                            @Override
-                            public byte[] getBody() throws AuthFailureError {
-                                try {
-                                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                                } catch (UnsupportedEncodingException uee) {
-                                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                                    return null;
+            //image action
+            icon_trade = view.findViewById(R.id.icon_trade);
+            icon_sale = view.findViewById(R.id.icon_sale);
+            btn_update_all = (Button) view.findViewById(R.id.updateall);
+            icon_trade_text = view.findViewById(R.id.icon_trade_text);
+            icon_sale_text = view.findViewById(R.id.icon_sale_text);
+            icon_trade.setText(mPreferences.getString("trade", "").toString());
+            icon_sale.setText(mPreferences.getString("sale", "").toString());
+
+            logout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final SharedPreferences.Editor prefEditor = mPreferences.edit();
+
+                    prefEditor.remove("id");
+                    prefEditor.remove("username");
+                    prefEditor.remove("birthdate");
+                    prefEditor.remove("email");
+                    prefEditor.remove("phone");
+                    prefEditor.remove("sale");
+                    prefEditor.remove("trade");
+                    prefEditor.remove("image");
+                    prefEditor.remove("messenger");
+                    prefEditor.clear();
+                    prefEditor.commit();
+
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    startActivity(intent);
+                }
+            });
+
+
+            change_password.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getActivity(), SendMailActivity.class);
+                    startActivity(intent);
+                }
+            });
+
+            icon_message.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getActivity(), MenuMessageActivity.class);
+                    startActivity(intent);
+                }
+            });
+            btn_phone.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (phone.getText().toString().length() != 8) {
+                        phone.setError("phone length must be 8");
+                    } else {
+                        try {
+                            RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                            JSONObject jsonBody = new JSONObject();
+                            jsonBody.put("phone", phone.getText().toString());
+                            final String mRequestBody = jsonBody.toString();
+
+                            String url = "http://192.168.1.4:3000/users/update-user-phone/" + mPreferences.getString("id", null);
+                            StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    final SharedPreferences.Editor prefEditor = mPreferences.edit();
+
+                                    Log.i("LOG_RESPONSE", response);
+                                    Toast toast = Toast.makeText(getContext(), "Update Done !", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                    prefEditor.putString("phone", phone.getText().toString());
+                                    prefEditor.commit();
+                                    Log.i("shared ==========>", mPreferences.getString("phone", null));
+                                    Log.i("text envoyé ==========>", phone.getText().toString());
+
+                                    getActivity().getSupportFragmentManager()
+                                            .beginTransaction().replace(R.id.fragment_container, new ProfileFragment())
+                                            .commit();
+
                                 }
-                            }
+                            }, new Response.ErrorListener() {
 
-                            @Override
-                            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                                String responseString = "";
-                                if (response != null) {
-                                    responseString = String.valueOf(response.statusCode);
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
+                                    Toast toast = Toast.makeText(getContext(), "Update Failed !", Toast.LENGTH_SHORT);
+                                    toast.show();
+
+
                                 }
-                                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-                            }
-                        };
+                            }) {
+                                @Override
+                                public String getBodyContentType() {
+                                    return "application/json; charset=utf-8";
+                                }
 
-                        requestQueue.add(stringRequest);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                                @Override
+                                public byte[] getBody() throws AuthFailureError {
+                                    try {
+                                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                                    } catch (UnsupportedEncodingException uee) {
+                                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                                        return null;
+                                    }
+                                }
+
+                                @Override
+                                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                                    String responseString = "";
+                                    if (response != null) {
+                                        responseString = String.valueOf(response.statusCode);
+                                    }
+                                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                                }
+                            };
+
+                            requestQueue.add(stringRequest);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                     }
-
                 }
-            }
 
-        });
+            });
+            btn_messenger.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (messenger.getText().toString().length() == 0) {
+                        messenger.setError("messenger is required!");
+                    } else {
+                        try {
+                            RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                            JSONObject jsonBody = new JSONObject();
+                            jsonBody.put("messenger", messenger.getText().toString());
+                            final String mRequestBody = jsonBody.toString();
 
-        btn_phone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (phone.getText().toString().length() != 8) {
-                    phone.setError("phone length must be 8");
-                } else {
-                    try {
-                        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-                        JSONObject jsonBody = new JSONObject();
-                        jsonBody.put("phone", phone.getText().toString());
-                        final String mRequestBody = jsonBody.toString();
+                            String url = "http://192.168.1.4:3000/users/update-user-messenger/" + mPreferences.getString("id", null);
+                            StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    final SharedPreferences.Editor prefEditor = mPreferences.edit();
 
-                        String url = "http://10.0.2.2:3000/users/update-user-phone/" + mPreferences.getString("id", null);
-                        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                final SharedPreferences.Editor prefEditor = mPreferences.edit();
+                                    Log.i("LOG_RESPONSE", response);
+                                    Toast toast = Toast.makeText(getContext(), "Update Done !", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                    prefEditor.putString("messenger", messenger.getText().toString());
+                                    prefEditor.commit();
+                                    Log.i("shared ==========>", mPreferences.getString("address", null));
+                                    Log.i("text envoyé ==========>", address.getText().toString());
 
-                                Log.i("LOG_RESPONSE", response);
-                                Toast toast = Toast.makeText(getContext(), "Update Done !", Toast.LENGTH_SHORT);
-                                toast.show();
-                                prefEditor.putString("phone", phone.getText().toString());
-                                prefEditor.commit();
-                                Log.i("shared ==========>", mPreferences.getString("phone", null));
-                                Log.i("text envoyé ==========>", phone.getText().toString());
+                                    getActivity().getSupportFragmentManager()
+                                            .beginTransaction().replace(R.id.fragment_container, new ProfileFragment())
+                                            .commit();
 
-                                getActivity().getSupportFragmentManager()
-                                        .beginTransaction().replace(R.id.fragment_container, new ProfileFragment())
-                                        .commit();
-
-                            }
-                        }, new Response.ErrorListener() {
-
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
-                                Toast toast = Toast.makeText(getContext(), "Update Failed !", Toast.LENGTH_SHORT);
-                                toast.show();
-
-
-                            }
-                        }) {
-                            @Override
-                            public String getBodyContentType() {
-                                return "application/json; charset=utf-8";
-                            }
-
-                            @Override
-                            public byte[] getBody() throws AuthFailureError {
-                                try {
-                                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                                } catch (UnsupportedEncodingException uee) {
-                                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                                    return null;
                                 }
-                            }
+                            }, new Response.ErrorListener() {
 
-                            @Override
-                            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                                String responseString = "";
-                                if (response != null) {
-                                    responseString = String.valueOf(response.statusCode);
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
+                                    Toast toast = Toast.makeText(getContext(), "Update Failed !", Toast.LENGTH_SHORT);
+                                    toast.show();
+
+
                                 }
-                                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-                            }
-                        };
+                            }) {
+                                @Override
+                                public String getBodyContentType() {
+                                    return "application/json; charset=utf-8";
+                                }
 
-                        requestQueue.add(stringRequest);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                                @Override
+                                public byte[] getBody() throws AuthFailureError {
+                                    try {
+                                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                                    } catch (UnsupportedEncodingException uee) {
+                                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                                        return null;
+                                    }
+                                }
+
+                                @Override
+                                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                                    String responseString = "";
+                                    if (response != null) {
+                                        responseString = String.valueOf(response.statusCode);
+                                    }
+                                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                                }
+                            };
+
+                            requestQueue.add(stringRequest);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                     }
-
                 }
-            }
 
-        });
-        btn_email.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (email.getText().toString().length() == 0) {
-                    email.setError("email is required!");
-                } else {
-                    try {
-                        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-                        JSONObject jsonBody = new JSONObject();
-                        jsonBody.put("email", email.getText().toString());
-                        final String mRequestBody = jsonBody.toString();
+            });
 
-                        String url = "http://10.0.2.2:3000/users/update-user-email/" + mPreferences.getString("id", null);
-                        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                final SharedPreferences.Editor prefEditor = mPreferences.edit();
+            btn_phone.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (phone.getText().toString().length() != 8) {
+                        phone.setError("phone length must be 8");
+                    } else {
+                        try {
+                            RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                            JSONObject jsonBody = new JSONObject();
+                            jsonBody.put("phone", phone.getText().toString());
+                            final String mRequestBody = jsonBody.toString();
 
-                                Log.i("LOG_RESPONSE", response);
-                                Toast toast = Toast.makeText(getContext(), "Update Done !", Toast.LENGTH_SHORT);
-                                toast.show();
-                                prefEditor.putString("email", email.getText().toString());
-                                prefEditor.commit();
-                                Log.i("shared ==========>", mPreferences.getString("email", null));
-                                Log.i("text envoyé ==========>", email.getText().toString());
+                            String url = "http://192.168.1.4:3000/users/update-user-phone/" + mPreferences.getString("id", null);
+                            StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    final SharedPreferences.Editor prefEditor = mPreferences.edit();
 
-                                getActivity().getSupportFragmentManager()
-                                        .beginTransaction().replace(R.id.fragment_container, new ProfileFragment())
-                                        .commit();
+                                    Log.i("LOG_RESPONSE", response);
+                                    Toast toast = Toast.makeText(getContext(), "Update Done !", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                    prefEditor.putString("phone", phone.getText().toString());
+                                    prefEditor.commit();
+                                    Log.i("shared ==========>", mPreferences.getString("phone", null));
+                                    Log.i("text envoyé ==========>", phone.getText().toString());
 
-                            }
-                        }, new Response.ErrorListener() {
+                                    getActivity().getSupportFragmentManager()
+                                            .beginTransaction().replace(R.id.fragment_container, new ProfileFragment())
+                                            .commit();
 
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
-                                Toast toast = Toast.makeText(getContext(), "Update Failed !", Toast.LENGTH_SHORT);
-                                toast.show();
-
-
-                            }
-                        }) {
-                            @Override
-                            public String getBodyContentType() {
-                                return "application/json; charset=utf-8";
-                            }
-
-                            @Override
-                            public byte[] getBody() throws AuthFailureError {
-                                try {
-                                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                                } catch (UnsupportedEncodingException uee) {
-                                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                                    return null;
                                 }
-                            }
+                            }, new Response.ErrorListener() {
 
-                            @Override
-                            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                                String responseString = "";
-                                if (response != null) {
-                                    responseString = String.valueOf(response.statusCode);
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
+                                    Toast toast = Toast.makeText(getContext(), "Update Failed !", Toast.LENGTH_SHORT);
+                                    toast.show();
+
+
                                 }
-                                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-                            }
-                        };
+                            }) {
+                                @Override
+                                public String getBodyContentType() {
+                                    return "application/json; charset=utf-8";
+                                }
 
-                        requestQueue.add(stringRequest);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                                @Override
+                                public byte[] getBody() throws AuthFailureError {
+                                    try {
+                                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                                    } catch (UnsupportedEncodingException uee) {
+                                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                                        return null;
+                                    }
+                                }
+
+                                @Override
+                                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                                    String responseString = "";
+                                    if (response != null) {
+                                        responseString = String.valueOf(response.statusCode);
+                                    }
+                                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                                }
+                            };
+
+                            requestQueue.add(stringRequest);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                     }
-
                 }
-            }
 
-        });
-        btn_address.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (address.getText().toString().length() == 0) {
-                    address.setError("address is required!");
-                } else {
-                    try {
-                        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-                        JSONObject jsonBody = new JSONObject();
-                        jsonBody.put("address", address.getText().toString());
-                        final String mRequestBody = jsonBody.toString();
+            });
+            btn_email.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (email.getText().toString().length() == 0) {
+                        email.setError("email is required!");
+                    } else {
+                        try {
+                            RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                            JSONObject jsonBody = new JSONObject();
+                            jsonBody.put("email", email.getText().toString());
+                            final String mRequestBody = jsonBody.toString();
 
-                        String url = "http://10.0.2.2:3000/users/update-user-address/" + mPreferences.getString("id", null);
-                        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                final SharedPreferences.Editor prefEditor = mPreferences.edit();
+                            String url = "http://192.168.1.4:3000/users/update-user-email/" + mPreferences.getString("id", null);
+                            StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    final SharedPreferences.Editor prefEditor = mPreferences.edit();
 
-                                Log.i("LOG_RESPONSE", response);
-                                Toast toast = Toast.makeText(getContext(), "Update Done !", Toast.LENGTH_SHORT);
-                                toast.show();
-                                prefEditor.putString("address", address.getText().toString());
-                                prefEditor.commit();
-                                Log.i("shared ==========>", mPreferences.getString("address", null));
-                                Log.i("text envoyé ==========>", address.getText().toString());
+                                    Log.i("LOG_RESPONSE", response);
+                                    Toast toast = Toast.makeText(getContext(), "Update Done !", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                    prefEditor.putString("email", email.getText().toString());
+                                    prefEditor.commit();
+                                    Log.i("shared ==========>", mPreferences.getString("email", null));
+                                    Log.i("text envoyé ==========>", email.getText().toString());
 
-                                getActivity().getSupportFragmentManager()
-                                        .beginTransaction().replace(R.id.fragment_container, new ProfileFragment())
-                                        .commit();
+                                    getActivity().getSupportFragmentManager()
+                                            .beginTransaction().replace(R.id.fragment_container, new ProfileFragment())
+                                            .commit();
 
-                            }
-                        }, new Response.ErrorListener() {
-
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
-                                Toast toast = Toast.makeText(getContext(), "Update Failed !", Toast.LENGTH_SHORT);
-                                toast.show();
-
-
-                            }
-                        }) {
-                            @Override
-                            public String getBodyContentType() {
-                                return "application/json; charset=utf-8";
-                            }
-
-                            @Override
-                            public byte[] getBody() throws AuthFailureError {
-                                try {
-                                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                                } catch (UnsupportedEncodingException uee) {
-                                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                                    return null;
                                 }
-                            }
+                            }, new Response.ErrorListener() {
 
-                            @Override
-                            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                                String responseString = "";
-                                if (response != null) {
-                                    responseString = String.valueOf(response.statusCode);
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
+                                    Toast toast = Toast.makeText(getContext(), "Update Failed !", Toast.LENGTH_SHORT);
+                                    toast.show();
+
+
                                 }
-                                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-                            }
-                        };
+                            }) {
+                                @Override
+                                public String getBodyContentType() {
+                                    return "application/json; charset=utf-8";
+                                }
 
-                        requestQueue.add(stringRequest);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                                @Override
+                                public byte[] getBody() throws AuthFailureError {
+                                    try {
+                                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                                    } catch (UnsupportedEncodingException uee) {
+                                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                                        return null;
+                                    }
+                                }
+
+                                @Override
+                                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                                    String responseString = "";
+                                    if (response != null) {
+                                        responseString = String.valueOf(response.statusCode);
+                                    }
+                                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                                }
+                            };
+
+                            requestQueue.add(stringRequest);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                     }
-
                 }
-            }
 
-        });
+            });
+            btn_address.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (address.getText().toString().length() == 0) {
+                        address.setError("address is required!");
+                    } else {
+                        try {
+                            RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                            JSONObject jsonBody = new JSONObject();
+                            jsonBody.put("address", address.getText().toString());
+                            final String mRequestBody = jsonBody.toString();
 
-        btn_phone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (phone.getText().toString().length() != 8) {
-                    phone.setError("phone length must be 8");
-                } else {
-                    try {
-                        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-                        JSONObject jsonBody = new JSONObject();
-                        jsonBody.put("phone", phone.getText().toString());
-                        final String mRequestBody = jsonBody.toString();
+                            String url = "http://192.168.1.4:3000/users/update-user-address/" + mPreferences.getString("id", null);
+                            StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    final SharedPreferences.Editor prefEditor = mPreferences.edit();
 
-                        String url = "http://10.0.2.2:3000/users/update-user-phone/" + mPreferences.getString("id", null);
-                        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                final SharedPreferences.Editor prefEditor = mPreferences.edit();
+                                    Log.i("LOG_RESPONSE", response);
+                                    Toast toast = Toast.makeText(getContext(), "Update Done !", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                    prefEditor.putString("address", address.getText().toString());
+                                    prefEditor.commit();
+                                    Log.i("shared ==========>", mPreferences.getString("address", null));
+                                    Log.i("text envoyé ==========>", address.getText().toString());
 
-                                Log.i("LOG_RESPONSE", response);
-                                Toast toast = Toast.makeText(getContext(), "Update Done !", Toast.LENGTH_SHORT);
-                                toast.show();
-                                prefEditor.putString("phone", phone.getText().toString());
-                                prefEditor.commit();
-                                Log.i("shared ==========>", mPreferences.getString("phone", null));
-                                Log.i("text envoyé ==========>", phone.getText().toString());
+                                    getActivity().getSupportFragmentManager()
+                                            .beginTransaction().replace(R.id.fragment_container, new ProfileFragment())
+                                            .commit();
 
-                                getActivity().getSupportFragmentManager()
-                                        .beginTransaction().replace(R.id.fragment_container, new ProfileFragment())
-                                        .commit();
-
-                            }
-                        }, new Response.ErrorListener() {
-
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
-                                Toast toast = Toast.makeText(getContext(), "Update Failed !", Toast.LENGTH_SHORT);
-                                toast.show();
-
-
-                            }
-                        }) {
-                            @Override
-                            public String getBodyContentType() {
-                                return "application/json; charset=utf-8";
-                            }
-
-                            @Override
-                            public byte[] getBody() throws AuthFailureError {
-                                try {
-                                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                                } catch (UnsupportedEncodingException uee) {
-                                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                                    return null;
                                 }
-                            }
+                            }, new Response.ErrorListener() {
 
-                            @Override
-                            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                                String responseString = "";
-                                if (response != null) {
-                                    responseString = String.valueOf(response.statusCode);
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
+                                    Toast toast = Toast.makeText(getContext(), "Update Failed !", Toast.LENGTH_SHORT);
+                                    toast.show();
+
+
                                 }
-                                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-                            }
-                        };
+                            }) {
+                                @Override
+                                public String getBodyContentType() {
+                                    return "application/json; charset=utf-8";
+                                }
 
-                        requestQueue.add(stringRequest);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                                @Override
+                                public byte[] getBody() throws AuthFailureError {
+                                    try {
+                                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                                    } catch (UnsupportedEncodingException uee) {
+                                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                                        return null;
+                                    }
+                                }
+
+                                @Override
+                                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                                    String responseString = "";
+                                    if (response != null) {
+                                        responseString = String.valueOf(response.statusCode);
+                                    }
+                                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                                }
+                            };
+
+                            requestQueue.add(stringRequest);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                     }
-
                 }
-            }
 
-        });
-        btn_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), UserImageActivity.class);
-                startActivity(intent);
-            }
-        });
+            });
 
-        btn_update_all.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (email.getText().toString().length() == 0) {
-                    email.setError("email is required!");
-                } else if (phone.getText().toString().length() != 8) {
-                    phone.setError("phone is required!");
-                } else if (address.getText().toString().length() == 0) {
-                    address.setError("address is required!");
-                } else {
-                    try {
-                        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-                        JSONObject jsonBody = new JSONObject();
-                        jsonBody.put("email", email.getText().toString());
-                        jsonBody.put("phone", phone.getText().toString());
-                        jsonBody.put("address", address.getText().toString());
+            btn_phone.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (phone.getText().toString().length() != 8) {
+                        phone.setError("phone length must be 8");
+                    } else {
+                        try {
+                            RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                            JSONObject jsonBody = new JSONObject();
+                            jsonBody.put("phone", phone.getText().toString());
+                            final String mRequestBody = jsonBody.toString();
 
-                        final String mRequestBody = jsonBody.toString();
+                            String url = "http://192.168.1.4:3000/users/update-user-phone/" + mPreferences.getString("id", null);
+                            StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    final SharedPreferences.Editor prefEditor = mPreferences.edit();
 
-                        String url = "http://10.0.2.2:3000/users/update-user-all/" + mPreferences.getString("id", null);
-                        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                final SharedPreferences.Editor prefEditor = mPreferences.edit();
+                                    Log.i("LOG_RESPONSE", response);
+                                    Toast toast = Toast.makeText(getContext(), "Update Done !", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                    prefEditor.putString("phone", phone.getText().toString());
+                                    prefEditor.commit();
+                                    Log.i("shared ==========>", mPreferences.getString("phone", null));
+                                    Log.i("text envoyé ==========>", phone.getText().toString());
 
-                                Log.i("LOG_RESPONSE", response);
-                                Toast toast = Toast.makeText(getContext(), "Update Done !", Toast.LENGTH_SHORT);
-                                toast.show();
-                                prefEditor.putString("email", email.getText().toString());
-                                prefEditor.putString("phone", phone.getText().toString());
-                                prefEditor.putString("address", address.getText().toString());
-                                prefEditor.commit();
+                                    getActivity().getSupportFragmentManager()
+                                            .beginTransaction().replace(R.id.fragment_container, new ProfileFragment())
+                                            .commit();
 
-                                getActivity().getSupportFragmentManager()
-                                        .beginTransaction().replace(R.id.fragment_container, new ProfileFragment())
-                                        .commit();
-
-                            }
-                        }, new Response.ErrorListener() {
-
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
-                                Toast toast = Toast.makeText(getContext(), "Update Failed !", Toast.LENGTH_SHORT);
-                                toast.show();
-
-
-                            }
-                        }) {
-                            @Override
-                            public String getBodyContentType() {
-                                return "application/json; charset=utf-8";
-                            }
-
-                            @Override
-                            public byte[] getBody() throws AuthFailureError {
-                                try {
-                                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                                } catch (UnsupportedEncodingException uee) {
-                                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                                    return null;
                                 }
-                            }
+                            }, new Response.ErrorListener() {
 
-                            @Override
-                            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                                String responseString = "";
-                                if (response != null) {
-                                    responseString = String.valueOf(response.statusCode);
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
+                                    Toast toast = Toast.makeText(getContext(), "Update Failed !", Toast.LENGTH_SHORT);
+                                    toast.show();
+
+
                                 }
-                                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-                            }
-                        };
+                            }) {
+                                @Override
+                                public String getBodyContentType() {
+                                    return "application/json; charset=utf-8";
+                                }
 
-                        requestQueue.add(stringRequest);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                                @Override
+                                public byte[] getBody() throws AuthFailureError {
+                                    try {
+                                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                                    } catch (UnsupportedEncodingException uee) {
+                                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                                        return null;
+                                    }
+                                }
+
+                                @Override
+                                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                                    String responseString = "";
+                                    if (response != null) {
+                                        responseString = String.valueOf(response.statusCode);
+                                    }
+                                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                                }
+                            };
+
+                            requestQueue.add(stringRequest);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                     }
-
                 }
-            }
 
-        });
+            });
+            btn_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getActivity(), UserImageActivity.class);
+                    startActivity(intent);
+                }
+            });
+
+            btn_update_all.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (email.getText().toString().length() == 0) {
+                        email.setError("email is required!");
+                    } else if (phone.getText().toString().length() != 8) {
+                        phone.setError("phone is required!");
+                    } else if (address.getText().toString().length() == 0) {
+                        address.setError("address is required!");
+                    } else {
+                        try {
+                            RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                            JSONObject jsonBody = new JSONObject();
+                            jsonBody.put("email", email.getText().toString());
+                            jsonBody.put("phone", phone.getText().toString());
+                            jsonBody.put("address", address.getText().toString());
+
+                            final String mRequestBody = jsonBody.toString();
+
+                            String url = "http://192.168.1.4:3000/users/update-user-all/" + mPreferences.getString("id", null);
+                            StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    final SharedPreferences.Editor prefEditor = mPreferences.edit();
+
+                                    Log.i("LOG_RESPONSE", response);
+                                    Toast toast = Toast.makeText(getContext(), "Update Done !", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                    prefEditor.putString("email", email.getText().toString());
+                                    prefEditor.putString("phone", phone.getText().toString());
+                                    prefEditor.putString("address", address.getText().toString());
+                                    prefEditor.commit();
+
+                                    getActivity().getSupportFragmentManager()
+                                            .beginTransaction().replace(R.id.fragment_container, new ProfileFragment())
+                                            .commit();
+
+                                }
+                            }, new Response.ErrorListener() {
+
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
+                                    Toast toast = Toast.makeText(getContext(), "Update Failed !", Toast.LENGTH_SHORT);
+                                    toast.show();
+
+
+                                }
+                            }) {
+                                @Override
+                                public String getBodyContentType() {
+                                    return "application/json; charset=utf-8";
+                                }
+
+                                @Override
+                                public byte[] getBody() throws AuthFailureError {
+                                    try {
+                                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                                    } catch (UnsupportedEncodingException uee) {
+                                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                                        return null;
+                                    }
+                                }
+
+                                @Override
+                                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                                    String responseString = "";
+                                    if (response != null) {
+                                        responseString = String.valueOf(response.statusCode);
+                                    }
+                                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                                }
+                            };
+
+                            requestQueue.add(stringRequest);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+
+            });
+        }
     }
-
     private boolean hasPermission(String permission) {
      /*   if (canMakeSmores()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -932,7 +993,7 @@ public class ProfileFragment extends Fragment {
     private void initRetrofitClient() {
         OkHttpClient client = new OkHttpClient.Builder().build();
 
-        apiService = new Retrofit.Builder().baseUrl("http://10.0.2.2:3000/upload/").client(client).build().create(ApiService.class);
+        apiService = new Retrofit.Builder().baseUrl("http://192.168.1.4:3000/upload/").client(client).build().create(ApiService.class);
     }
 
 
@@ -988,5 +1049,12 @@ public class ProfileFragment extends Fragment {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
             return;
         ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

@@ -103,7 +103,7 @@ public class UserImageActivity extends AppCompatActivity {
             bookimage.setBackgroundResource(R.drawable.bookmale2);
         } else {
             String nameImage = mPreferences.getString("image", null);
-            Glide.with(this).load("http://10.0.2.2:3000/get/image/" + mPreferences.getString("image", null)).apply(option).into(bookimage);
+            Glide.with(this).load("http://192.168.1.4:3000/get/image/" + mPreferences.getString("image", null)).apply(option).into(bookimage);
 
         }
 
@@ -195,7 +195,7 @@ public class UserImageActivity extends AppCompatActivity {
                             jsonBody.put("image", imagenamefinal);
                             final String mRequestBody = jsonBody.toString();
 
-                            String url = "http://10.0.2.2:3000/users/update-user-image/" + mPreferences.getString("id", null);
+                            String url = "http://192.168.1.4:3000/users/update-user-image/" + mPreferences.getString("id", null);
                             ;
 
                             StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
@@ -338,7 +338,7 @@ public class UserImageActivity extends AppCompatActivity {
     private void initRetrofitClient() {
         OkHttpClient client = new OkHttpClient.Builder().build();
 
-        apiService = new Retrofit.Builder().baseUrl("http://10.0.2.2:3000/upload/").client(client).build().create(ApiService.class);
+        apiService = new Retrofit.Builder().baseUrl("http://192.168.1.4:3000/upload/").client(client).build().create(ApiService.class);
     }
 
     public void Choose(View view) {

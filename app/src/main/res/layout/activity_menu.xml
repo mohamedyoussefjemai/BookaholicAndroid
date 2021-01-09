@@ -23,24 +23,23 @@
         android:layout_marginTop="60dp"
         android:gravity="center"
         android:orientation="horizontal"
-        android:weightSum="4"
+        android:weightSum="5"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <View
             android:id="@+id/btnHome"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="25dp"
             android:layout_marginRight="30dp"
             android:layout_marginBottom="15dp"
-
             android:layout_weight="1"
             android:background="@drawable/hogar" />
 
         <View
             android:id="@+id/btnLib"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="25dp"
@@ -52,7 +51,7 @@
             android:background="@drawable/lib" />
         <View
             android:id="@+id/btnAdd"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="25dp"
@@ -65,7 +64,7 @@
 
         <View
             android:id="@+id/btnFavoris"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="25dp"
@@ -77,7 +76,7 @@
 
         <View
             android:id="@+id/btnprofile"
-            android:layout_width="20dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="25dp"

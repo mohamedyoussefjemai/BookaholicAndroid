@@ -2,6 +2,8 @@ package com.example.piandroid;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,6 +17,7 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -47,10 +50,9 @@ public class FragmentHome extends Fragment {
     MainAdapter mainAdapter;
     private SharedPreferences mPreferences;
     final String filename = "BookaholicLogin";
-    ImageView comics_mangas, health_cooking, romance_newadult, tourism_travel, adventure, literature, personal_devlopment, history, youth, social_science, artmusic_cinema,humor,police_thrillers
-            ,religion_spirituality,school,sport_leisure,theater,all;
+    ImageView comics_mangas, health_cooking, romance_newadult, tourism_travel, adventure, literature, personal_devlopment, history, youth, social_science, artmusic_cinema, humor, police_thrillers, religion_spirituality, school, sport_leisure, theater, all;
     TextView comics_mangas_text, health_cooking_text, romance_newadult_text, tourism_travel_text, adventure_text, literature_text, personal_devlopment_text, history_text, youth_text, social_science_text,
-            artmusic_cinema_text,humor_text,police_thrillers_text,religion_spirituality_text,school_text,sport_leisure_text,theater_text,all_text;
+            artmusic_cinema_text, humor_text, police_thrillers_text, religion_spirituality_text, school_text, sport_leisure_text, theater_text, all_text;
     String categoryChoosed = "";
 
     @Nullable
@@ -124,7 +126,7 @@ public class FragmentHome extends Fragment {
                 final String mRequestBody2 = jsonBody.toString();
 
 
-                String url = "http://10.0.2.2:3000/books/";
+                String url = "http://192.168.1.4:3000/books/";
 
 
                 StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -233,114 +235,120 @@ public class FragmentHome extends Fragment {
         comics_mangas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                categoryChoosed = comics_mangas_text.getText().toString();
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(getContext(), "Need connexion ", Toast.LENGTH_SHORT).show();
 
-                RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
-                JSONObject jsonBody = new JSONObject();
-                final String mRequestBody2 = jsonBody.toString();
+                } else {
 
+                    categoryChoosed = comics_mangas_text.getText().toString();
 
-                String url = "http://10.0.2.2:3000/books/read-book-category/" + categoryChoosed;
-
-
-                StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("LOG_RESPONSE   user ", response);
-                        String responseFormatted = response.substring(1, response.length() - 1);
-                        Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+                    RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
+                    JSONObject jsonBody = new JSONObject();
+                    final String mRequestBody2 = jsonBody.toString();
 
 
-                        try {
-                            JSONArray jsonArray = null;
+                    String url = "http://192.168.1.4:3000/books/read-book-category/" + categoryChoosed;
+
+
+                    StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("LOG_RESPONSE   user ", response);
+                            String responseFormatted = response.substring(1, response.length() - 1);
+                            Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+
+
                             try {
-                                jsonArray = new JSONArray(response);
+                                JSONArray jsonArray = null;
+                                try {
+                                    jsonArray = new JSONArray(response);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.i("JSON ARRAY  ", jsonArray.toString());
+                                mainbooks.clear();
+
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    MainBook book = new MainBook();
+                                    book.setId(jsonArray.getJSONObject(i).get("id").toString());
+                                    book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
+                                    book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
+                                    book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
+                                    book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
+                                    book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
+                                    book.setImage(jsonArray.getJSONObject(i).get("image").toString());
+                                    book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
+                                    book.setUser(jsonArray.getJSONObject(i).get("user").toString());
+                                    book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
+                                    book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
+                                    Log.i("book =======================>", book.getCategory());
+
+                                    mainbooks.add(book);
+                                }
+                                Log.i("size array =======================>", String.valueOf(mainbooks.size()));
+
+                                Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
+                                        "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
+                                        "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
+                                        "theater"};
+                                Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                mainCategories = new ArrayList<>();
+                                for (int i = 0; i < categoryLogo.length; i++) {
+                                    MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
+                                    mainCategories.add(category);
+                                }
+
+
+                                recyclerView2.getAdapter().notifyDataSetChanged();
+
+                                Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
+                                //  notifyItemRemoved(position);
+                                //  notifyItemRangeChanged(position, mainbooks.size());
+                                //  notifyDataSetChanged();
+                                Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
+
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                            } finally {
+
                             }
-                            Log.i("JSON ARRAY  ", jsonArray.toString());
-                            mainbooks.clear();
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                MainBook book = new MainBook();
-                                book.setId(jsonArray.getJSONObject(i).get("id").toString());
-                                book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
-                                book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
-                                book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
-                                book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
-                                book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
-                                book.setImage(jsonArray.getJSONObject(i).get("image").toString());
-                                book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
-                                book.setUser(jsonArray.getJSONObject(i).get("user").toString());
-                                book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
-                                book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
-                                Log.i("book =======================>", book.getCategory());
-
-                                mainbooks.add(book);
-                            }
-                            Log.i("size array =======================>", String.valueOf(mainbooks.size()));
-
-                            Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
-                                    "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
-                                    "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
-                                    "theater"};
-                            Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            mainCategories = new ArrayList<>();
-                            for (int i = 0; i < categoryLogo.length; i++) {
-                                MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
-                                mainCategories.add(category);
-                            }
-
-
-                            recyclerView2.getAdapter().notifyDataSetChanged();
-
-                            Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
-                            //  notifyItemRemoved(position);
-                            //  notifyItemRangeChanged(position, mainbooks.size());
-                            //  notifyDataSetChanged();
-                            Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-
                         }
-                    }
 
-                },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
+                    },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
 
-                            }
-                        }) {
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json; charset=utf-8";
-                    }
-
-                    @Override
-                    public byte[] getBody() throws AuthFailureError {
-                        try {
-                            return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
-                        } catch (UnsupportedEncodingException uee) {
-                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
-                            return null;
+                                }
+                            }) {
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json; charset=utf-8";
                         }
-                    }
 
-                };
-                requestQueue2.add(stringRequest2);
+                        @Override
+                        public byte[] getBody() throws AuthFailureError {
+                            try {
+                                return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
+                            } catch (UnsupportedEncodingException uee) {
+                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
+                                return null;
+                            }
+                        }
 
+                    };
+                    requestQueue2.add(stringRequest2);
+
+                }
             }
         });
 
@@ -348,1824 +356,1889 @@ public class FragmentHome extends Fragment {
         health_cooking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                categoryChoosed = health_cooking_text.getText().toString();
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(getContext(), "Need connexion ", Toast.LENGTH_SHORT).show();
 
-                RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
-                JSONObject jsonBody = new JSONObject();
-                final String mRequestBody2 = jsonBody.toString();
+                } else {
+                    categoryChoosed = health_cooking_text.getText().toString();
 
-
-                String url = "http://10.0.2.2:3000/books/read-book-category/" + categoryChoosed;
-
-
-                StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("LOG_RESPONSE   user ", response);
-                        String responseFormatted = response.substring(1, response.length() - 1);
-                        Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+                    RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
+                    JSONObject jsonBody = new JSONObject();
+                    final String mRequestBody2 = jsonBody.toString();
 
 
-                        try {
-                            JSONArray jsonArray = null;
+                    String url = "http://192.168.1.4:3000/books/read-book-category/" + categoryChoosed;
+
+
+                    StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("LOG_RESPONSE   user ", response);
+                            String responseFormatted = response.substring(1, response.length() - 1);
+                            Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+
+
                             try {
-                                jsonArray = new JSONArray(response);
+                                JSONArray jsonArray = null;
+                                try {
+                                    jsonArray = new JSONArray(response);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.i("JSON ARRAY  ", jsonArray.toString());
+                                mainbooks.clear();
+
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    MainBook book = new MainBook();
+                                    book.setId(jsonArray.getJSONObject(i).get("id").toString());
+                                    book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
+                                    book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
+                                    book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
+                                    book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
+                                    book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
+                                    book.setImage(jsonArray.getJSONObject(i).get("image").toString());
+                                    book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
+                                    book.setUser(jsonArray.getJSONObject(i).get("user").toString());
+                                    book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
+                                    book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
+                                    Log.i("book =======================>", book.getCategory());
+
+                                    mainbooks.add(book);
+                                }
+                                Log.i("size array =======================>", String.valueOf(mainbooks.size()));
+
+                                Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
+                                        "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
+                                        "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
+                                        "theater"};
+                                Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                mainCategories = new ArrayList<>();
+                                for (int i = 0; i < categoryLogo.length; i++) {
+                                    MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
+                                    mainCategories.add(category);
+                                }
+
+
+                                recyclerView2.getAdapter().notifyDataSetChanged();
+
+                                Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
+                                //  notifyItemRemoved(position);
+                                //  notifyItemRangeChanged(position, mainbooks.size());
+                                //  notifyDataSetChanged();
+                                Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
+
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                            } finally {
+
                             }
-                            Log.i("JSON ARRAY  ", jsonArray.toString());
-                            mainbooks.clear();
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                MainBook book = new MainBook();
-                                book.setId(jsonArray.getJSONObject(i).get("id").toString());
-                                book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
-                                book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
-                                book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
-                                book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
-                                book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
-                                book.setImage(jsonArray.getJSONObject(i).get("image").toString());
-                                book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
-                                book.setUser(jsonArray.getJSONObject(i).get("user").toString());
-                                book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
-                                book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
-                                Log.i("book =======================>", book.getCategory());
-
-                                mainbooks.add(book);
-                            }
-                            Log.i("size array =======================>", String.valueOf(mainbooks.size()));
-
-                            Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
-                                    "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
-                                    "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
-                                    "theater"};
-                            Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            mainCategories = new ArrayList<>();
-                            for (int i = 0; i < categoryLogo.length; i++) {
-                                MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
-                                mainCategories.add(category);
-                            }
-
-
-                            recyclerView2.getAdapter().notifyDataSetChanged();
-
-                            Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
-                            //  notifyItemRemoved(position);
-                            //  notifyItemRangeChanged(position, mainbooks.size());
-                            //  notifyDataSetChanged();
-                            Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-
                         }
-                    }
 
-                },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
+                    },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
 
-                            }
-                        }) {
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json; charset=utf-8";
-                    }
-
-                    @Override
-                    public byte[] getBody() throws AuthFailureError {
-                        try {
-                            return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
-                        } catch (UnsupportedEncodingException uee) {
-                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
-                            return null;
+                                }
+                            }) {
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json; charset=utf-8";
                         }
-                    }
 
-                };
-                requestQueue2.add(stringRequest2);
+                        @Override
+                        public byte[] getBody() throws AuthFailureError {
+                            try {
+                                return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
+                            } catch (UnsupportedEncodingException uee) {
+                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
+                                return null;
+                            }
+                        }
 
+                    };
+                    requestQueue2.add(stringRequest2);
+                }
             }
         });
         //romance new adult
         romance_newadult.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                categoryChoosed = romance_newadult_text.getText().toString();
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(getContext(), "Need connexion ", Toast.LENGTH_SHORT).show();
 
-                RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
-                JSONObject jsonBody = new JSONObject();
-                final String mRequestBody2 = jsonBody.toString();
+                } else {
+                    categoryChoosed = romance_newadult_text.getText().toString();
 
-
-                String url = "http://10.0.2.2:3000/books/read-book-category/romance";
-
-
-                StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("LOG_RESPONSE   user ", response);
-                        String responseFormatted = response.substring(1, response.length() - 1);
-                        Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+                    RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
+                    JSONObject jsonBody = new JSONObject();
+                    final String mRequestBody2 = jsonBody.toString();
 
 
-                        try {
-                            JSONArray jsonArray = null;
+                    String url = "http://192.168.1.4:3000/books/read-book-category/romance";
+
+
+                    StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("LOG_RESPONSE   user ", response);
+                            String responseFormatted = response.substring(1, response.length() - 1);
+                            Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+
+
                             try {
-                                jsonArray = new JSONArray(response);
+                                JSONArray jsonArray = null;
+                                try {
+                                    jsonArray = new JSONArray(response);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.i("JSON ARRAY  ", jsonArray.toString());
+                                mainbooks.clear();
+
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    MainBook book = new MainBook();
+                                    book.setId(jsonArray.getJSONObject(i).get("id").toString());
+                                    book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
+                                    book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
+                                    book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
+                                    book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
+                                    book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
+                                    book.setImage(jsonArray.getJSONObject(i).get("image").toString());
+                                    book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
+                                    book.setUser(jsonArray.getJSONObject(i).get("user").toString());
+                                    book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
+                                    book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
+                                    Log.i("book =======================>", book.getCategory());
+
+                                    mainbooks.add(book);
+                                }
+                                Log.i("size array =======================>", String.valueOf(mainbooks.size()));
+
+                                Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
+                                        "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
+                                        "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
+                                        "theater"};
+                                Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                mainCategories = new ArrayList<>();
+                                for (int i = 0; i < categoryLogo.length; i++) {
+                                    MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
+                                    mainCategories.add(category);
+                                }
+
+
+                                recyclerView2.getAdapter().notifyDataSetChanged();
+
+                                Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
+                                //  notifyItemRemoved(position);
+                                //  notifyItemRangeChanged(position, mainbooks.size());
+                                //  notifyDataSetChanged();
+                                Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
+
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                            } finally {
+
                             }
-                            Log.i("JSON ARRAY  ", jsonArray.toString());
-                            mainbooks.clear();
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                MainBook book = new MainBook();
-                                book.setId(jsonArray.getJSONObject(i).get("id").toString());
-                                book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
-                                book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
-                                book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
-                                book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
-                                book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
-                                book.setImage(jsonArray.getJSONObject(i).get("image").toString());
-                                book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
-                                book.setUser(jsonArray.getJSONObject(i).get("user").toString());
-                                book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
-                                book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
-                                Log.i("book =======================>", book.getCategory());
-
-                                mainbooks.add(book);
-                            }
-                            Log.i("size array =======================>", String.valueOf(mainbooks.size()));
-
-                            Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
-                                    "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
-                                    "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
-                                    "theater"};
-                            Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            mainCategories = new ArrayList<>();
-                            for (int i = 0; i < categoryLogo.length; i++) {
-                                MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
-                                mainCategories.add(category);
-                            }
-
-
-                            recyclerView2.getAdapter().notifyDataSetChanged();
-
-                            Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
-                            //  notifyItemRemoved(position);
-                            //  notifyItemRangeChanged(position, mainbooks.size());
-                            //  notifyDataSetChanged();
-                            Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-
                         }
-                    }
 
-                },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
+                    },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
 
-                            }
-                        }) {
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json; charset=utf-8";
-                    }
-
-                    @Override
-                    public byte[] getBody() throws AuthFailureError {
-                        try {
-                            return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
-                        } catch (UnsupportedEncodingException uee) {
-                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
-                            return null;
+                                }
+                            }) {
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json; charset=utf-8";
                         }
-                    }
 
-                };
-                requestQueue2.add(stringRequest2);
+                        @Override
+                        public byte[] getBody() throws AuthFailureError {
+                            try {
+                                return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
+                            } catch (UnsupportedEncodingException uee) {
+                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
+                                return null;
+                            }
+                        }
 
+                    };
+                    requestQueue2.add(stringRequest2);
+
+                }
             }
         });
         //tourism and travel
         tourism_travel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                categoryChoosed = tourism_travel_text.getText().toString();
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(getContext(), "Need connexion ", Toast.LENGTH_SHORT).show();
 
-                RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
-                JSONObject jsonBody = new JSONObject();
-                final String mRequestBody2 = jsonBody.toString();
+                } else {
+                    categoryChoosed = tourism_travel_text.getText().toString();
 
-
-                String url = "http://10.0.2.2:3000/books/read-book-category/travel";
-
-
-                StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("LOG_RESPONSE   user ", response);
-                        String responseFormatted = response.substring(1, response.length() - 1);
-                        Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+                    RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
+                    JSONObject jsonBody = new JSONObject();
+                    final String mRequestBody2 = jsonBody.toString();
 
 
-                        try {
-                            JSONArray jsonArray = null;
+                    String url = "http://192.168.1.4:3000/books/read-book-category/travel";
+
+
+                    StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("LOG_RESPONSE   user ", response);
+                            String responseFormatted = response.substring(1, response.length() - 1);
+                            Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+
+
                             try {
-                                jsonArray = new JSONArray(response);
+                                JSONArray jsonArray = null;
+                                try {
+                                    jsonArray = new JSONArray(response);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.i("JSON ARRAY  ", jsonArray.toString());
+                                mainbooks.clear();
+
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    MainBook book = new MainBook();
+                                    book.setId(jsonArray.getJSONObject(i).get("id").toString());
+                                    book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
+                                    book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
+                                    book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
+                                    book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
+                                    book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
+                                    book.setImage(jsonArray.getJSONObject(i).get("image").toString());
+                                    book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
+                                    book.setUser(jsonArray.getJSONObject(i).get("user").toString());
+                                    book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
+                                    book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
+                                    Log.i("book =======================>", book.getCategory());
+
+                                    mainbooks.add(book);
+                                }
+                                Log.i("size array =======================>", String.valueOf(mainbooks.size()));
+
+                                Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
+                                        "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
+                                        "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
+                                        "theater"};
+                                Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                mainCategories = new ArrayList<>();
+                                for (int i = 0; i < categoryLogo.length; i++) {
+                                    MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
+                                    mainCategories.add(category);
+                                }
+
+
+                                recyclerView2.getAdapter().notifyDataSetChanged();
+
+                                Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
+                                //  notifyItemRemoved(position);
+                                //  notifyItemRangeChanged(position, mainbooks.size());
+                                //  notifyDataSetChanged();
+                                Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
+
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                            } finally {
+
                             }
-                            Log.i("JSON ARRAY  ", jsonArray.toString());
-                            mainbooks.clear();
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                MainBook book = new MainBook();
-                                book.setId(jsonArray.getJSONObject(i).get("id").toString());
-                                book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
-                                book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
-                                book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
-                                book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
-                                book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
-                                book.setImage(jsonArray.getJSONObject(i).get("image").toString());
-                                book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
-                                book.setUser(jsonArray.getJSONObject(i).get("user").toString());
-                                book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
-                                book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
-                                Log.i("book =======================>", book.getCategory());
-
-                                mainbooks.add(book);
-                            }
-                            Log.i("size array =======================>", String.valueOf(mainbooks.size()));
-
-                            Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
-                                    "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
-                                    "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
-                                    "theater"};
-                            Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            mainCategories = new ArrayList<>();
-                            for (int i = 0; i < categoryLogo.length; i++) {
-                                MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
-                                mainCategories.add(category);
-                            }
-
-
-                            recyclerView2.getAdapter().notifyDataSetChanged();
-
-                            Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
-                            //  notifyItemRemoved(position);
-                            //  notifyItemRangeChanged(position, mainbooks.size());
-                            //  notifyDataSetChanged();
-                            Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-
                         }
-                    }
 
-                },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
+                    },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
 
-                            }
-                        }) {
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json; charset=utf-8";
-                    }
-
-                    @Override
-                    public byte[] getBody() throws AuthFailureError {
-                        try {
-                            return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
-                        } catch (UnsupportedEncodingException uee) {
-                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
-                            return null;
+                                }
+                            }) {
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json; charset=utf-8";
                         }
-                    }
 
-                };
-                requestQueue2.add(stringRequest2);
+                        @Override
+                        public byte[] getBody() throws AuthFailureError {
+                            try {
+                                return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
+                            } catch (UnsupportedEncodingException uee) {
+                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
+                                return null;
+                            }
+                        }
 
+                    };
+                    requestQueue2.add(stringRequest2);
+                }
             }
         });
         //adventure
         adventure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                categoryChoosed = adventure_text.getText().toString();
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(getContext(), "Need connexion ", Toast.LENGTH_SHORT).show();
 
-                RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
-                JSONObject jsonBody = new JSONObject();
-                final String mRequestBody2 = jsonBody.toString();
+                } else {
+                    categoryChoosed = adventure_text.getText().toString();
 
-
-                String url = "http://10.0.2.2:3000/books/read-book-category/" + categoryChoosed;
-
-
-                StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("LOG_RESPONSE   user ", response);
-                        String responseFormatted = response.substring(1, response.length() - 1);
-                        Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+                    RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
+                    JSONObject jsonBody = new JSONObject();
+                    final String mRequestBody2 = jsonBody.toString();
 
 
-                        try {
-                            JSONArray jsonArray = null;
+                    String url = "http://192.168.1.4:3000/books/read-book-category/" + categoryChoosed;
+
+
+                    StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("LOG_RESPONSE   user ", response);
+                            String responseFormatted = response.substring(1, response.length() - 1);
+                            Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+
+
                             try {
-                                jsonArray = new JSONArray(response);
+                                JSONArray jsonArray = null;
+                                try {
+                                    jsonArray = new JSONArray(response);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.i("JSON ARRAY  ", jsonArray.toString());
+                                mainbooks.clear();
+
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    MainBook book = new MainBook();
+                                    book.setId(jsonArray.getJSONObject(i).get("id").toString());
+                                    book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
+                                    book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
+                                    book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
+                                    book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
+                                    book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
+                                    book.setImage(jsonArray.getJSONObject(i).get("image").toString());
+                                    book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
+                                    book.setUser(jsonArray.getJSONObject(i).get("user").toString());
+                                    book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
+                                    book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
+                                    Log.i("book =======================>", book.getCategory());
+
+                                    mainbooks.add(book);
+                                }
+                                Log.i("size array =======================>", String.valueOf(mainbooks.size()));
+
+                                Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
+                                        "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
+                                        "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
+                                        "theater"};
+                                Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                mainCategories = new ArrayList<>();
+                                for (int i = 0; i < categoryLogo.length; i++) {
+                                    MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
+                                    mainCategories.add(category);
+                                }
+
+
+                                recyclerView2.getAdapter().notifyDataSetChanged();
+
+                                Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
+                                //  notifyItemRemoved(position);
+                                //  notifyItemRangeChanged(position, mainbooks.size());
+                                //  notifyDataSetChanged();
+                                Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
+
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                            } finally {
+
                             }
-                            Log.i("JSON ARRAY  ", jsonArray.toString());
-                            mainbooks.clear();
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                MainBook book = new MainBook();
-                                book.setId(jsonArray.getJSONObject(i).get("id").toString());
-                                book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
-                                book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
-                                book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
-                                book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
-                                book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
-                                book.setImage(jsonArray.getJSONObject(i).get("image").toString());
-                                book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
-                                book.setUser(jsonArray.getJSONObject(i).get("user").toString());
-                                book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
-                                book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
-                                Log.i("book =======================>", book.getCategory());
-
-                                mainbooks.add(book);
-                            }
-                            Log.i("size array =======================>", String.valueOf(mainbooks.size()));
-
-                            Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
-                                    "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
-                                    "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
-                                    "theater"};
-                            Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            mainCategories = new ArrayList<>();
-                            for (int i = 0; i < categoryLogo.length; i++) {
-                                MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
-                                mainCategories.add(category);
-                            }
-
-
-                            recyclerView2.getAdapter().notifyDataSetChanged();
-
-                            Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
-                            //  notifyItemRemoved(position);
-                            //  notifyItemRangeChanged(position, mainbooks.size());
-                            //  notifyDataSetChanged();
-                            Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-
                         }
-                    }
 
-                },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
+                    },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
 
-                            }
-                        }) {
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json; charset=utf-8";
-                    }
-
-                    @Override
-                    public byte[] getBody() throws AuthFailureError {
-                        try {
-                            return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
-                        } catch (UnsupportedEncodingException uee) {
-                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
-                            return null;
+                                }
+                            }) {
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json; charset=utf-8";
                         }
-                    }
 
-                };
-                requestQueue2.add(stringRequest2);
+                        @Override
+                        public byte[] getBody() throws AuthFailureError {
+                            try {
+                                return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
+                            } catch (UnsupportedEncodingException uee) {
+                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
+                                return null;
+                            }
+                        }
 
+                    };
+                    requestQueue2.add(stringRequest2);
+                }
             }
         });
         //literature
         literature.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                categoryChoosed = literature_text.getText().toString();
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(getContext(), "Need connexion ", Toast.LENGTH_SHORT).show();
 
-                RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
-                JSONObject jsonBody = new JSONObject();
-                final String mRequestBody2 = jsonBody.toString();
+                } else {
+                    categoryChoosed = literature_text.getText().toString();
 
-
-                String url = "http://10.0.2.2:3000/books/read-book-category/" + categoryChoosed;
-
-
-                StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("LOG_RESPONSE   user ", response);
-                        String responseFormatted = response.substring(1, response.length() - 1);
-                        Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+                    RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
+                    JSONObject jsonBody = new JSONObject();
+                    final String mRequestBody2 = jsonBody.toString();
 
 
-                        try {
-                            JSONArray jsonArray = null;
+                    String url = "http://192.168.1.4:3000/books/read-book-category/" + categoryChoosed;
+
+
+                    StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("LOG_RESPONSE   user ", response);
+                            String responseFormatted = response.substring(1, response.length() - 1);
+                            Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+
+
                             try {
-                                jsonArray = new JSONArray(response);
+                                JSONArray jsonArray = null;
+                                try {
+                                    jsonArray = new JSONArray(response);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.i("JSON ARRAY  ", jsonArray.toString());
+                                mainbooks.clear();
+
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    MainBook book = new MainBook();
+                                    book.setId(jsonArray.getJSONObject(i).get("id").toString());
+                                    book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
+                                    book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
+                                    book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
+                                    book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
+                                    book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
+                                    book.setImage(jsonArray.getJSONObject(i).get("image").toString());
+                                    book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
+                                    book.setUser(jsonArray.getJSONObject(i).get("user").toString());
+                                    book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
+                                    book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
+                                    Log.i("book =======================>", book.getCategory());
+
+                                    mainbooks.add(book);
+                                }
+                                Log.i("size array =======================>", String.valueOf(mainbooks.size()));
+
+                                Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
+                                        "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
+                                        "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
+                                        "theater"};
+                                Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                mainCategories = new ArrayList<>();
+                                for (int i = 0; i < categoryLogo.length; i++) {
+                                    MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
+                                    mainCategories.add(category);
+                                }
+
+
+                                recyclerView2.getAdapter().notifyDataSetChanged();
+
+                                Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
+                                //  notifyItemRemoved(position);
+                                //  notifyItemRangeChanged(position, mainbooks.size());
+                                //  notifyDataSetChanged();
+                                Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
+
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                            } finally {
+
                             }
-                            Log.i("JSON ARRAY  ", jsonArray.toString());
-                            mainbooks.clear();
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                MainBook book = new MainBook();
-                                book.setId(jsonArray.getJSONObject(i).get("id").toString());
-                                book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
-                                book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
-                                book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
-                                book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
-                                book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
-                                book.setImage(jsonArray.getJSONObject(i).get("image").toString());
-                                book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
-                                book.setUser(jsonArray.getJSONObject(i).get("user").toString());
-                                book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
-                                book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
-                                Log.i("book =======================>", book.getCategory());
-
-                                mainbooks.add(book);
-                            }
-                            Log.i("size array =======================>", String.valueOf(mainbooks.size()));
-
-                            Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
-                                    "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
-                                    "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
-                                    "theater"};
-                            Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            mainCategories = new ArrayList<>();
-                            for (int i = 0; i < categoryLogo.length; i++) {
-                                MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
-                                mainCategories.add(category);
-                            }
-
-
-                            recyclerView2.getAdapter().notifyDataSetChanged();
-
-                            Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
-                            //  notifyItemRemoved(position);
-                            //  notifyItemRangeChanged(position, mainbooks.size());
-                            //  notifyDataSetChanged();
-                            Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-
                         }
-                    }
 
-                },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
+                    },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
 
-                            }
-                        }) {
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json; charset=utf-8";
-                    }
-
-                    @Override
-                    public byte[] getBody() throws AuthFailureError {
-                        try {
-                            return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
-                        } catch (UnsupportedEncodingException uee) {
-                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
-                            return null;
+                                }
+                            }) {
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json; charset=utf-8";
                         }
-                    }
 
-                };
-                requestQueue2.add(stringRequest2);
+                        @Override
+                        public byte[] getBody() throws AuthFailureError {
+                            try {
+                                return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
+                            } catch (UnsupportedEncodingException uee) {
+                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
+                                return null;
+                            }
+                        }
 
+                    };
+                    requestQueue2.add(stringRequest2);
+                }
             }
         });
         //personal devlopment
         personal_devlopment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                categoryChoosed = personal_devlopment_text.getText().toString();
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(getContext(), "Need connexion ", Toast.LENGTH_SHORT).show();
 
-                RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
-                JSONObject jsonBody = new JSONObject();
-                final String mRequestBody2 = jsonBody.toString();
+                } else {
+                    categoryChoosed = personal_devlopment_text.getText().toString();
 
-
-                String url = "http://10.0.2.2:3000/books/read-book-category/devper";
-
-
-                StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("LOG_RESPONSE   user ", response);
-                        String responseFormatted = response.substring(1, response.length() - 1);
-                        Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+                    RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
+                    JSONObject jsonBody = new JSONObject();
+                    final String mRequestBody2 = jsonBody.toString();
 
 
-                        try {
-                            JSONArray jsonArray = null;
+                    String url = "http://192.168.1.4:3000/books/read-book-category/devper";
+
+
+                    StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("LOG_RESPONSE   user ", response);
+                            String responseFormatted = response.substring(1, response.length() - 1);
+                            Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+
+
                             try {
-                                jsonArray = new JSONArray(response);
+                                JSONArray jsonArray = null;
+                                try {
+                                    jsonArray = new JSONArray(response);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.i("JSON ARRAY  ", jsonArray.toString());
+                                mainbooks.clear();
+
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    MainBook book = new MainBook();
+                                    book.setId(jsonArray.getJSONObject(i).get("id").toString());
+                                    book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
+                                    book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
+                                    book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
+                                    book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
+                                    book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
+                                    book.setImage(jsonArray.getJSONObject(i).get("image").toString());
+                                    book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
+                                    book.setUser(jsonArray.getJSONObject(i).get("user").toString());
+                                    book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
+                                    book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
+                                    Log.i("book =======================>", book.getCategory());
+
+                                    mainbooks.add(book);
+                                }
+                                Log.i("size array =======================>", String.valueOf(mainbooks.size()));
+
+                                Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
+                                        "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
+                                        "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
+                                        "theater"};
+                                Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                mainCategories = new ArrayList<>();
+                                for (int i = 0; i < categoryLogo.length; i++) {
+                                    MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
+                                    mainCategories.add(category);
+                                }
+
+
+                                recyclerView2.getAdapter().notifyDataSetChanged();
+
+                                Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
+                                //  notifyItemRemoved(position);
+                                //  notifyItemRangeChanged(position, mainbooks.size());
+                                //  notifyDataSetChanged();
+                                Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
+
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                            } finally {
+
                             }
-                            Log.i("JSON ARRAY  ", jsonArray.toString());
-                            mainbooks.clear();
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                MainBook book = new MainBook();
-                                book.setId(jsonArray.getJSONObject(i).get("id").toString());
-                                book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
-                                book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
-                                book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
-                                book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
-                                book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
-                                book.setImage(jsonArray.getJSONObject(i).get("image").toString());
-                                book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
-                                book.setUser(jsonArray.getJSONObject(i).get("user").toString());
-                                book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
-                                book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
-                                Log.i("book =======================>", book.getCategory());
-
-                                mainbooks.add(book);
-                            }
-                            Log.i("size array =======================>", String.valueOf(mainbooks.size()));
-
-                            Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
-                                    "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
-                                    "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
-                                    "theater"};
-                            Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            mainCategories = new ArrayList<>();
-                            for (int i = 0; i < categoryLogo.length; i++) {
-                                MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
-                                mainCategories.add(category);
-                            }
-
-
-                            recyclerView2.getAdapter().notifyDataSetChanged();
-
-                            Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
-                            //  notifyItemRemoved(position);
-                            //  notifyItemRangeChanged(position, mainbooks.size());
-                            //  notifyDataSetChanged();
-                            Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-
                         }
-                    }
 
-                },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
+                    },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
 
-                            }
-                        }) {
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json; charset=utf-8";
-                    }
-
-                    @Override
-                    public byte[] getBody() throws AuthFailureError {
-                        try {
-                            return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
-                        } catch (UnsupportedEncodingException uee) {
-                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
-                            return null;
+                                }
+                            }) {
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json; charset=utf-8";
                         }
-                    }
 
-                };
-                requestQueue2.add(stringRequest2);
+                        @Override
+                        public byte[] getBody() throws AuthFailureError {
+                            try {
+                                return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
+                            } catch (UnsupportedEncodingException uee) {
+                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
+                                return null;
+                            }
+                        }
 
+                    };
+                    requestQueue2.add(stringRequest2);
+                }
             }
         });
         //history
         history.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                categoryChoosed = history_text.getText().toString();
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(getContext(), "Need connexion ", Toast.LENGTH_SHORT).show();
 
-                RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
-                JSONObject jsonBody = new JSONObject();
-                final String mRequestBody2 = jsonBody.toString();
+                } else {
+                    categoryChoosed = history_text.getText().toString();
 
-
-                String url = "http://10.0.2.2:3000/books/read-book-category/" + categoryChoosed;
-
-
-                StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("LOG_RESPONSE   user ", response);
-                        String responseFormatted = response.substring(1, response.length() - 1);
-                        Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+                    RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
+                    JSONObject jsonBody = new JSONObject();
+                    final String mRequestBody2 = jsonBody.toString();
 
 
-                        try {
-                            JSONArray jsonArray = null;
+                    String url = "http://192.168.1.4:3000/books/read-book-category/" + categoryChoosed;
+
+
+                    StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("LOG_RESPONSE   user ", response);
+                            String responseFormatted = response.substring(1, response.length() - 1);
+                            Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+
+
                             try {
-                                jsonArray = new JSONArray(response);
+                                JSONArray jsonArray = null;
+                                try {
+                                    jsonArray = new JSONArray(response);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.i("JSON ARRAY  ", jsonArray.toString());
+                                mainbooks.clear();
+
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    MainBook book = new MainBook();
+                                    book.setId(jsonArray.getJSONObject(i).get("id").toString());
+                                    book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
+                                    book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
+                                    book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
+                                    book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
+                                    book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
+                                    book.setImage(jsonArray.getJSONObject(i).get("image").toString());
+                                    book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
+                                    book.setUser(jsonArray.getJSONObject(i).get("user").toString());
+                                    book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
+                                    book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
+                                    Log.i("book =======================>", book.getCategory());
+
+                                    mainbooks.add(book);
+                                }
+                                Log.i("size array =======================>", String.valueOf(mainbooks.size()));
+
+                                Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
+                                        "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
+                                        "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
+                                        "theater"};
+                                Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                mainCategories = new ArrayList<>();
+                                for (int i = 0; i < categoryLogo.length; i++) {
+                                    MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
+                                    mainCategories.add(category);
+                                }
+
+
+                                recyclerView2.getAdapter().notifyDataSetChanged();
+
+                                Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
+                                //  notifyItemRemoved(position);
+                                //  notifyItemRangeChanged(position, mainbooks.size());
+                                //  notifyDataSetChanged();
+                                Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
+
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                            } finally {
+
                             }
-                            Log.i("JSON ARRAY  ", jsonArray.toString());
-                            mainbooks.clear();
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                MainBook book = new MainBook();
-                                book.setId(jsonArray.getJSONObject(i).get("id").toString());
-                                book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
-                                book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
-                                book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
-                                book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
-                                book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
-                                book.setImage(jsonArray.getJSONObject(i).get("image").toString());
-                                book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
-                                book.setUser(jsonArray.getJSONObject(i).get("user").toString());
-                                book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
-                                book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
-                                Log.i("book =======================>", book.getCategory());
-
-                                mainbooks.add(book);
-                            }
-                            Log.i("size array =======================>", String.valueOf(mainbooks.size()));
-
-                            Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
-                                    "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
-                                    "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
-                                    "theater"};
-                            Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            mainCategories = new ArrayList<>();
-                            for (int i = 0; i < categoryLogo.length; i++) {
-                                MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
-                                mainCategories.add(category);
-                            }
-
-
-                            recyclerView2.getAdapter().notifyDataSetChanged();
-
-                            Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
-                            //  notifyItemRemoved(position);
-                            //  notifyItemRangeChanged(position, mainbooks.size());
-                            //  notifyDataSetChanged();
-                            Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-
                         }
-                    }
 
-                },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
+                    },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
 
-                            }
-                        }) {
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json; charset=utf-8";
-                    }
-
-                    @Override
-                    public byte[] getBody() throws AuthFailureError {
-                        try {
-                            return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
-                        } catch (UnsupportedEncodingException uee) {
-                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
-                            return null;
+                                }
+                            }) {
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json; charset=utf-8";
                         }
-                    }
 
-                };
-                requestQueue2.add(stringRequest2);
+                        @Override
+                        public byte[] getBody() throws AuthFailureError {
+                            try {
+                                return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
+                            } catch (UnsupportedEncodingException uee) {
+                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
+                                return null;
+                            }
+                        }
 
+                    };
+                    requestQueue2.add(stringRequest2);
+                }
             }
         });
         //youth
         youth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                categoryChoosed = youth_text.getText().toString();
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(getContext(), "Need connexion ", Toast.LENGTH_SHORT).show();
 
-                RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
-                JSONObject jsonBody = new JSONObject();
-                final String mRequestBody2 = jsonBody.toString();
+                } else {
+                    categoryChoosed = youth_text.getText().toString();
 
-
-                String url = "http://10.0.2.2:3000/books/read-book-category/" + categoryChoosed;
-
-
-                StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("LOG_RESPONSE   user ", response);
-                        String responseFormatted = response.substring(1, response.length() - 1);
-                        Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+                    RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
+                    JSONObject jsonBody = new JSONObject();
+                    final String mRequestBody2 = jsonBody.toString();
 
 
-                        try {
-                            JSONArray jsonArray = null;
+                    String url = "http://192.168.1.4:3000/books/read-book-category/" + categoryChoosed;
+
+
+                    StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("LOG_RESPONSE   user ", response);
+                            String responseFormatted = response.substring(1, response.length() - 1);
+                            Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+
+
                             try {
-                                jsonArray = new JSONArray(response);
+                                JSONArray jsonArray = null;
+                                try {
+                                    jsonArray = new JSONArray(response);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.i("JSON ARRAY  ", jsonArray.toString());
+                                mainbooks.clear();
+
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    MainBook book = new MainBook();
+                                    book.setId(jsonArray.getJSONObject(i).get("id").toString());
+                                    book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
+                                    book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
+                                    book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
+                                    book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
+                                    book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
+                                    book.setImage(jsonArray.getJSONObject(i).get("image").toString());
+                                    book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
+                                    book.setUser(jsonArray.getJSONObject(i).get("user").toString());
+                                    book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
+                                    book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
+                                    Log.i("book =======================>", book.getCategory());
+
+                                    mainbooks.add(book);
+                                }
+                                Log.i("size array =======================>", String.valueOf(mainbooks.size()));
+
+                                Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
+                                        "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
+                                        "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
+                                        "theater"};
+                                Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                mainCategories = new ArrayList<>();
+                                for (int i = 0; i < categoryLogo.length; i++) {
+                                    MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
+                                    mainCategories.add(category);
+                                }
+
+
+                                recyclerView2.getAdapter().notifyDataSetChanged();
+
+                                Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
+                                //  notifyItemRemoved(position);
+                                //  notifyItemRangeChanged(position, mainbooks.size());
+                                //  notifyDataSetChanged();
+                                Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
+
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                            } finally {
+
                             }
-                            Log.i("JSON ARRAY  ", jsonArray.toString());
-                            mainbooks.clear();
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                MainBook book = new MainBook();
-                                book.setId(jsonArray.getJSONObject(i).get("id").toString());
-                                book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
-                                book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
-                                book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
-                                book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
-                                book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
-                                book.setImage(jsonArray.getJSONObject(i).get("image").toString());
-                                book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
-                                book.setUser(jsonArray.getJSONObject(i).get("user").toString());
-                                book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
-                                book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
-                                Log.i("book =======================>", book.getCategory());
-
-                                mainbooks.add(book);
-                            }
-                            Log.i("size array =======================>", String.valueOf(mainbooks.size()));
-
-                            Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
-                                    "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
-                                    "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
-                                    "theater"};
-                            Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            mainCategories = new ArrayList<>();
-                            for (int i = 0; i < categoryLogo.length; i++) {
-                                MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
-                                mainCategories.add(category);
-                            }
-
-
-                            recyclerView2.getAdapter().notifyDataSetChanged();
-
-                            Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
-                            //  notifyItemRemoved(position);
-                            //  notifyItemRangeChanged(position, mainbooks.size());
-                            //  notifyDataSetChanged();
-                            Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-
                         }
-                    }
 
-                },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
+                    },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
 
-                            }
-                        }) {
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json; charset=utf-8";
-                    }
-
-                    @Override
-                    public byte[] getBody() throws AuthFailureError {
-                        try {
-                            return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
-                        } catch (UnsupportedEncodingException uee) {
-                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
-                            return null;
+                                }
+                            }) {
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json; charset=utf-8";
                         }
-                    }
 
-                };
-                requestQueue2.add(stringRequest2);
+                        @Override
+                        public byte[] getBody() throws AuthFailureError {
+                            try {
+                                return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
+                            } catch (UnsupportedEncodingException uee) {
+                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
+                                return null;
+                            }
+                        }
 
+                    };
+                    requestQueue2.add(stringRequest2);
+                }
             }
         });
         //social science
         social_science.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                categoryChoosed = social_science_text.getText().toString();
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(getContext(), "Need connexion ", Toast.LENGTH_SHORT).show();
 
-                RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
-                JSONObject jsonBody = new JSONObject();
-                final String mRequestBody2 = jsonBody.toString();
+                } else {
+                    categoryChoosed = social_science_text.getText().toString();
 
-
-                String url = "http://10.0.2.2:3000/books/read-book-category/social";
-
-
-                StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("LOG_RESPONSE   user ", response);
-                        String responseFormatted = response.substring(1, response.length() - 1);
-                        Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+                    RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
+                    JSONObject jsonBody = new JSONObject();
+                    final String mRequestBody2 = jsonBody.toString();
 
 
-                        try {
-                            JSONArray jsonArray = null;
+                    String url = "http://192.168.1.4:3000/books/read-book-category/social";
+
+
+                    StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("LOG_RESPONSE   user ", response);
+                            String responseFormatted = response.substring(1, response.length() - 1);
+                            Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+
+
                             try {
-                                jsonArray = new JSONArray(response);
+                                JSONArray jsonArray = null;
+                                try {
+                                    jsonArray = new JSONArray(response);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.i("JSON ARRAY  ", jsonArray.toString());
+                                mainbooks.clear();
+
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    MainBook book = new MainBook();
+                                    book.setId(jsonArray.getJSONObject(i).get("id").toString());
+                                    book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
+                                    book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
+                                    book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
+                                    book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
+                                    book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
+                                    book.setImage(jsonArray.getJSONObject(i).get("image").toString());
+                                    book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
+                                    book.setUser(jsonArray.getJSONObject(i).get("user").toString());
+                                    book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
+                                    book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
+                                    Log.i("book =======================>", book.getCategory());
+
+                                    mainbooks.add(book);
+                                }
+                                Log.i("size array =======================>", String.valueOf(mainbooks.size()));
+
+                                Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
+                                        "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
+                                        "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
+                                        "theater"};
+                                Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                mainCategories = new ArrayList<>();
+                                for (int i = 0; i < categoryLogo.length; i++) {
+                                    MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
+                                    mainCategories.add(category);
+                                }
+
+
+                                recyclerView2.getAdapter().notifyDataSetChanged();
+
+                                Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
+                                //  notifyItemRemoved(position);
+                                //  notifyItemRangeChanged(position, mainbooks.size());
+                                //  notifyDataSetChanged();
+                                Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
+
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                            } finally {
+
                             }
-                            Log.i("JSON ARRAY  ", jsonArray.toString());
-                            mainbooks.clear();
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                MainBook book = new MainBook();
-                                book.setId(jsonArray.getJSONObject(i).get("id").toString());
-                                book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
-                                book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
-                                book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
-                                book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
-                                book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
-                                book.setImage(jsonArray.getJSONObject(i).get("image").toString());
-                                book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
-                                book.setUser(jsonArray.getJSONObject(i).get("user").toString());
-                                book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
-                                book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
-                                Log.i("book =======================>", book.getCategory());
-
-                                mainbooks.add(book);
-                            }
-                            Log.i("size array =======================>", String.valueOf(mainbooks.size()));
-
-                            Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
-                                    "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
-                                    "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
-                                    "theater"};
-                            Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            mainCategories = new ArrayList<>();
-                            for (int i = 0; i < categoryLogo.length; i++) {
-                                MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
-                                mainCategories.add(category);
-                            }
-
-
-                            recyclerView2.getAdapter().notifyDataSetChanged();
-
-                            Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
-                            //  notifyItemRemoved(position);
-                            //  notifyItemRangeChanged(position, mainbooks.size());
-                            //  notifyDataSetChanged();
-                            Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-
                         }
-                    }
 
-                },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
+                    },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
 
-                            }
-                        }) {
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json; charset=utf-8";
-                    }
-
-                    @Override
-                    public byte[] getBody() throws AuthFailureError {
-                        try {
-                            return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
-                        } catch (UnsupportedEncodingException uee) {
-                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
-                            return null;
+                                }
+                            }) {
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json; charset=utf-8";
                         }
-                    }
 
-                };
-                requestQueue2.add(stringRequest2);
+                        @Override
+                        public byte[] getBody() throws AuthFailureError {
+                            try {
+                                return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
+                            } catch (UnsupportedEncodingException uee) {
+                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
+                                return null;
+                            }
+                        }
 
+                    };
+                    requestQueue2.add(stringRequest2);
+                }
             }
         });
 //art music and cinema
         artmusic_cinema.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                categoryChoosed = artmusic_cinema_text.getText().toString();
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(getContext(), "Need connexion ", Toast.LENGTH_SHORT).show();
 
-                RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
-                JSONObject jsonBody = new JSONObject();
-                final String mRequestBody2 = jsonBody.toString();
+                } else {
+                    categoryChoosed = artmusic_cinema_text.getText().toString();
 
-
-                String url = "http://10.0.2.2:3000/books/read-book-category/art";
-
-
-                StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("LOG_RESPONSE   user ", response);
-                        String responseFormatted = response.substring(1, response.length() - 1);
-                        Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+                    RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
+                    JSONObject jsonBody = new JSONObject();
+                    final String mRequestBody2 = jsonBody.toString();
 
 
-                        try {
-                            JSONArray jsonArray = null;
+                    String url = "http://192.168.1.4:3000/books/read-book-category/art";
+
+
+                    StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("LOG_RESPONSE   user ", response);
+                            String responseFormatted = response.substring(1, response.length() - 1);
+                            Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+
+
                             try {
-                                jsonArray = new JSONArray(response);
+                                JSONArray jsonArray = null;
+                                try {
+                                    jsonArray = new JSONArray(response);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.i("JSON ARRAY  ", jsonArray.toString());
+                                mainbooks.clear();
+
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    MainBook book = new MainBook();
+                                    book.setId(jsonArray.getJSONObject(i).get("id").toString());
+                                    book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
+                                    book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
+                                    book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
+                                    book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
+                                    book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
+                                    book.setImage(jsonArray.getJSONObject(i).get("image").toString());
+                                    book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
+                                    book.setUser(jsonArray.getJSONObject(i).get("user").toString());
+                                    book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
+                                    book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
+                                    Log.i("book =======================>", book.getCategory());
+
+                                    mainbooks.add(book);
+                                }
+                                Log.i("size array =======================>", String.valueOf(mainbooks.size()));
+
+                                Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
+                                        "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
+                                        "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
+                                        "theater"};
+                                Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                mainCategories = new ArrayList<>();
+                                for (int i = 0; i < categoryLogo.length; i++) {
+                                    MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
+                                    mainCategories.add(category);
+                                }
+
+
+                                recyclerView2.getAdapter().notifyDataSetChanged();
+
+                                Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
+                                //  notifyItemRemoved(position);
+                                //  notifyItemRangeChanged(position, mainbooks.size());
+                                //  notifyDataSetChanged();
+                                Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
+
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                            } finally {
+
                             }
-                            Log.i("JSON ARRAY  ", jsonArray.toString());
-                            mainbooks.clear();
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                MainBook book = new MainBook();
-                                book.setId(jsonArray.getJSONObject(i).get("id").toString());
-                                book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
-                                book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
-                                book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
-                                book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
-                                book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
-                                book.setImage(jsonArray.getJSONObject(i).get("image").toString());
-                                book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
-                                book.setUser(jsonArray.getJSONObject(i).get("user").toString());
-                                book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
-                                book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
-                                Log.i("book =======================>", book.getCategory());
-
-                                mainbooks.add(book);
-                            }
-                            Log.i("size array =======================>", String.valueOf(mainbooks.size()));
-
-                            Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
-                                    "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
-                                    "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
-                                    "theater"};
-                            Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            mainCategories = new ArrayList<>();
-                            for (int i = 0; i < categoryLogo.length; i++) {
-                                MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
-                                mainCategories.add(category);
-                            }
-
-
-                            recyclerView2.getAdapter().notifyDataSetChanged();
-
-                            Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
-                            //  notifyItemRemoved(position);
-                            //  notifyItemRangeChanged(position, mainbooks.size());
-                            //  notifyDataSetChanged();
-                            Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-
                         }
-                    }
 
-                },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
+                    },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
 
-                            }
-                        }) {
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json; charset=utf-8";
-                    }
-
-                    @Override
-                    public byte[] getBody() throws AuthFailureError {
-                        try {
-                            return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
-                        } catch (UnsupportedEncodingException uee) {
-                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
-                            return null;
+                                }
+                            }) {
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json; charset=utf-8";
                         }
-                    }
 
-                };
-                requestQueue2.add(stringRequest2);
+                        @Override
+                        public byte[] getBody() throws AuthFailureError {
+                            try {
+                                return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
+                            } catch (UnsupportedEncodingException uee) {
+                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
+                                return null;
+                            }
+                        }
 
+                    };
+                    requestQueue2.add(stringRequest2);
+                }
             }
         });
         //humor
         humor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                categoryChoosed = humor_text.getText().toString();
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(getContext(), "Need connexion ", Toast.LENGTH_SHORT).show();
 
-                RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
-                JSONObject jsonBody = new JSONObject();
-                final String mRequestBody2 = jsonBody.toString();
+                } else {
+                    categoryChoosed = humor_text.getText().toString();
 
-
-                String url = "http://10.0.2.2:3000/books/read-book-category/" + categoryChoosed;
-
-
-                StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("LOG_RESPONSE   user ", response);
-                        String responseFormatted = response.substring(1, response.length() - 1);
-                        Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+                    RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
+                    JSONObject jsonBody = new JSONObject();
+                    final String mRequestBody2 = jsonBody.toString();
 
 
-                        try {
-                            JSONArray jsonArray = null;
+                    String url = "http://192.168.1.4:3000/books/read-book-category/" + categoryChoosed;
+
+
+                    StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("LOG_RESPONSE   user ", response);
+                            String responseFormatted = response.substring(1, response.length() - 1);
+                            Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+
+
                             try {
-                                jsonArray = new JSONArray(response);
+                                JSONArray jsonArray = null;
+                                try {
+                                    jsonArray = new JSONArray(response);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.i("JSON ARRAY  ", jsonArray.toString());
+                                mainbooks.clear();
+
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    MainBook book = new MainBook();
+                                    book.setId(jsonArray.getJSONObject(i).get("id").toString());
+                                    book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
+                                    book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
+                                    book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
+                                    book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
+                                    book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
+                                    book.setImage(jsonArray.getJSONObject(i).get("image").toString());
+                                    book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
+                                    book.setUser(jsonArray.getJSONObject(i).get("user").toString());
+                                    book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
+                                    book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
+                                    Log.i("book =======================>", book.getCategory());
+
+                                    mainbooks.add(book);
+                                }
+                                Log.i("size array =======================>", String.valueOf(mainbooks.size()));
+
+                                Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
+                                        "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
+                                        "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
+                                        "theater"};
+                                Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                mainCategories = new ArrayList<>();
+                                for (int i = 0; i < categoryLogo.length; i++) {
+                                    MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
+                                    mainCategories.add(category);
+                                }
+
+
+                                recyclerView2.getAdapter().notifyDataSetChanged();
+
+                                Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
+                                //  notifyItemRemoved(position);
+                                //  notifyItemRangeChanged(position, mainbooks.size());
+                                //  notifyDataSetChanged();
+                                Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
+
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                            } finally {
+
                             }
-                            Log.i("JSON ARRAY  ", jsonArray.toString());
-                            mainbooks.clear();
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                MainBook book = new MainBook();
-                                book.setId(jsonArray.getJSONObject(i).get("id").toString());
-                                book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
-                                book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
-                                book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
-                                book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
-                                book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
-                                book.setImage(jsonArray.getJSONObject(i).get("image").toString());
-                                book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
-                                book.setUser(jsonArray.getJSONObject(i).get("user").toString());
-                                book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
-                                book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
-                                Log.i("book =======================>", book.getCategory());
-
-                                mainbooks.add(book);
-                            }
-                            Log.i("size array =======================>", String.valueOf(mainbooks.size()));
-
-                            Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
-                                    "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
-                                    "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
-                                    "theater"};
-                            Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            mainCategories = new ArrayList<>();
-                            for (int i = 0; i < categoryLogo.length; i++) {
-                                MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
-                                mainCategories.add(category);
-                            }
-
-
-                            recyclerView2.getAdapter().notifyDataSetChanged();
-
-                            Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
-                            //  notifyItemRemoved(position);
-                            //  notifyItemRangeChanged(position, mainbooks.size());
-                            //  notifyDataSetChanged();
-                            Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-
                         }
-                    }
 
-                },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
+                    },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
 
-                            }
-                        }) {
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json; charset=utf-8";
-                    }
-
-                    @Override
-                    public byte[] getBody() throws AuthFailureError {
-                        try {
-                            return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
-                        } catch (UnsupportedEncodingException uee) {
-                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
-                            return null;
+                                }
+                            }) {
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json; charset=utf-8";
                         }
-                    }
 
-                };
-                requestQueue2.add(stringRequest2);
+                        @Override
+                        public byte[] getBody() throws AuthFailureError {
+                            try {
+                                return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
+                            } catch (UnsupportedEncodingException uee) {
+                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
+                                return null;
+                            }
+                        }
 
+                    };
+                    requestQueue2.add(stringRequest2);
+                }
             }
         });
         //police and thrillers
         police_thrillers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                categoryChoosed = police_thrillers_text.getText().toString();
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(getContext(), "Need connexion ", Toast.LENGTH_SHORT).show();
 
-                RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
-                JSONObject jsonBody = new JSONObject();
-                final String mRequestBody2 = jsonBody.toString();
+                } else {
+                    categoryChoosed = police_thrillers_text.getText().toString();
 
-
-                String url = "http://10.0.2.2:3000/books/read-book-category/police";
-
-
-                StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("LOG_RESPONSE   user ", response);
-                        String responseFormatted = response.substring(1, response.length() - 1);
-                        Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+                    RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
+                    JSONObject jsonBody = new JSONObject();
+                    final String mRequestBody2 = jsonBody.toString();
 
 
-                        try {
-                            JSONArray jsonArray = null;
+                    String url = "http://192.168.1.4:3000/books/read-book-category/police";
+
+
+                    StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("LOG_RESPONSE   user ", response);
+                            String responseFormatted = response.substring(1, response.length() - 1);
+                            Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+
+
                             try {
-                                jsonArray = new JSONArray(response);
+                                JSONArray jsonArray = null;
+                                try {
+                                    jsonArray = new JSONArray(response);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.i("JSON ARRAY  ", jsonArray.toString());
+                                mainbooks.clear();
+
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    MainBook book = new MainBook();
+                                    book.setId(jsonArray.getJSONObject(i).get("id").toString());
+                                    book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
+                                    book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
+                                    book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
+                                    book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
+                                    book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
+                                    book.setImage(jsonArray.getJSONObject(i).get("image").toString());
+                                    book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
+                                    book.setUser(jsonArray.getJSONObject(i).get("user").toString());
+                                    book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
+                                    book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
+                                    Log.i("book =======================>", book.getCategory());
+
+                                    mainbooks.add(book);
+                                }
+                                Log.i("size array =======================>", String.valueOf(mainbooks.size()));
+
+                                Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
+                                        "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
+                                        "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
+                                        "theater"};
+                                Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                mainCategories = new ArrayList<>();
+                                for (int i = 0; i < categoryLogo.length; i++) {
+                                    MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
+                                    mainCategories.add(category);
+                                }
+
+
+                                recyclerView2.getAdapter().notifyDataSetChanged();
+
+                                Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
+                                //  notifyItemRemoved(position);
+                                //  notifyItemRangeChanged(position, mainbooks.size());
+                                //  notifyDataSetChanged();
+                                Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
+
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                            } finally {
+
                             }
-                            Log.i("JSON ARRAY  ", jsonArray.toString());
-                            mainbooks.clear();
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                MainBook book = new MainBook();
-                                book.setId(jsonArray.getJSONObject(i).get("id").toString());
-                                book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
-                                book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
-                                book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
-                                book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
-                                book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
-                                book.setImage(jsonArray.getJSONObject(i).get("image").toString());
-                                book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
-                                book.setUser(jsonArray.getJSONObject(i).get("user").toString());
-                                book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
-                                book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
-                                Log.i("book =======================>", book.getCategory());
-
-                                mainbooks.add(book);
-                            }
-                            Log.i("size array =======================>", String.valueOf(mainbooks.size()));
-
-                            Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
-                                    "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
-                                    "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
-                                    "theater"};
-                            Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            mainCategories = new ArrayList<>();
-                            for (int i = 0; i < categoryLogo.length; i++) {
-                                MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
-                                mainCategories.add(category);
-                            }
-
-
-                            recyclerView2.getAdapter().notifyDataSetChanged();
-
-                            Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
-                            //  notifyItemRemoved(position);
-                            //  notifyItemRangeChanged(position, mainbooks.size());
-                            //  notifyDataSetChanged();
-                            Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-
                         }
-                    }
 
-                },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
+                    },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
 
-                            }
-                        }) {
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json; charset=utf-8";
-                    }
-
-                    @Override
-                    public byte[] getBody() throws AuthFailureError {
-                        try {
-                            return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
-                        } catch (UnsupportedEncodingException uee) {
-                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
-                            return null;
+                                }
+                            }) {
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json; charset=utf-8";
                         }
-                    }
 
-                };
-                requestQueue2.add(stringRequest2);
+                        @Override
+                        public byte[] getBody() throws AuthFailureError {
+                            try {
+                                return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
+                            } catch (UnsupportedEncodingException uee) {
+                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
+                                return null;
+                            }
+                        }
 
+                    };
+                    requestQueue2.add(stringRequest2);
+                }
             }
         });
         //religion and spirituality
         religion_spirituality.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                categoryChoosed = religion_spirituality_text.getText().toString();
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(getContext(), "Need connexion ", Toast.LENGTH_SHORT).show();
 
-                RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
-                JSONObject jsonBody = new JSONObject();
-                final String mRequestBody2 = jsonBody.toString();
+                } else {
+                    categoryChoosed = religion_spirituality_text.getText().toString();
 
-
-                String url = "http://10.0.2.2:3000/books/read-book-category/religion";
-
-
-                StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("LOG_RESPONSE   user ", response);
-                        String responseFormatted = response.substring(1, response.length() - 1);
-                        Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+                    RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
+                    JSONObject jsonBody = new JSONObject();
+                    final String mRequestBody2 = jsonBody.toString();
 
 
-                        try {
-                            JSONArray jsonArray = null;
+                    String url = "http://192.168.1.4:3000/books/read-book-category/religion";
+
+
+                    StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("LOG_RESPONSE   user ", response);
+                            String responseFormatted = response.substring(1, response.length() - 1);
+                            Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+
+
                             try {
-                                jsonArray = new JSONArray(response);
+                                JSONArray jsonArray = null;
+                                try {
+                                    jsonArray = new JSONArray(response);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.i("JSON ARRAY  ", jsonArray.toString());
+                                mainbooks.clear();
+
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    MainBook book = new MainBook();
+                                    book.setId(jsonArray.getJSONObject(i).get("id").toString());
+                                    book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
+                                    book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
+                                    book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
+                                    book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
+                                    book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
+                                    book.setImage(jsonArray.getJSONObject(i).get("image").toString());
+                                    book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
+                                    book.setUser(jsonArray.getJSONObject(i).get("user").toString());
+                                    book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
+                                    book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
+                                    Log.i("book =======================>", book.getCategory());
+
+                                    mainbooks.add(book);
+                                }
+                                Log.i("size array =======================>", String.valueOf(mainbooks.size()));
+
+                                Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
+                                        "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
+                                        "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
+                                        "theater"};
+                                Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                mainCategories = new ArrayList<>();
+                                for (int i = 0; i < categoryLogo.length; i++) {
+                                    MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
+                                    mainCategories.add(category);
+                                }
+
+
+                                recyclerView2.getAdapter().notifyDataSetChanged();
+
+                                Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
+                                //  notifyItemRemoved(position);
+                                //  notifyItemRangeChanged(position, mainbooks.size());
+                                //  notifyDataSetChanged();
+                                Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
+
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                            } finally {
+
                             }
-                            Log.i("JSON ARRAY  ", jsonArray.toString());
-                            mainbooks.clear();
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                MainBook book = new MainBook();
-                                book.setId(jsonArray.getJSONObject(i).get("id").toString());
-                                book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
-                                book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
-                                book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
-                                book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
-                                book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
-                                book.setImage(jsonArray.getJSONObject(i).get("image").toString());
-                                book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
-                                book.setUser(jsonArray.getJSONObject(i).get("user").toString());
-                                book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
-                                book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
-                                Log.i("book =======================>", book.getCategory());
-
-                                mainbooks.add(book);
-                            }
-                            Log.i("size array =======================>", String.valueOf(mainbooks.size()));
-
-                            Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
-                                    "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
-                                    "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
-                                    "theater"};
-                            Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            mainCategories = new ArrayList<>();
-                            for (int i = 0; i < categoryLogo.length; i++) {
-                                MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
-                                mainCategories.add(category);
-                            }
-
-
-                            recyclerView2.getAdapter().notifyDataSetChanged();
-
-                            Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
-                            //  notifyItemRemoved(position);
-                            //  notifyItemRangeChanged(position, mainbooks.size());
-                            //  notifyDataSetChanged();
-                            Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-
                         }
-                    }
 
-                },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
+                    },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
 
-                            }
-                        }) {
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json; charset=utf-8";
-                    }
-
-                    @Override
-                    public byte[] getBody() throws AuthFailureError {
-                        try {
-                            return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
-                        } catch (UnsupportedEncodingException uee) {
-                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
-                            return null;
+                                }
+                            }) {
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json; charset=utf-8";
                         }
-                    }
 
-                };
-                requestQueue2.add(stringRequest2);
+                        @Override
+                        public byte[] getBody() throws AuthFailureError {
+                            try {
+                                return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
+                            } catch (UnsupportedEncodingException uee) {
+                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
+                                return null;
+                            }
+                        }
 
+                    };
+                    requestQueue2.add(stringRequest2);
+                }
             }
         });
         //school
         school.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                categoryChoosed = school_text.getText().toString();
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(getContext(), "Need connexion ", Toast.LENGTH_SHORT).show();
 
-                RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
-                JSONObject jsonBody = new JSONObject();
-                final String mRequestBody2 = jsonBody.toString();
+                } else {
+                    categoryChoosed = school_text.getText().toString();
 
-
-                String url = "http://10.0.2.2:3000/books/read-book-category/" + categoryChoosed;
-
-
-                StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("LOG_RESPONSE   user ", response);
-                        String responseFormatted = response.substring(1, response.length() - 1);
-                        Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+                    RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
+                    JSONObject jsonBody = new JSONObject();
+                    final String mRequestBody2 = jsonBody.toString();
 
 
-                        try {
-                            JSONArray jsonArray = null;
+                    String url = "http://192.168.1.4:3000/books/read-book-category/" + categoryChoosed;
+
+
+                    StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("LOG_RESPONSE   user ", response);
+                            String responseFormatted = response.substring(1, response.length() - 1);
+                            Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+
+
                             try {
-                                jsonArray = new JSONArray(response);
+                                JSONArray jsonArray = null;
+                                try {
+                                    jsonArray = new JSONArray(response);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.i("JSON ARRAY  ", jsonArray.toString());
+                                mainbooks.clear();
+
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    MainBook book = new MainBook();
+                                    book.setId(jsonArray.getJSONObject(i).get("id").toString());
+                                    book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
+                                    book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
+                                    book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
+                                    book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
+                                    book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
+                                    book.setImage(jsonArray.getJSONObject(i).get("image").toString());
+                                    book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
+                                    book.setUser(jsonArray.getJSONObject(i).get("user").toString());
+                                    book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
+                                    book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
+                                    Log.i("book =======================>", book.getCategory());
+
+                                    mainbooks.add(book);
+                                }
+                                Log.i("size array =======================>", String.valueOf(mainbooks.size()));
+
+                                Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
+                                        "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
+                                        "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
+                                        "theater"};
+                                Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                mainCategories = new ArrayList<>();
+                                for (int i = 0; i < categoryLogo.length; i++) {
+                                    MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
+                                    mainCategories.add(category);
+                                }
+
+
+                                recyclerView2.getAdapter().notifyDataSetChanged();
+
+                                Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
+                                //  notifyItemRemoved(position);
+                                //  notifyItemRangeChanged(position, mainbooks.size());
+                                //  notifyDataSetChanged();
+                                Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
+
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                            } finally {
+
                             }
-                            Log.i("JSON ARRAY  ", jsonArray.toString());
-                            mainbooks.clear();
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                MainBook book = new MainBook();
-                                book.setId(jsonArray.getJSONObject(i).get("id").toString());
-                                book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
-                                book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
-                                book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
-                                book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
-                                book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
-                                book.setImage(jsonArray.getJSONObject(i).get("image").toString());
-                                book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
-                                book.setUser(jsonArray.getJSONObject(i).get("user").toString());
-                                book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
-                                book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
-                                Log.i("book =======================>", book.getCategory());
-
-                                mainbooks.add(book);
-                            }
-                            Log.i("size array =======================>", String.valueOf(mainbooks.size()));
-
-                            Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
-                                    "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
-                                    "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
-                                    "theater"};
-                            Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            mainCategories = new ArrayList<>();
-                            for (int i = 0; i < categoryLogo.length; i++) {
-                                MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
-                                mainCategories.add(category);
-                            }
-
-
-                            recyclerView2.getAdapter().notifyDataSetChanged();
-
-                            Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
-                            //  notifyItemRemoved(position);
-                            //  notifyItemRangeChanged(position, mainbooks.size());
-                            //  notifyDataSetChanged();
-                            Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-
                         }
-                    }
 
-                },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
+                    },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
 
-                            }
-                        }) {
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json; charset=utf-8";
-                    }
-
-                    @Override
-                    public byte[] getBody() throws AuthFailureError {
-                        try {
-                            return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
-                        } catch (UnsupportedEncodingException uee) {
-                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
-                            return null;
+                                }
+                            }) {
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json; charset=utf-8";
                         }
-                    }
 
-                };
-                requestQueue2.add(stringRequest2);
+                        @Override
+                        public byte[] getBody() throws AuthFailureError {
+                            try {
+                                return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
+                            } catch (UnsupportedEncodingException uee) {
+                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
+                                return null;
+                            }
+                        }
 
+                    };
+                    requestQueue2.add(stringRequest2);
+                }
             }
         });
         //sport and leisure
         sport_leisure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                categoryChoosed = sport_leisure_text.getText().toString();
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(getContext(), "Need connexion ", Toast.LENGTH_SHORT).show();
 
-                RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
-                JSONObject jsonBody = new JSONObject();
-                final String mRequestBody2 = jsonBody.toString();
+                } else {
+                    categoryChoosed = sport_leisure_text.getText().toString();
 
-
-                String url = "http://10.0.2.2:3000/books/read-book-category/sport";
-
-
-                StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("LOG_RESPONSE   user ", response);
-                        String responseFormatted = response.substring(1, response.length() - 1);
-                        Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+                    RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
+                    JSONObject jsonBody = new JSONObject();
+                    final String mRequestBody2 = jsonBody.toString();
 
 
-                        try {
-                            JSONArray jsonArray = null;
+                    String url = "http://192.168.1.4:3000/books/read-book-category/sport";
+
+
+                    StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("LOG_RESPONSE   user ", response);
+                            String responseFormatted = response.substring(1, response.length() - 1);
+                            Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+
+
                             try {
-                                jsonArray = new JSONArray(response);
+                                JSONArray jsonArray = null;
+                                try {
+                                    jsonArray = new JSONArray(response);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.i("JSON ARRAY  ", jsonArray.toString());
+                                mainbooks.clear();
+
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    MainBook book = new MainBook();
+                                    book.setId(jsonArray.getJSONObject(i).get("id").toString());
+                                    book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
+                                    book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
+                                    book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
+                                    book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
+                                    book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
+                                    book.setImage(jsonArray.getJSONObject(i).get("image").toString());
+                                    book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
+                                    book.setUser(jsonArray.getJSONObject(i).get("user").toString());
+                                    book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
+                                    book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
+                                    Log.i("book =======================>", book.getCategory());
+
+                                    mainbooks.add(book);
+                                }
+                                Log.i("size array =======================>", String.valueOf(mainbooks.size()));
+
+                                Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
+                                        "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
+                                        "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
+                                        "theater"};
+                                Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                mainCategories = new ArrayList<>();
+                                for (int i = 0; i < categoryLogo.length; i++) {
+                                    MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
+                                    mainCategories.add(category);
+                                }
+
+
+                                recyclerView2.getAdapter().notifyDataSetChanged();
+
+                                Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
+                                //  notifyItemRemoved(position);
+                                //  notifyItemRangeChanged(position, mainbooks.size());
+                                //  notifyDataSetChanged();
+                                Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
+
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                            } finally {
+
                             }
-                            Log.i("JSON ARRAY  ", jsonArray.toString());
-                            mainbooks.clear();
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                MainBook book = new MainBook();
-                                book.setId(jsonArray.getJSONObject(i).get("id").toString());
-                                book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
-                                book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
-                                book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
-                                book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
-                                book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
-                                book.setImage(jsonArray.getJSONObject(i).get("image").toString());
-                                book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
-                                book.setUser(jsonArray.getJSONObject(i).get("user").toString());
-                                book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
-                                book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
-                                Log.i("book =======================>", book.getCategory());
-
-                                mainbooks.add(book);
-                            }
-                            Log.i("size array =======================>", String.valueOf(mainbooks.size()));
-
-                            Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
-                                    "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
-                                    "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
-                                    "theater"};
-                            Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            mainCategories = new ArrayList<>();
-                            for (int i = 0; i < categoryLogo.length; i++) {
-                                MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
-                                mainCategories.add(category);
-                            }
-
-
-                            recyclerView2.getAdapter().notifyDataSetChanged();
-
-                            Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
-                            //  notifyItemRemoved(position);
-                            //  notifyItemRangeChanged(position, mainbooks.size());
-                            //  notifyDataSetChanged();
-                            Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-
                         }
-                    }
 
-                },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
+                    },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
 
-                            }
-                        }) {
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json; charset=utf-8";
-                    }
-
-                    @Override
-                    public byte[] getBody() throws AuthFailureError {
-                        try {
-                            return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
-                        } catch (UnsupportedEncodingException uee) {
-                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
-                            return null;
+                                }
+                            }) {
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json; charset=utf-8";
                         }
-                    }
 
-                };
-                requestQueue2.add(stringRequest2);
+                        @Override
+                        public byte[] getBody() throws AuthFailureError {
+                            try {
+                                return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
+                            } catch (UnsupportedEncodingException uee) {
+                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
+                                return null;
+                            }
+                        }
 
+                    };
+                    requestQueue2.add(stringRequest2);
+                }
             }
         });
         //theater
         theater.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                categoryChoosed = theater_text.getText().toString();
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(getContext(), "Need connexion ", Toast.LENGTH_SHORT).show();
 
-                RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
-                JSONObject jsonBody = new JSONObject();
-                final String mRequestBody2 = jsonBody.toString();
+                } else {
+                    categoryChoosed = theater_text.getText().toString();
 
-
-                String url = "http://10.0.2.2:3000/books/read-book-category/" + categoryChoosed;
-
-
-                StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("LOG_RESPONSE   user ", response);
-                        String responseFormatted = response.substring(1, response.length() - 1);
-                        Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+                    RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
+                    JSONObject jsonBody = new JSONObject();
+                    final String mRequestBody2 = jsonBody.toString();
 
 
-                        try {
-                            JSONArray jsonArray = null;
+                    String url = "http://192.168.1.4:3000/books/read-book-category/" + categoryChoosed;
+
+
+                    StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("LOG_RESPONSE   user ", response);
+                            String responseFormatted = response.substring(1, response.length() - 1);
+                            Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+
+
                             try {
-                                jsonArray = new JSONArray(response);
+                                JSONArray jsonArray = null;
+                                try {
+                                    jsonArray = new JSONArray(response);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.i("JSON ARRAY  ", jsonArray.toString());
+                                mainbooks.clear();
+
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    MainBook book = new MainBook();
+                                    book.setId(jsonArray.getJSONObject(i).get("id").toString());
+                                    book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
+                                    book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
+                                    book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
+                                    book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
+                                    book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
+                                    book.setImage(jsonArray.getJSONObject(i).get("image").toString());
+                                    book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
+                                    book.setUser(jsonArray.getJSONObject(i).get("user").toString());
+                                    book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
+                                    book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
+                                    Log.i("book =======================>", book.getCategory());
+
+                                    mainbooks.add(book);
+                                }
+                                Log.i("size array =======================>", String.valueOf(mainbooks.size()));
+
+                                Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
+                                        "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
+                                        "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
+                                        "theater"};
+                                Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                        R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                        R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                        R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                                mainCategories = new ArrayList<>();
+                                for (int i = 0; i < categoryLogo.length; i++) {
+                                    MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
+                                    mainCategories.add(category);
+                                }
+
+
+                                recyclerView2.getAdapter().notifyDataSetChanged();
+
+                                Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
+                                //  notifyItemRemoved(position);
+                                //  notifyItemRangeChanged(position, mainbooks.size());
+                                //  notifyDataSetChanged();
+                                Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
+
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                            } finally {
+
                             }
-                            Log.i("JSON ARRAY  ", jsonArray.toString());
-                            mainbooks.clear();
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                MainBook book = new MainBook();
-                                book.setId(jsonArray.getJSONObject(i).get("id").toString());
-                                book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
-                                book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
-                                book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
-                                book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
-                                book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
-                                book.setImage(jsonArray.getJSONObject(i).get("image").toString());
-                                book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
-                                book.setUser(jsonArray.getJSONObject(i).get("user").toString());
-                                book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
-                                book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
-                                Log.i("book =======================>", book.getCategory());
-
-                                mainbooks.add(book);
-                            }
-                            Log.i("size array =======================>", String.valueOf(mainbooks.size()));
-
-                            Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
-                                    "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
-                                    "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
-                                    "theater"};
-                            Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
-                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
-                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
-                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
-                            mainCategories = new ArrayList<>();
-                            for (int i = 0; i < categoryLogo.length; i++) {
-                                MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
-                                mainCategories.add(category);
-                            }
-
-
-                            recyclerView2.getAdapter().notifyDataSetChanged();
-
-                            Log.i("taille avant delete ===================================================>", String.valueOf(mainbooks.size()));
-                            //  notifyItemRemoved(position);
-                            //  notifyItemRangeChanged(position, mainbooks.size());
-                            //  notifyDataSetChanged();
-                            Log.i("taille aprés delete ===================================================>", String.valueOf(mainbooks.size()));
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-
                         }
-                    }
 
-                },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
+                    },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("LOG_RESPONSE", error.toString());
 
-                            }
-                        }) {
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json; charset=utf-8";
-                    }
-
-                    @Override
-                    public byte[] getBody() throws AuthFailureError {
-                        try {
-                            return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
-                        } catch (UnsupportedEncodingException uee) {
-                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
-                            return null;
+                                }
+                            }) {
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json; charset=utf-8";
                         }
-                    }
 
-                };
-                requestQueue2.add(stringRequest2);
+                        @Override
+                        public byte[] getBody() throws AuthFailureError {
+                            try {
+                                return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
+                            } catch (UnsupportedEncodingException uee) {
+                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
+                                return null;
+                            }
+                        }
 
+                    };
+                    requestQueue2.add(stringRequest2);
+                }
             }
         });
         //favoris
@@ -2175,7 +2248,7 @@ public class FragmentHome extends Fragment {
 
         mPreferences = getActivity().getSharedPreferences(filename, Context.MODE_PRIVATE);
 
-        String url2 = "http://10.0.2.2:3000/favoris/read-favoris/" + mPreferences.getString("id", null);
+        String url2 = "http://192.168.1.4:3000/favoris/read-favoris/" + mPreferences.getString("id", null);
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
             @Override
@@ -2239,50 +2312,145 @@ public class FragmentHome extends Fragment {
 
         if (categoryChoosed.equals("")) {
 
-            RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
-            JSONObject jsonBody = new JSONObject();
-            final String mRequestBody2 = jsonBody.toString();
+            mPreferences = getActivity().getSharedPreferences(filename, Context.MODE_PRIVATE);
+
+            if (isNetworkAvailable()) {
+                Log.i("test connexion oui  ====>", String.valueOf(isNetworkAvailable()));
+                if (!mPreferences.contains("home")) {
+                    final SharedPreferences.Editor prefEditor = mPreferences.edit();
+                    prefEditor.putString("home", null);
+                    prefEditor.commit();
+                }
+
+                RequestQueue requestQueue2 = Volley.newRequestQueue(getContext());
+                JSONObject jsonBody = new JSONObject();
+                final String mRequestBody2 = jsonBody.toString();
 
 
-            String url = "http://10.0.2.2:3000/books/";
+                String url = "http://192.168.1.4:3000/books/";
+                StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("LOG_RESPONSE   user ", response);
+                        String responseFormatted = response.substring(1, response.length() - 1);
+                        Log.i("LOG_RESPONSE   formatted ", responseFormatted);
 
 
-            StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    Log.i("LOG_RESPONSE   user ", response);
-                    String responseFormatted = response.substring(1, response.length() - 1);
-                    Log.i("LOG_RESPONSE   formatted ", responseFormatted);
-
-
-                    try {
-                        JSONArray jsonArray = null;
                         try {
-                            jsonArray = new JSONArray(response);
+                            JSONArray jsonArray = null;
+                            try {
+                                jsonArray = new JSONArray(response);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            Log.i("JSON ARRAY  ", jsonArray.toString());
+
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                MainBook book = new MainBook();
+                                book.setId(jsonArray.getJSONObject(i).get("id").toString());
+                                book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
+                                book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
+                                book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
+                                book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
+                                book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
+                                book.setImage(jsonArray.getJSONObject(i).get("image").toString());
+                                book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
+                                book.setUser(jsonArray.getJSONObject(i).get("user").toString());
+                                book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
+                                book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
+                                Log.i("book =======================>", book.getCategory());
+
+                                mainbooks.add(book);
+                            }
+                            Log.i("size array =======================>", String.valueOf(mainbooks.size()));
+                            final SharedPreferences.Editor prefEditor = mPreferences.edit();
+                            prefEditor.putString("home", String.valueOf(jsonArray));
+                            prefEditor.commit();
+
+
+                            Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                    R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                    R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                    R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+
+                            // recycle view cellule
+                            recyclerView2 = view.findViewById(R.id.recycler_view_books);
+                            LinearLayoutManager layoutManager2 = new LinearLayoutManager(
+                                    getContext(), LinearLayoutManager.VERTICAL, false
+                            );
+                            cardViewAdapter = new CardViewAdapter(getContext(), mainbooks, TabFavoris);
+
+                            recyclerView2.setAdapter(cardViewAdapter);
+
+                            recyclerView2.setItemAnimator(new DefaultItemAnimator());
+
+                            recyclerView2.setLayoutManager(layoutManager2);
+                            // fin cellule
+
                         } catch (JSONException e) {
                             e.printStackTrace();
-                        }
-                        Log.i("JSON ARRAY  ", jsonArray.toString());
+                        } finally {
 
-                        for (int i = 0; i < jsonArray.length(); i++) {
+                        }
+                    }
+
+                },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("LOG_RESPONSE", error.toString());
+
+                            }
+                        }) {
+                    @Override
+                    public String getBodyContentType() {
+                        return "application/json; charset=utf-8";
+                    }
+
+                    @Override
+                    public byte[] getBody() throws AuthFailureError {
+                        try {
+                            return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
+                        } catch (UnsupportedEncodingException uee) {
+                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
+                            return null;
+                        }
+                    }
+
+                };
+                requestQueue2.add(stringRequest2);
+            } else {
+                if (!mPreferences.contains("home")) {
+                    final SharedPreferences.Editor prefEditor = mPreferences.edit();
+                    prefEditor.putString("home", null);
+                    prefEditor.commit();
+                }
+                Log.i("test connexion non  ====>", String.valueOf(isNetworkAvailable()));
+
+                String JsonArray = mPreferences.getString("home", null);
+
+
+                JSONArray mJSONArray = null;
+                try {
+                    if (JsonArray != null) {
+                        mJSONArray = new JSONArray(JsonArray);
+                        for (int i = 0; i < mJSONArray.length(); i++) {
                             MainBook book = new MainBook();
-                            book.setId(jsonArray.getJSONObject(i).get("id").toString());
-                            book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
-                            book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
-                            book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
-                            book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
-                            book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
-                            book.setImage(jsonArray.getJSONObject(i).get("image").toString());
-                            book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
-                            book.setUser(jsonArray.getJSONObject(i).get("user").toString());
-                            book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
-                            book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
+                            book.setId(mJSONArray.getJSONObject(i).get("id").toString());
+                            book.setTitle(mJSONArray.getJSONObject(i).get("title").toString());
+                            book.setAuthor(mJSONArray.getJSONObject(i).get("author").toString());
+                            book.setPrice(mJSONArray.getJSONObject(i).get("price").toString());
+                            book.setCategory(mJSONArray.getJSONObject(i).get("category").toString());
+                            book.setStatus(mJSONArray.getJSONObject(i).get("status").toString());
+                            book.setImage(mJSONArray.getJSONObject(i).get("image").toString());
+                            book.setLanguage(mJSONArray.getJSONObject(i).get("language").toString());
+                            book.setUser(mJSONArray.getJSONObject(i).get("user").toString());
+                            book.setUsername(mJSONArray.getJSONObject(i).get("username").toString());
+                            book.setBookimage(mJSONArray.getJSONObject(i).get("image").toString());
                             Log.i("book =======================>", book.getCategory());
 
                             mainbooks.add(book);
                         }
-                        Log.i("size array =======================>", String.valueOf(mainbooks.size()));
-
                         recyclerView2 = view.findViewById(R.id.recycler_view_books);
                         Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
                                 R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
@@ -2302,40 +2470,24 @@ public class FragmentHome extends Fragment {
                         recyclerView2.setLayoutManager(layoutManager2);
 
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } finally {
+                    } else {
+                        Toast.makeText(getContext(), "Need connexion ", Toast.LENGTH_SHORT).show();
 
                     }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
 
-            },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e("LOG_RESPONSE", error.toString());
 
-                        }
-                    }) {
-                @Override
-                public String getBodyContentType() {
-                    return "application/json; charset=utf-8";
-                }
-
-                @Override
-                public byte[] getBody() throws AuthFailureError {
-                    try {
-                        return mRequestBody2 == null ? null : mRequestBody2.getBytes("utf-8");
-                    } catch (UnsupportedEncodingException uee) {
-                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody2, "utf-8");
-                        return null;
-                    }
-                }
-
-            };
-            requestQueue2.add(stringRequest2);
+            }
 
         }
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 }

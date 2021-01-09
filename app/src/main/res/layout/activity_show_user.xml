@@ -20,7 +20,7 @@
             <!-- bg orange -->
             <LinearLayout
                 android:id="@+id/bg_orange"
-                android:layout_width="425dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/colorOrange"
                 android:gravity="center"
@@ -115,7 +115,7 @@
 
                 <LinearLayout
                     android:layout_marginRight="10dp"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:layout_marginBottom="10dp"

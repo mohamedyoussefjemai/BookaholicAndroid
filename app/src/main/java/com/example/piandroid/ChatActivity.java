@@ -40,7 +40,7 @@ import okhttp3.WebSocketListener;
 public class ChatActivity extends AppCompatActivity implements TextWatcher {
     private String name;
     private WebSocket webSocket;
-    private String SERVER_PATH = "ws://10.0.2.2:3001/";
+    private String SERVER_PATH = "ws://192.168.1.4:3001/";
     private EditText messageEdit;
     private View sendBtn, pickImgBtn;
     private RecyclerView recyclerView;
@@ -79,7 +79,7 @@ public class ChatActivity extends AppCompatActivity implements TextWatcher {
     private void initiateSocketConnection() {
         OkHttpClient client = new OkHttpClient();
         String port = getIntent().getStringExtra("port");
-        SERVER_PATH ="ws://10.0.2.2:"+port+"/";
+        SERVER_PATH ="ws://192.168.1.4:"+port+"/";
         Request request = new Request.Builder().url(SERVER_PATH).build();
         webSocket = client.newWebSocket(request, new SocketListener());
     }

@@ -86,7 +86,7 @@ builder.setView(input);
                         jsonBody.put("username", input.getText().toString());
                         final String mRequestBody = jsonBody.toString();
 
-                        String url = "http://10.0.2.2:3000/users/update-user-username/" + mPreferences.getString("id", null);
+                        String url = "http://192.168.1.4:3000/users/update-user-username/" + mPreferences.getString("id", null);
                         StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
@@ -268,7 +268,7 @@ builder.setView(input);
                         jsonBody.put("phone", phone.getText().toString());
                         final String mRequestBody = jsonBody.toString();
 
-                        String url = "http://10.0.2.2:3000/users/update-user-phone/" + mPreferences.getString("id", null);
+                        String url = "http://192.168.1.4:3000/users/update-user-phone/" + mPreferences.getString("id", null);
                         StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
@@ -348,7 +348,7 @@ builder.setView(input);
                         jsonBody.put("email", email.getText().toString());
                         final String mRequestBody = jsonBody.toString();
 
-                        String url = "http://10.0.2.2:3000/users/update-user-email/" + mPreferences.getString("id", null);
+                        String url = "http://192.168.1.4:3000/users/update-user-email/" + mPreferences.getString("id", null);
                         StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
@@ -428,7 +428,7 @@ builder.setView(input);
                         jsonBody.put("address", address.getText().toString());
                         final String mRequestBody = jsonBody.toString();
 
-                        String url = "http://10.0.2.2:3000/users/update-user-address/" + mPreferences.getString("id", null);
+                        String url = "http://192.168.1.4:3000/users/update-user-address/" + mPreferences.getString("id", null);
                         StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
@@ -508,7 +508,7 @@ builder.setView(input);
                         jsonBody.put("phone", phone.getText().toString());
                         final String mRequestBody = jsonBody.toString();
 
-                        String url = "http://10.0.2.2:3000/users/update-user-phone/" + mPreferences.getString("id", null);
+                        String url = "http://192.168.1.4:3000/users/update-user-phone/" + mPreferences.getString("id", null);
                         StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {

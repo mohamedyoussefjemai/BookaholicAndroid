@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -78,7 +80,7 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHo
 
 // Load Image from the internet and set it into Imageview using Glide
 
-        Glide.with(context).load("http://10.0.2.2:3000/get/image/" + mainbooks.get(position).getImage()).apply(option).into(holder.imageView);
+        Glide.with(context).load("http://192.168.1.4:3000/get/image/" + mainbooks.get(position).getImage()).apply(option).into(holder.imageView);
 // on click card
         Log.i("favoris dans cardview ======================>", TabFavoris.toString());
 
@@ -111,173 +113,185 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHo
         holder.textView3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String idUser = mainbooks.get(position).getUser();
-                String receiver = mainbooks.get(position).getUsername();
-                Context context = v.getContext();
-                Intent intent = new Intent(context, ShowUserActivity.class);
-                intent.putExtra("idUser", idUser);
-                context.startActivity(intent);
-
+                if (isNetworkAvailable()) {
+                    String idUser = mainbooks.get(position).getUser();
+                    String receiver = mainbooks.get(position).getUsername();
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, ShowUserActivity.class);
+                    intent.putExtra("idUser", idUser);
+                    context.startActivity(intent);
+                } else {
+                    Toast.makeText(context, "Need connexion ", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isNetworkAvailable()) {
 
-                String idBook = mainbooks.get(position).getId();
-                Context context = v.getContext();
-                Intent intent = new Intent(context, ShowBookActivity.class);
-                intent.putExtra("idBook", idBook);
-                intent.putExtra("idUser",mainbooks.get(position).getUser());
-                intent.putExtra("receiver", mainbooks.get(position).getUsername());
-                intent.putExtra("titlechange", mainbooks.get(position).getTitle());
-                intent.putExtra("hide", "false");
+                    String idBook = mainbooks.get(position).getId();
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, ShowBookActivity.class);
+                    intent.putExtra("idBook", idBook);
+                    intent.putExtra("idUser", mainbooks.get(position).getUser());
+                    intent.putExtra("receiver", mainbooks.get(position).getUsername());
+                    intent.putExtra("titlechange", mainbooks.get(position).getTitle());
+                    intent.putExtra("hide", "false");
 
-                context.startActivity(intent);
+                    context.startActivity(intent);
 
+                } else
+                    Toast.makeText(context, "Need connexion ", Toast.LENGTH_SHORT).show();
             }
         });
 
         holder.heart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TabFavoris.contains(mainbooks.get(position).getId())) {
-                    Toast toast = Toast.makeText(context, "this book id already in your favorite list", Toast.LENGTH_LONG);
-                    toast.show();
+                if (isNetworkAvailable()) {
+
+                    if (TabFavoris.contains(mainbooks.get(position).getId())) {
+                        Toast toast = Toast.makeText(context, "this book id already in your favorite list", Toast.LENGTH_LONG);
+                        toast.show();
+                    } else {
+                        holder.heart.setBackgroundResource(R.drawable.heart);
+                        TabFavoris.add(mainbooks.get(position).getId());
+                        String bookfav = mainbooks.get(position).getId();
+                        String titlefav = mainbooks.get(position).getTitle();
+                        String authorfav = mainbooks.get(position).getAuthor();
+                        String categoryfav = mainbooks.get(position).getCategory();
+                        String statusfav = mainbooks.get(position).getStatus();
+                        String pricefav = mainbooks.get(position).getPrice();
+                        String visiblefav = "1";
+                        String languagefav = mainbooks.get(position).getLanguage();
+                        String userfav = mPreferences.getString("id", null);
+                        String usernamefav = mPreferences.getString("username", null);
+                        String imagefav = mainbooks.get(position).getImage();
+
+
+                        RequestQueue requestQueue = Volley.newRequestQueue(context);
+                        JSONObject jsonBody = new JSONObject();
+                        try {
+                            jsonBody.put("title", titlefav);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            jsonBody.put("author", authorfav);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            jsonBody.put("author", authorfav);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            jsonBody.put("author", authorfav);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            jsonBody.put("book", bookfav);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            jsonBody.put("category", categoryfav);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            jsonBody.put("status", statusfav);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            jsonBody.put("price", pricefav);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            jsonBody.put("visible", visiblefav);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            jsonBody.put("language", languagefav);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            jsonBody.put("user", userfav);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            jsonBody.put("username", usernamefav);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            jsonBody.put("image", imagefav);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        final String mRequestBody = jsonBody.toString();
+                        Log.i("fonction =======================>", mRequestBody);
+
+                        String url = "http://192.168.1.4:3000/favoris/add-favoris";
+
+                        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                Log.i("LOG_RESPONSE", response);
+                                Toast toast = Toast.makeText(context, "Add book Done !", Toast.LENGTH_SHORT);
+                                toast.show();
+
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("LOG_RESPONSE", error.toString());
+                                Toast toast = Toast.makeText(context, "Add book Failed !", Toast.LENGTH_SHORT);
+                                toast.show();
+
+
+                            }
+                        }) {
+                            @Override
+                            public String getBodyContentType() {
+                                return "application/json; charset=utf-8";
+                            }
+
+                            @Override
+                            public byte[] getBody() throws AuthFailureError {
+                                try {
+                                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                                } catch (UnsupportedEncodingException uee) {
+                                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                                    return null;
+                                }
+                            }
+
+                            @Override
+                            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                                String responseString = "";
+                                if (response != null) {
+                                    responseString = String.valueOf(response.statusCode);
+                                }
+                                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                            }
+                        };
+
+                        requestQueue.add(stringRequest);
+                    }
                 } else {
-                    holder.heart.setBackgroundResource(R.drawable.heart);
-                    TabFavoris.add(mainbooks.get(position).getId());
-                    String bookfav = mainbooks.get(position).getId();
-                    String titlefav = mainbooks.get(position).getTitle();
-                    String authorfav = mainbooks.get(position).getAuthor();
-                    String categoryfav = mainbooks.get(position).getCategory();
-                    String statusfav = mainbooks.get(position).getStatus();
-                    String pricefav = mainbooks.get(position).getPrice();
-                    String visiblefav = "1";
-                    String languagefav = mainbooks.get(position).getLanguage();
-                    String userfav = mPreferences.getString("id", null);
-                    String usernamefav = mPreferences.getString("username", null);
-                    String imagefav = mainbooks.get(position).getImage();
+                    Toast.makeText(context, "Need connexion ", Toast.LENGTH_SHORT).show();
 
-
-                    RequestQueue requestQueue = Volley.newRequestQueue(context);
-                    JSONObject jsonBody = new JSONObject();
-                    try {
-                        jsonBody.put("title", titlefav);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        jsonBody.put("author", authorfav);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        jsonBody.put("author", authorfav);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        jsonBody.put("author", authorfav);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        jsonBody.put("book", bookfav);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        jsonBody.put("category", categoryfav);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        jsonBody.put("status", statusfav);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        jsonBody.put("price", pricefav);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        jsonBody.put("visible", visiblefav);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        jsonBody.put("language", languagefav);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        jsonBody.put("user", userfav);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        jsonBody.put("username", usernamefav);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        jsonBody.put("image", imagefav);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    final String mRequestBody = jsonBody.toString();
-                    Log.i("fonction =======================>", mRequestBody);
-
-                    String url = "http://10.0.2.2:3000/favoris/add-favoris";
-
-                    StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            Log.i("LOG_RESPONSE", response);
-                            Toast toast = Toast.makeText(context, "Add book Done !", Toast.LENGTH_SHORT);
-                            toast.show();
-
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e("LOG_RESPONSE", error.toString());
-                            Toast toast = Toast.makeText(context, "Add book Failed !", Toast.LENGTH_SHORT);
-                            toast.show();
-
-
-                        }
-                    }) {
-                        @Override
-                        public String getBodyContentType() {
-                            return "application/json; charset=utf-8";
-                        }
-
-                        @Override
-                        public byte[] getBody() throws AuthFailureError {
-                            try {
-                                return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                            } catch (UnsupportedEncodingException uee) {
-                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                                return null;
-                            }
-                        }
-
-                        @Override
-                        protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                            String responseString = "";
-                            if (response != null) {
-                                responseString = String.valueOf(response.statusCode);
-                            }
-                            return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-                        }
-                    };
-
-                    requestQueue.add(stringRequest);
                 }
             }
         });
@@ -306,5 +320,12 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHo
             textView8 = itemView.findViewById(R.id.username);
             heart = itemView.findViewById(R.id.heart);
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

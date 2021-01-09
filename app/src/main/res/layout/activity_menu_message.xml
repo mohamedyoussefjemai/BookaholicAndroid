@@ -17,7 +17,7 @@
         <!-- bg orange -->
         <LinearLayout
             android:id="@+id/bg_orange"
-            android:layout_width="425dp"
+            android:layout_width="match_parent"
             android:layout_height="155dp"
             android:background="@color/colorOrange"
             android:orientation="vertical">

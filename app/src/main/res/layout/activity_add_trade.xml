@@ -17,7 +17,7 @@
         <!-- bg orange -->
         <LinearLayout
             android:id="@+id/bg_orange"
-            android:layout_width="425dp"
+            android:layout_width="match_parent"
             android:layout_height="155dp"
             android:background="@color/colorOrange"
             android:orientation="vertical">
@@ -52,8 +52,8 @@
             android:textAppearance="@style/username" />
         <Spinner
             android:id="@+id/books"
-            android:layout_width="340dp"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20.5dp"
             android:layout_marginEnd="39.5dp"
             android:background="@drawable/rectangle"
@@ -66,7 +66,7 @@
 
         <TextView
             android:id="@+id/visible_text"
-            android:layout_width="100dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20.5dp"
             android:text="Add a sum"
@@ -74,8 +74,8 @@
 
         <Switch
             android:id="@+id/switch1"
-            android:layout_width="60dp"
-            android:layout_height="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:text="Visible"
             android:textColor="@color/colorWhite"
@@ -93,8 +93,8 @@
 
         <EditText
             android:id="@+id/price"
-            android:layout_width="340dp"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20.5dp"
             android:layout_marginEnd="39.5dp"
             android:background="@drawable/rectangle"

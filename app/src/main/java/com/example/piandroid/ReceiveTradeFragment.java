@@ -69,7 +69,7 @@ public class ReceiveTradeFragment extends Fragment {
         JSONObject jsonBody = new JSONObject();
         final String mRequestBody = jsonBody.toString();
 
-        String url = "http://10.0.2.2:3000/requests/read-trade-received/" + mPreferences.getString("username", null);
+        String url = "http://192.168.1.4:3000/requests/read-trade-received/" + mPreferences.getString("username", null);
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override

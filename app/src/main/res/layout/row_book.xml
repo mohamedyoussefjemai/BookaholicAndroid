@@ -12,7 +12,7 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="362dp"
             android:layout_margin="20dp"
             android:checkable="true"
             android:clickable="true"
@@ -26,31 +26,29 @@
             app:checkedIconTint="@color/colorOrange">
 
 
-
             <RelativeLayout
                 android:id="@+id/cardsView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:gravity="center">
 
                 <LinearLayout
                     android:id="@+id/linearimage"
                     android:layout_width="match_parent"
-                    android:layout_height="316dp"
+                    android:layout_height="match_parent"
                     android:orientation="horizontal"
-                    android:weightSum="2"
-                    >
+                    android:weightSum="2">
 
                     <ImageView
                         android:id="@+id/bookimage"
                         android:layout_width="match_parent"
-                        android:layout_height="fill_parent"
+                        android:layout_height="match_parent"
                         android:layout_marginLeft="20px"
                         android:layout_marginTop="20px"
                         android:layout_marginRight="20px"
                         android:layout_marginBottom="20px"
-                        android:adjustViewBounds="true"
-                        android:layout_weight="1" />
+                        android:layout_weight="1"
+                        android:adjustViewBounds="true" />
 
 
                     <LinearLayout
@@ -61,24 +59,25 @@
                         android:orientation="vertical"
 
                         >
+
                         <View
                             android:id="@+id/heart"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_gravity="right"
                             android:layout_marginLeft="30dp"
-                            android:layout_marginRight="30dp"
                             android:layout_marginTop="30dp"
-                            android:background="@drawable/favoris"
-                             />
+                            android:layout_marginRight="30dp"
+                            android:background="@drawable/favoris" />
+
                         <TextView
                             android:id="@+id/username"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="2dp"
-                            android:layout_marginRight="2dp"
-
                             android:layout_marginTop="10dp"
+
+                            android:layout_marginRight="2dp"
                             android:gravity="left"
                             android:textAppearance="@style/titre_de_li" />
 
@@ -87,11 +86,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="2dp"
-                            android:layout_marginRight="2dp"                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="2dp"
 
                             android:gravity="left"
                             android:textAppearance="@style/author" />
-
 
 
                         <TextView
@@ -99,17 +98,20 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="2dp"
-                            android:layout_marginRight="2dp"                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="2dp"
 
                             android:gravity="left"
                             android:textAppearance="@style/author"
                             android:textColor="@color/colorOrange" />
+
                         <TextView
                             android:id="@+id/username2"
-                            android:layout_width="120dp"
-                            android:layout_marginLeft="2dp"
-                            android:layout_marginRight="2dp"                            android:layout_marginTop="10dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="2dp"
                             android:layout_marginBottom="10dp"
                             android:gravity="left"
                             android:textAppearance="@style/author"
@@ -124,48 +126,46 @@
                             android:weightSum="2">
 
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:layout_weight="1"
-                            android:weightSum="3">
-
-                            <TextView
-                                android:id="@+id/name2"
-                                android:layout_width="80dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:layout_weight="1"
-                                android:textColor="#FFFFFF" />
-
-                            <TextView
-                                android:id="@+id/price2"
-                                android:layout_width="80dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:layout_weight="1"
-
-                                android:textAppearance="@style/home_text"
-                                android:textSize="14sp"
-                                android:textStyle="normal" />
-
-                            <TextView
-                                android:id="@+id/price"
-                                android:layout_marginTop="10dp"
+                            <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="2dp"
-                                android:layout_marginBottom="20dp"
+                                android:layout_height="match_parent"
                                 android:layout_weight="1"
-                                android:gravity="right"
-                                android:textAppearance="@style/home_text"
-                                android:textSize="24sp"
-                                android:textStyle="bold" />
+                                android:orientation="vertical"
+                                android:weightSum="3">
 
-                        </LinearLayout>
+                                <TextView
+                                    android:id="@+id/name2"
+                                    android:layout_width="80dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:textColor="#FFFFFF" />
+
+                                <TextView
+                                    android:id="@+id/price2"
+                                    android:layout_width="80dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:textAppearance="@style/home_text"
+                                    android:textStyle="normal" />
+
+                                <TextView
+                                    android:id="@+id/price"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="2dp"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_marginRight="2dp"
+                                    android:gravity="right"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold"
+                                    android:textAppearance="@style/home_text"
+                                    />
+
+                            </LinearLayout>
 
                         </LinearLayout>
 

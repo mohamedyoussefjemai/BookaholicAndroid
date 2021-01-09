@@ -23,13 +23,14 @@
             <!-- bg orange -->
             <LinearLayout
                 android:id="@+id/bg_orange"
-                android:layout_width="425dp"
-                android:layout_height="230dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@color/colorOrange"
                 android:orientation="vertical">
 
 
                 <ImageButton
+                    android:layout_marginTop="20dp"
                     android:id="@+id/btn_image"
                     android:layout_width="150dp"
                     android:layout_height="181dp"
@@ -42,21 +43,22 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
+                    android:weightSum="8"
                     android:orientation="horizontal">
 
                     <TextView
+                        android:layout_weight="1"
                         android:id="@+id/name_text"
-                        android:layout_width="377dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
                         android:layout_marginBottom="20px"
                         android:gravity="center_horizontal|top"
-                        android:text="Flen Foulena"
                         android:textAppearance="@style/name" />
 
                     <ImageButton
+                        android:layout_weight="7"
                         android:id="@+id/btn_edit"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/colorOrange"
                         android:clickable="true"
@@ -83,9 +85,9 @@
 
                     <TextView
                         android:id="@+id/icon_trade"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:text="4"
                         android:textColor="@color/colorBlack"
                         android:textSize="36dp"
@@ -109,9 +111,9 @@
 
                     <TextView
                         android:id="@+id/icon_sale"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:text="4"
                         android:textColor="@color/colorBlack"
                         android:textSize="36dp"
@@ -135,6 +137,7 @@
                     android:orientation="vertical">
 
                     <View
+                        android:layout_marginTop="5dp"
                         android:id="@+id/icon_message"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
@@ -173,49 +176,53 @@
 
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:gravity="center"
+                android:weightSum="8"
                 android:orientation="horizontal"
                 android:padding="10dp">
 
                 <EditText
                     android:id="@+id/email"
-                    android:layout_width="300dp"
-                    android:layout_height="40dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="20.5dp"
                     android:layout_marginEnd="39.5dp"
                     android:background="@drawable/rectangle"
+                    android:layout_weight="1"
                     android:hint="Tap to change mail address"
                     android:inputType="textEmailAddress"
                     android:shadowRadius="10" />
 
                 <ImageButton
                     android:id="@+id/btn_email"
-                    android:layout_width="40dp"
-                    android:layout_height="25dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:clickable="true"
-                    android:paddingRight="40px"
+                    android:layout_weight="7"
                     android:background="@color/colorWhite"
                     android:src="@drawable/iconedit" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:gravity="center"
+                android:weightSum="8"
                 android:orientation="horizontal"
                 android:padding="10dp">
 
                 <EditText
                     android:id="@+id/tel"
-                    android:layout_width="300dp"
-                    android:layout_height="40dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="20.5dp"
                     android:layout_marginEnd="39.5dp"
+                    android:layout_weight="1"
                     android:background="@drawable/rectangle"
                     android:hint="Tap to change phone number"
                     android:inputType="textEmailAddress"
@@ -223,9 +230,10 @@
 
                 <ImageButton
                     android:id="@+id/btn_phone"
-                    android:layout_width="40dp"
-                    android:layout_height="25dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:clickable="true"
+                    android:layout_weight="7"
                     android:paddingRight="40px"
                     android:background="@color/colorWhite"
 
@@ -234,59 +242,65 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:gravity="center"
+                android:weightSum="8"
                 android:orientation="horizontal"
                 android:padding="10dp">
 
                 <EditText
                     android:id="@+id/adresse"
-                    android:layout_width="300dp"
-                    android:layout_height="40dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="20.5dp"
                     android:layout_marginEnd="39.5dp"
                     android:background="@drawable/rectangle"
                     android:hint="Tap to change your adress"
                     android:inputType="textEmailAddress"
+                    android:layout_weight="1"
                     android:shadowRadius="10" />
 
                 <ImageButton
                     android:id="@+id/btn_addr"
-                    android:layout_width="40dp"
-                    android:layout_height="25dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:clickable="true"
                     android:paddingRight="40px"
+                    android:layout_weight="7"
                     android:background="@color/colorWhite"
                     android:src="@drawable/iconedit" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:gravity="center"
+                android:weightSum="8"
                 android:orientation="horizontal"
                 android:padding="10dp">
 
                 <EditText
                     android:id="@+id/messenger"
-                    android:layout_width="300dp"
-                    android:layout_height="40dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="20.5dp"
                     android:layout_marginEnd="39.5dp"
+                    android:layout_weight="1"
                     android:background="@drawable/rectangle"
                     android:hint="Tap to change your facebook id"
                     android:shadowRadius="10" />
 
                 <ImageButton
                     android:id="@+id/btn_messenger"
-                    android:layout_width="40dp"
-                    android:layout_height="25dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:clickable="true"
                     android:paddingRight="40px"
+                    android:layout_weight="7"
                     android:background="@color/colorWhite"
                     android:src="@drawable/iconedit" />
 
@@ -294,8 +308,8 @@
 
             <Button
                 android:id="@+id/updateall"
-                android:layout_width="100dp"
-                android:layout_height="40dp"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/rectanglelogin"
@@ -306,7 +320,7 @@
             <TextView
                 android:id="@+id/change_password"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginStart="20.5dp"
                 android:clickable="true"
                 android:drawableStart="@drawable/iconlock"
@@ -319,7 +333,7 @@
             <TextView
                 android:id="@+id/logout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginStart="20.5dp"
                 android:layout_marginTop="10dp"
                 android:clickable="true"

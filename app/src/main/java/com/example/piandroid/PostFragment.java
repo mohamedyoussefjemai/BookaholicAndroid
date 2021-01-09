@@ -128,7 +128,7 @@ public class PostFragment extends Fragment implements View.OnTouchListener {
                 prefEditor.putString("post", null);
                 prefEditor.commit();
             }
-            String url = "http://10.0.2.2:3000/books/post-book/" + mPreferences.getString("id", null);
+            String url = "http://192.168.1.4:3000/books/post-book/" + mPreferences.getString("id", null);
 
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override

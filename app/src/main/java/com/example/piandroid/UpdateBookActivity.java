@@ -153,7 +153,7 @@ public class UpdateBookActivity extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(UpdateBookActivity.this);
         JSONObject jsonBody = new JSONObject();
         final String mRequestBody = jsonBody.toString();
-        String url = "http://10.0.2.2:3000/books/read-book/" + id;
+        String url = "http://192.168.1.4:3000/books/read-book/" + id;
 
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -312,7 +312,7 @@ public class UpdateBookActivity extends AppCompatActivity {
                         final String mRequestBody = jsonBody.toString();
                         Log.i("fonction =======================>", mRequestBody);
 
-                        String url = "http://10.0.2.2:3000/books/update-book/" + id;
+                        String url = "http://192.168.1.4:3000/books/update-book/" + id;
                         Log.i("id for update =======================>", id);
 
                         Log.i("url update  =======================>", mRequestBody);
@@ -500,7 +500,7 @@ public class UpdateBookActivity extends AppCompatActivity {
     private void initRetrofitClient() {
         OkHttpClient client = new OkHttpClient.Builder().build();
 
-        apiService = new Retrofit.Builder().baseUrl("http://10.0.2.2:3000/upload/").client(client).build().create(ApiService.class);
+        apiService = new Retrofit.Builder().baseUrl("http://192.168.1.4:3000/upload/").client(client).build().create(ApiService.class);
     }
 
 

@@ -275,7 +275,7 @@ public class AddBookActivity extends AppCompatActivity {
                                 final String mRequestBody = jsonBody.toString();
                                 Log.i("fonction =======================>", mRequestBody);
 
-                                String url = "http://10.0.2.2:3000/books/add-book";
+                                String url = "http://192.168.1.4:3000/books/add-book";
 
                                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                                     @Override
@@ -386,7 +386,7 @@ public class AddBookActivity extends AppCompatActivity {
     private void initRetrofitClient() {
         OkHttpClient client = new OkHttpClient.Builder().build();
 
-        apiService = new Retrofit.Builder().baseUrl("http://10.0.2.2:3000/upload/").client(client).build().create(ApiService.class);
+        apiService = new Retrofit.Builder().baseUrl("http://192.168.1.4:3000/upload/").client(client).build().create(ApiService.class);
     }
 
     public void Choose(View view) {
@@ -440,7 +440,7 @@ public class AddBookActivity extends AppCompatActivity {
 
         try {
             String uploadid = UUID.randomUUID().toString();
-            new MultipartUploadRequest(this, uploadid, "http://10.0.2.2:3000/upload")
+            new MultipartUploadRequest(this, uploadid, "http://192.168.1.4:3000/upload")
                     .addFileToUpload(path, "image")
                     .addParameter("name", name)
                     .setNotificationConfig(new UploadNotificationConfig())

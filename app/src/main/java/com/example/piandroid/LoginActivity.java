@@ -101,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
                 final String mRequestBody = jsonBody.toString();
 
 
-                String url = "http://10.0.2.2:3000/users/login";
+                String url = "http://192.168.1.4:3000/users/login";
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -117,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
                             RequestQueue requestQueue = Volley.newRequestQueue(LoginActivity.this);
                             JSONObject jsonBody = new JSONObject();
                             final String mRequestBody = jsonBody.toString();
-                            String url = "http://10.0.2.2:3000/users/read-user-email/" + email.getText();
+                            String url = "http://192.168.1.4:3000/users/read-user-email/" + email.getText();
 
                             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                                 @Override

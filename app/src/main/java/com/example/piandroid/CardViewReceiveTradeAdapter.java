@@ -110,7 +110,7 @@ public class CardViewReceiveTradeAdapter extends RecyclerView.Adapter<CardViewRe
                                     final String mRequestBody = jsonBody.toString();
 
                                     Log.i("bodyyyyyyyyyyyyyyyyyy",jsonBody.toString());
-                                    String url = "http://10.0.2.2:3000/requests/accept-trade-request/" + idRequest;
+                                    String url = "http://192.168.1.4:3000/requests/accept-trade-request/" + idRequest;
 
                                     StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
                                         @Override
@@ -208,7 +208,7 @@ public class CardViewReceiveTradeAdapter extends RecyclerView.Adapter<CardViewRe
 
                                 final String mRequestBody = jsonBody.toString();
 
-                                String url = "http://10.0.2.2:3000/requests/refuse-trade-request/" + idRequest;
+                                String url = "http://192.168.1.4:3000/requests/refuse-trade-request/" + idRequest;
                                 StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String response) {

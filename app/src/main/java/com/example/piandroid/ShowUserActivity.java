@@ -65,7 +65,7 @@ public class ShowUserActivity extends AppCompatActivity {
         JSONObject jsonBody = new JSONObject();
         final String mRequestBody = jsonBody.toString();
 
-        String url = "http://10.0.2.2:3000/users/read-user/" + idUser;
+        String url = "http://192.168.1.4:3000/users/read-user/" + idUser;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -115,7 +115,7 @@ public class ShowUserActivity extends AppCompatActivity {
                         image.setBackgroundResource(R.drawable.bookmale2);
                     } else {
                         String nameImage = mPreferences.getString("image", null);
-                        Glide.with(ShowUserActivity.this).load("http://10.0.2.2:3000/get/image/" + jsonObj.get("image").toString()).apply(option).into(image);
+                        Glide.with(ShowUserActivity.this).load("http://192.168.1.4:3000/get/image/" + jsonObj.get("image").toString()).apply(option).into(image);
 
                     }
 

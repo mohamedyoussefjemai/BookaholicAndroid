@@ -1,6 +1,8 @@
 package com.example.piandroid;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -22,6 +24,7 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -68,45 +71,155 @@ public class FavoriteFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-        JSONObject jsonBody = new JSONObject();
-        final String mRequestBody = jsonBody.toString();
-
         mPreferences = getActivity().getSharedPreferences(filename, Context.MODE_PRIVATE);
 
-        String url = "http://10.0.2.2:3000/favoris/read-favoris/" + mPreferences.getString("id", null);
+        if (isNetworkAvailable()) {
+            Log.i("test connexion oui  ====>", String.valueOf(isNetworkAvailable()));
+            if (!mPreferences.contains("fav")) {
+                final SharedPreferences.Editor prefEditor = mPreferences.edit();
+                prefEditor.putString("fav", null);
+                prefEditor.commit();
+            }
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.i("LOG_RESPONSE   user ", response);
-                String responseFormatted = response.substring(1, response.length() - 1);
-                Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+            RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+            JSONObject jsonBody = new JSONObject();
+            final String mRequestBody = jsonBody.toString();
 
 
-                try {
-                    JSONArray jsonArray = null;
+            String url = "http://192.168.1.4:3000/favoris/read-favoris/" + mPreferences.getString("id", null);
+
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.i("LOG_RESPONSE   user ", response);
+                    String responseFormatted = response.substring(1, response.length() - 1);
+                    Log.i("LOG_RESPONSE   formatted ", responseFormatted);
+
+
                     try {
-                        jsonArray = new JSONArray(response);
+                        JSONArray jsonArray = null;
+                        try {
+                            jsonArray = new JSONArray(response);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Log.i("JSON ARRAY  ", jsonArray.toString());
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            MainBook book = new MainBook();
+                            book.setId(jsonArray.getJSONObject(i).get("book").toString());
+                            book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
+                            book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
+                            book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
+                            book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
+                            book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
+                            book.setImage(jsonArray.getJSONObject(i).get("image").toString());
+                            book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
+                            book.setUser(jsonArray.getJSONObject(i).get("user").toString());
+                            book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
+                            book.setVisible(jsonArray.getJSONObject(i).get("visible").toString());
+                            book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
+                            Log.i("book =======================>", book.getCategory());
+
+                            mainbooks.add(book);
+                        }
+                        Log.i("size array =======================>", String.valueOf(mainbooks.size()));
+                        final SharedPreferences.Editor prefEditor = mPreferences.edit();
+                        prefEditor.putString("fav", String.valueOf(jsonArray));
+                        prefEditor.commit();
+                        Log.i("test fav ====>", String.valueOf(mPreferences.getString("lib", null)));
+                        recyclerView2 = view.findViewById(R.id.recycler_view_books);
+                        Integer[] categoryLogo = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                        String[] categoryName = {"comic & mangas", "Health & cooking", "romance & new adult", "tourism & travel",
+                                "adventure", "literature", "Personal development", "History", "youth", "social Sciences", "art music & cinema",
+                                "humor", "police & thrillers", "Religion and spirituality", "school", "sport & leisure",
+                                "theater"};
+                        Integer[] bookimage = {R.drawable.superheroo, R.drawable.chef, R.drawable.hearts, R.drawable.travel,
+                                R.drawable.traveler, R.drawable.papyrus, R.drawable.personaldevelopment, R.drawable.parchment,
+                                R.drawable.youth, R.drawable.psychology, R.drawable.violin, R.drawable.humor, R.drawable.villian,
+                                R.drawable.yinyang, R.drawable.whiteboard, R.drawable.barbell, R.drawable.theater};
+                        mainCategories = new ArrayList<>();
+                        for (int i = 0; i < categoryLogo.length; i++) {
+                            MainCategory category = new MainCategory(categoryLogo[i], categoryName[i]);
+                            mainCategories.add(category);
+                        }
+
+                        LinearLayoutManager layoutManager2 = new LinearLayoutManager(
+                                getContext(), LinearLayoutManager.VERTICAL, false
+                        );
+                        cardViewFavoriteAdapter = new CardViewFavoriteAdapter(getContext(), mainbooks);
+
+                        recyclerView2.setAdapter(cardViewFavoriteAdapter);
+
+                        recyclerView2.setItemAnimator(new DefaultItemAnimator());
+
+                        recyclerView2.setLayoutManager(layoutManager2);
+
+                        cardViewFavoriteAdapter.notifyDataSetChanged();
+
                     } catch (JSONException e) {
                         e.printStackTrace();
-                    }
-                    Log.i("JSON ARRAY  ", jsonArray.toString());
+                    } finally {
 
-                    for (int i = 0; i < jsonArray.length(); i++) {
+                    }
+                }
+
+            },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("LOG_RESPONSE", error.toString());
+
+                        }
+                    }) {
+                @Override
+                public String getBodyContentType() {
+                    return "application/json; charset=utf-8";
+                }
+
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    try {
+                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                    } catch (UnsupportedEncodingException uee) {
+                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                        return null;
+                    }
+                }
+
+            };
+            requestQueue.add(stringRequest);
+        } else {
+            if (!mPreferences.contains("fav")) {
+                final SharedPreferences.Editor prefEditor = mPreferences.edit();
+                prefEditor.putString("fav", null);
+                prefEditor.commit();
+            }
+            Log.i("test connexion non  ====>", String.valueOf(isNetworkAvailable()));
+            String JsonArray = mPreferences.getString("fav", null);
+
+
+            JSONArray mJSONArray = null;
+            try {
+                if (JsonArray != null) {
+                    mJSONArray = new JSONArray(JsonArray);
+                    for (int i = 0; i < mJSONArray.length(); i++) {
                         MainBook book = new MainBook();
-                        book.setId(jsonArray.getJSONObject(i).get("book").toString());
-                        book.setTitle(jsonArray.getJSONObject(i).get("title").toString());
-                        book.setAuthor(jsonArray.getJSONObject(i).get("author").toString());
-                        book.setPrice(jsonArray.getJSONObject(i).get("price").toString());
-                        book.setCategory(jsonArray.getJSONObject(i).get("category").toString());
-                        book.setStatus(jsonArray.getJSONObject(i).get("status").toString());
-                        book.setImage(jsonArray.getJSONObject(i).get("image").toString());
-                        book.setLanguage(jsonArray.getJSONObject(i).get("language").toString());
-                        book.setUser(jsonArray.getJSONObject(i).get("user").toString());
-                        book.setUsername(jsonArray.getJSONObject(i).get("username").toString());
-                        book.setVisible(jsonArray.getJSONObject(i).get("visible").toString());
-                        book.setBookimage(jsonArray.getJSONObject(i).get("image").toString());
+                        book.setId(mJSONArray.getJSONObject(i).get("book").toString());
+                        book.setTitle(mJSONArray.getJSONObject(i).get("title").toString());
+                        book.setAuthor(mJSONArray.getJSONObject(i).get("author").toString());
+                        book.setPrice(mJSONArray.getJSONObject(i).get("price").toString());
+                        book.setCategory(mJSONArray.getJSONObject(i).get("category").toString());
+                        book.setStatus(mJSONArray.getJSONObject(i).get("status").toString());
+                        book.setImage(mJSONArray.getJSONObject(i).get("image").toString());
+                        book.setLanguage(mJSONArray.getJSONObject(i).get("language").toString());
+                        book.setUser(mJSONArray.getJSONObject(i).get("user").toString());
+                        book.setUsername(mJSONArray.getJSONObject(i).get("username").toString());
+                        book.setVisible(mJSONArray.getJSONObject(i).get("visible").toString());
+                        book.setBookimage(mJSONArray.getJSONObject(i).get("image").toString());
                         Log.i("book =======================>", book.getCategory());
 
                         mainbooks.add(book);
@@ -144,41 +257,24 @@ public class FavoriteFragment extends Fragment {
                     recyclerView2.setLayoutManager(layoutManager2);
 
                     cardViewFavoriteAdapter.notifyDataSetChanged();
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } finally {
+                } else {
+                    Toast.makeText(getContext(), "Need connexion ", Toast.LENGTH_SHORT).show();
 
                 }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
 
-        },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("LOG_RESPONSE", error.toString());
 
-                    }
-                }) {
-            @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
-            }
-
-            @Override
-            public byte[] getBody() throws AuthFailureError {
-                try {
-                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                } catch (UnsupportedEncodingException uee) {
-                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                    return null;
-                }
-            }
-
-        };
-        requestQueue.add(stringRequest);
-
+        }
 
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 }

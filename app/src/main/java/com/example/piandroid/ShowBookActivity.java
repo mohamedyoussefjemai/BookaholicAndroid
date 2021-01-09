@@ -108,7 +108,7 @@ public class ShowBookActivity extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(ShowBookActivity.this);
         JSONObject jsonBody = new JSONObject();
         final String mRequestBody = jsonBody.toString();
-        String url = "http://10.0.2.2:3000/books/read-book/" + idBook;
+        String url = "http://192.168.1.4:3000/books/read-book/" + idBook;
         option = new RequestOptions().centerCrop().placeholder(R.drawable.eye).error(R.drawable.eye);
 
 
@@ -121,7 +121,7 @@ public class ShowBookActivity extends AppCompatActivity {
 
                 try {
                     JSONObject jsonObj = new JSONObject(responseFormatted);
-                    Glide.with(ShowBookActivity.this).load("http://10.0.2.2:3000/get/image/" + jsonObj.get("image").toString()).apply(option).into(bookimage);
+                    Glide.with(ShowBookActivity.this).load("http://192.168.1.4:3000/get/image/" + jsonObj.get("image").toString()).apply(option).into(bookimage);
                     price.setText(jsonObj.get("price").toString() + " DT");
                     username.setText(jsonObj.get("username").toString());
                     title.setText(jsonObj.get("title").toString());

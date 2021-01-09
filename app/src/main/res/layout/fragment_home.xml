@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:gravity="top"
     android:orientation="vertical"
     android:paddingTop="30dp"
     tools:context=".FragmentHome">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:gravity="top"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
@@ -25,16 +24,17 @@
 
         <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
+            android:layout_marginTop="20dp"
+            android:id="@+id/cat"
             android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="match_parent"
                 android:orientation="horizontal"
-
                 android:padding="10dp">
                 <LinearLayout
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
@@ -53,13 +53,13 @@
                         android:id="@+id/all_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:text="All"
                         android:textSize="10sp"
                         android:textStyle="bold" />
                 </LinearLayout>
                 <LinearLayout
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
@@ -78,15 +78,15 @@
                         android:id="@+id/comics_mangas_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:text="@string/comics_mangas"
                         android:textSize="10sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -104,15 +104,15 @@
                         android:id="@+id/health_cooking_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:text="@string/health_cooking"
                         android:textSize="10sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -129,16 +129,16 @@
                     <TextView
                         android:id="@+id/romance_newadult_text"
                         android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:layout_gravity="center"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="@string/romance_newadult"
                         android:textSize="10sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -155,16 +155,16 @@
                     <TextView
                         android:id="@+id/tourism_travel_text"
                         android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:layout_gravity="center"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="@string/tourism_travel"
                         android:textSize="10sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -181,16 +181,16 @@
                     <TextView
                         android:id="@+id/adventure_text"
                         android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:layout_gravity="center"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="@string/adventure"
                         android:textSize="10sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -207,16 +207,16 @@
                     <TextView
                         android:id="@+id/literature_text"
                         android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:layout_gravity="center"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="@string/literature"
                         android:textSize="10sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -233,16 +233,16 @@
                     <TextView
                         android:id="@+id/personal_devlopment_text"
                         android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:layout_gravity="center"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="@string/personal_devlopment"
                         android:textSize="10sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -259,16 +259,16 @@
                     <TextView
                         android:id="@+id/history_text"
                         android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:layout_gravity="center"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="@string/history"
                         android:textSize="10sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -285,16 +285,16 @@
                     <TextView
                         android:id="@+id/youth_text"
                         android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:layout_gravity="center"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="@string/youth"
                         android:textSize="10sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -311,16 +311,16 @@
                     <TextView
                         android:id="@+id/social_science_text"
                         android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:layout_gravity="center"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="@string/social_science"
                         android:textSize="10sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -337,16 +337,16 @@
                     <TextView
                         android:id="@+id/artmusic_cinema_text"
                         android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:layout_gravity="center"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="@string/artmusic_cinema"
                         android:textSize="10sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -363,16 +363,16 @@
                     <TextView
                         android:id="@+id/humor_text"
                         android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:layout_gravity="center"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="@string/humor"
                         android:textSize="10sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -389,16 +389,16 @@
                     <TextView
                         android:id="@+id/police_thrillers_text"
                         android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:layout_gravity="center"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="@string/police_thrillers"
                         android:textSize="10sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -415,7 +415,7 @@
                     <TextView
                         android:id="@+id/religion_spirituality_text"
                         android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="@string/religion_spirituality"
                         android:textSize="10sp"
@@ -423,8 +423,8 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -441,7 +441,7 @@
                     <TextView
                         android:id="@+id/school_text"
                         android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="@string/school"
                         android:textSize="10sp"
@@ -449,8 +449,8 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -467,15 +467,15 @@
                     <TextView
                         android:id="@+id/sport_leisure_text"
                         android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:layout_gravity="center"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="@string/sport_leisure"
                         android:textSize="10sp"
                         android:textStyle="bold" />
                 </LinearLayout>
                 <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -492,8 +492,8 @@
                     <TextView
                         android:id="@+id/theater_text"
                         android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:layout_gravity="center"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="@string/theater"
                         android:textSize="10sp"
                         android:textStyle="bold" />
@@ -504,8 +504,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_books"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cat" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </FrameLayout>
