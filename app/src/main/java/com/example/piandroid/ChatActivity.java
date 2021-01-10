@@ -21,6 +21,8 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.piandroid.database.AppDataBase;
+import com.example.piandroid.entity.User;
 import com.google.gson.JsonObject;
 
 import org.json.JSONException;
@@ -30,6 +32,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -47,15 +51,18 @@ public class ChatActivity extends AppCompatActivity implements TextWatcher {
     private SharedPreferences mPreferences;
     final String filename = "BookaholicLogin";
     private int IMAGE_REQUEST_ID = 16;
+    ArrayList<JSONObject> messages=new ArrayList<>();
+    List<User> users;
 
     private MessagerAdapter messagerAdapter;
-
+    AppDataBase database ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mPreferences = getSharedPreferences(filename, Context.MODE_PRIVATE);
+
 
 
         //get Username
@@ -68,7 +75,66 @@ public class ChatActivity extends AppCompatActivity implements TextWatcher {
 
         recyclerView = findViewById(R.id.chatrecyclerView);
 
-        messagerAdapter = new MessagerAdapter(this, getLayoutInflater());
+        /* select */
+        /*  select avant de charger les nouveaux test*/
+
+        database = AppDataBase.getAppDatabase(getApplicationContext());
+        users = database.userDao().getAll();
+        for (int i = 0; i < users.size(); i++) {
+          //  Log.i("rowList ==>"+i+" ", users.get(i).getName());
+          //  Log.i("rowList ==>"+i+" ", users.get(i).getMessage());
+         //   Log.i("rowList ==>"+i+" ", users.get(i).getSent().toString());
+       //     Log.i("rowList ==>"+i+" ", users.get(i).getImage());
+
+            name = mPreferences.getString("username", null);
+
+            String port = getIntent().getStringExtra("port");
+
+            if (users.get(i).getPort().equals(port)) {
+
+                JSONObject jsonObject = new JSONObject();
+                try {
+
+                    jsonObject.put("name", users.get(i).getName());
+                    if(users.get(i).getMessage() != null)
+                    {
+                        jsonObject.put("message", users.get(i).getMessage());
+
+                    }else {
+                        jsonObject.put("image", users.get(i).getImage());
+
+                    }
+               //     jsonObject.put("image", users.get(i).getImage());
+               //     jsonObject.put("message", users.get(i).getMessage());
+                    jsonObject.put("isSent", users.get(i).getSent());
+
+                    if(!users.get(i).getName().equals(name))
+                    {
+                        jsonObject.put("isSent", false);
+                    }
+                    else  {
+                        jsonObject.put("isSent",true);
+
+                    }
+
+                    messages.add(jsonObject);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+
+        }
+
+        /*                     test                 */
+
+
+
+
+
+        messagerAdapter = new MessagerAdapter(this, getLayoutInflater(),messages,getIntent().getStringExtra("port"));
 
         recyclerView.setAdapter(messagerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -134,6 +200,7 @@ public class ChatActivity extends AppCompatActivity implements TextWatcher {
                 String des_user = getIntent().getStringExtra("des_username");
                 if (jsonObject.getString("name").equals(name) || jsonObject.getString("des_user").equals(name)) {
                     super.onMessage(webSocket, text);
+
                 }
 
             } catch (JSONException e) {
@@ -145,6 +212,8 @@ public class ChatActivity extends AppCompatActivity implements TextWatcher {
                 try {
                     JSONObject jsonObject = new JSONObject(text);
                     jsonObject.put("isSent", false);
+                    String port = getIntent().getStringExtra("port");
+
                     messagerAdapter.addItem(jsonObject);
 
                     recyclerView.smoothScrollToPosition(messagerAdapter.getItemCount() - 1);
@@ -158,14 +227,13 @@ public class ChatActivity extends AppCompatActivity implements TextWatcher {
 
     private void initializeView() {
 
-
         messageEdit = findViewById(R.id.messageEdit);
         sendBtn = findViewById(R.id.sendBtn);
         pickImgBtn = findViewById(R.id.pickImgBtn);
 
         recyclerView = findViewById(R.id.chatrecyclerView);
 
-        messagerAdapter = new MessagerAdapter(this, getLayoutInflater());
+        messagerAdapter = new MessagerAdapter(this, getLayoutInflater(),messages,getIntent().getStringExtra("port"));
 
         recyclerView.setAdapter(messagerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -178,13 +246,13 @@ public class ChatActivity extends AppCompatActivity implements TextWatcher {
                 String des_user = getIntent().getStringExtra("des_username");
 
                 jsonObject.put("name", name);
-                jsonObject.put("des_user", des_user);
                 jsonObject.put("message", messageEdit.getText().toString());
 
 
                 webSocket.send(jsonObject.toString());
 
                 jsonObject.put("isSent", true);
+
                 messagerAdapter.addItem(jsonObject);
 
                 recyclerView.smoothScrollToPosition(messagerAdapter.getItemCount() - 1);
@@ -230,11 +298,9 @@ public class ChatActivity extends AppCompatActivity implements TextWatcher {
 
         JSONObject jsonObject = new JSONObject();
         try {
-            String des_user = getIntent().getStringExtra("des_username");
 
             jsonObject.put("name", name);
             jsonObject.put("image", Base64String);
-            jsonObject.put("des_user", des_user);
 
             webSocket.send(jsonObject.toString());
 

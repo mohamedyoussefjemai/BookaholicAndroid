@@ -123,9 +123,9 @@ public class LibFragment extends Fragment implements OnTouchListener {
 
         if (isNetworkAvailable()) {
             Log.i("test connexion oui  ====>", String.valueOf(isNetworkAvailable()));
-            if (!mPreferences.contains("post")) {
+            if (!mPreferences.contains("lib")) {
                 final SharedPreferences.Editor prefEditor = mPreferences.edit();
-                prefEditor.putString("post", null);
+                prefEditor.putString("lib", null);
                 prefEditor.commit();
             }
             RequestQueue requestQueue = Volley.newRequestQueue(getContext());
@@ -242,9 +242,9 @@ public class LibFragment extends Fragment implements OnTouchListener {
             };
             requestQueue.add(stringRequest);
         } else {
-            if (!mPreferences.contains("post")) {
+            if (!mPreferences.contains("lib")) {
                 final SharedPreferences.Editor prefEditor = mPreferences.edit();
-                prefEditor.putString("post", null);
+                prefEditor.putString("lib", null);
                 prefEditor.commit();
             }
             Log.i("test connexion non  ====>", String.valueOf(isNetworkAvailable()));

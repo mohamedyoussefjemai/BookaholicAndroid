@@ -15,6 +15,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.piandroid.database.AppDataBase;
+import com.example.piandroid.entity.User;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,15 +32,23 @@ public class MessagerAdapter extends RecyclerView.Adapter {
     private static final int TYPE_IMAGE_RECEIVED = 3;
     private final Context context;
 
+
     private SharedPreferences mPreferences;
     final String filename = "BookaholicLogin";
 
     private LayoutInflater inflater;
     private List<JSONObject> messages = new ArrayList<>();
+    String port;
 
-    public MessagerAdapter(Context context, LayoutInflater inflater) {
+    public MessagerAdapter(Context context, LayoutInflater inflater, List<JSONObject> messages, String port) {
         this.context = context;
         this.inflater = inflater;
+        if (messages.size() == 0) {
+            this.messages = new ArrayList<>();
+        } else {
+            this.messages = messages;
+        }
+        this.port = port;
     }
 
     private class SentMessageHolder extends RecyclerView.ViewHolder {
@@ -143,6 +154,7 @@ public class MessagerAdapter extends RecyclerView.Adapter {
 
         mPreferences = context.getSharedPreferences(filename, Context.MODE_PRIVATE);
 
+
         JSONObject message = messages.get(position);
         try {
             String username = mPreferences.getString("username", null);
@@ -150,41 +162,31 @@ public class MessagerAdapter extends RecyclerView.Adapter {
 
             if (message.getBoolean("isSent")) {
                 if (message.has("message")) {
-                    //      Log.i("des_username = ", message.getString("des_user"));
-                    //    Log.i("username sender = ", message.getString("name"));
 
-                    //   if (message.getString("name").equals(username)) {
                     SentMessageHolder messageHolder = (SentMessageHolder) holder;
                     messageHolder.messageTxt.setText(message.getString("message"));
-                    //   }
-                } else {
-                    //   Log.i("des_username = ", message.getString("des_user"));
-                    //   Log.i("username sendeer = ", message.getString("name"));
 
-                    //   if (message.getString("name").equals(username)) {
+                } else {
+
                     SentImageHolder imageHolder = (SentImageHolder) holder;
                     Bitmap bitmap = getBitmapFromString(message.getString("image"));
                     imageHolder.imageView.setImageBitmap(bitmap);
-                    //   }
+
                 }
             } else {
                 if (message.has("message")) {
-                    //     Log.i("des_username = ", message.getString("des_user"));
-                    //     Log.i("username sender = ", message.getString("name"));
-
-                    //   if (message.getString("des_user").equals(username)) {
 
                     ReceiveMessageHolder messageHolder = (ReceiveMessageHolder) holder;
                     messageHolder.nameTxt.setText(message.getString("name"));
                     messageHolder.messageTxt.setText(message.getString("message"));
-                    //  }
+
                 } else {
-                    //   if (message.getString("des_user").equals(username)) {
+
                     ReceiveImageHolder imageHolder = (ReceiveImageHolder) holder;
                     imageHolder.nameTxt.setText(message.getString("name"));
                     Bitmap bitmap = getBitmapFromString(message.getString("image"));
                     imageHolder.imageView.setImageBitmap(bitmap);
-                    //  }
+
                 }
             }
 
@@ -206,7 +208,36 @@ public class MessagerAdapter extends RecyclerView.Adapter {
     }
 
     public void addItem(JSONObject jsonObject) {
-        messages.add(jsonObject);
-        notifyDataSetChanged();
+        mPreferences = context.getSharedPreferences(filename, Context.MODE_PRIVATE);
+        String name = mPreferences.getString("username", null);
+        //insert
+
+        AppDataBase database = AppDataBase.getAppDatabase(context);
+        User user = new User();
+        try {
+            user.setName(jsonObject.getString("name"));
+            user.setPort(port);
+            if (jsonObject.has("message")) {
+                user.setMessage(jsonObject.getString("message"));
+            } else {
+                user.setImage(jsonObject.getString("image"));
+            }
+            if (jsonObject.getString("name").equals(name)) {
+                jsonObject.put("isSent", true);
+            } else {
+                jsonObject.put("isSent", false);
+
+            }
+            user.setSent(false);
+            database.userDao().insertOne(user);
+            Log.i("insert done", "insert done");
+            messages.add(jsonObject);
+            notifyDataSetChanged();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //end
+
+
     }
 }
