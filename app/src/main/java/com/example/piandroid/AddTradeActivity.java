@@ -63,7 +63,8 @@ public class AddTradeActivity extends AppCompatActivity {
     private Switch visible;
     private Spinner books;
     private Button AddTrade;
-    int visible_int;
+    int visible_int = 0;
+
 
     private SharedPreferences mPreferences;
     final String filename = "BookaholicLogin";

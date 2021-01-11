@@ -53,6 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20.5dp"
+            android:paddingLeft="25dp"
             android:layout_marginEnd="39.5dp"
             android:background="@drawable/rectangle"
             android:drawableRight="@mipmap/openbook"
@@ -76,6 +77,7 @@
             android:background="@drawable/rectangle"
             android:drawableEnd="@mipmap/user"
             android:hint="Title :"
+            android:paddingLeft="25dp"
             android:shadowRadius="10" />
         <TextView
             android:id="@+id/category_text"
@@ -91,6 +93,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20.5dp"
             android:layout_marginEnd="39.5dp"
+            android:paddingLeft="25dp"
+
             android:background="@drawable/rectangle"
             android:drawableEnd="@mipmap/user"
             android:shadowRadius="10"
@@ -115,6 +119,8 @@
             android:drawableEnd="@mipmap/user"
             android:shadowRadius="10"
             android:entries="@array/status__arrays"
+            android:paddingLeft="25dp"
+
             android:prompt="@string/status__prompt"/>
         <TextView
             android:id="@+id/language_text"
@@ -153,6 +159,8 @@
             android:text="Visible"
             android:textColor="@color/colorWhite"
             android:checked="false"
+            android:paddingLeft="25dp"
+
             />
         <TextView
             android:id="@+id/price_text"
@@ -205,7 +213,7 @@
             android:layout_marginLeft="20.5dp"
             android:layout_marginRight="39.5dp"
             android:background="@drawable/rectanglelogin"
-            android:text="Add Your Book"
+            android:text="Update Book"
             android:textColor="@color/colorWhite" />
 
     </LinearLayout>

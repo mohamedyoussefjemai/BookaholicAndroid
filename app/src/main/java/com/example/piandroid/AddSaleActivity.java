@@ -60,82 +60,89 @@ public class AddSaleActivity extends AppCompatActivity {
         price = findViewById(R.id.price);
         price.setInputType(InputType.TYPE_CLASS_NUMBER);
         AddSale = (Button) findViewById(R.id.AddSale);
+        price.setText(getIntent().getStringExtra("priceSale"));
+
 
         AddSale.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                try {
-                    RequestQueue requestQueue = Volley.newRequestQueue(AddSaleActivity.this);
-                    final JSONObject jsonBody = new JSONObject();
-                    jsonBody.put("type", "sale");
-                    jsonBody.put("etat", "waiting");
-                    jsonBody.put("price", price.getText().toString());
-
-                    jsonBody.put("sender", mPreferences.getString("username", null));
-                    Log.i("sender  :",mPreferences.getString("username", null));
-
-                    jsonBody.put("receiver", getIntent().getStringExtra("receiver"));
-                    jsonBody.put("titlechange", getIntent().getStringExtra("titlechange"));
-
-                    Log.i("receiver  :",getIntent().getStringExtra("receiver"));
-
-                    final String mRequestBody = jsonBody.toString();
-                    Log.i("fonction =======================>", mRequestBody);
-
-                    String url = "http://192.168.1.4:3000/requests/add-request";
-
-                    StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            Log.i("LOG_RESPONSE", response);
-                            Toast toast = Toast.makeText(AddSaleActivity.this, "Add sale request Done !", Toast.LENGTH_SHORT);
-                            toast.show();
-                            Intent intent = new Intent(AddSaleActivity.this, MenuActivity.class);
-                            startActivity(intent);
-
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e("LOG_RESPONSE", error.toString());
-                            Toast toast = Toast.makeText(AddSaleActivity.this, "Add sale request Failed !", Toast.LENGTH_SHORT);
-                            toast.show();
+                if (price.getText() == null) {
+                    Toast toast = Toast.makeText(AddSaleActivity.this, "Price must be not null !", Toast.LENGTH_SHORT);
+                    toast.show();
+                } else {
 
 
-                        }
-                    }) {
-                        @Override
-                        public String getBodyContentType() {
-                            return "application/json; charset=utf-8";
-                        }
+                    try {
+                        RequestQueue requestQueue = Volley.newRequestQueue(AddSaleActivity.this);
+                        final JSONObject jsonBody = new JSONObject();
+                        jsonBody.put("type", "sale");
+                        jsonBody.put("etat", "waiting");
+                        jsonBody.put("price", price.getText().toString());
 
-                        @Override
-                        public byte[] getBody() throws AuthFailureError {
-                            try {
-                                return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                            } catch (UnsupportedEncodingException uee) {
-                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                                return null;
+                        jsonBody.put("sender", mPreferences.getString("username", null));
+                        Log.i("sender  :", mPreferences.getString("username", null));
+
+                        jsonBody.put("receiver", getIntent().getStringExtra("receiver"));
+                        jsonBody.put("titlechange", getIntent().getStringExtra("titlechange"));
+
+                        Log.i("receiver  :", getIntent().getStringExtra("receiver"));
+
+                        final String mRequestBody = jsonBody.toString();
+                        Log.i("fonction =======================>", mRequestBody);
+
+                        String url = "http://192.168.1.4:3000/requests/add-request";
+
+                        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                Log.i("LOG_RESPONSE", response);
+                                Toast toast = Toast.makeText(AddSaleActivity.this, "Add sale request Done !", Toast.LENGTH_SHORT);
+                                toast.show();
+                                Intent intent = new Intent(AddSaleActivity.this, MenuActivity.class);
+                                startActivity(intent);
+
                             }
-                        }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("LOG_RESPONSE", error.toString());
+                                Toast toast = Toast.makeText(AddSaleActivity.this, "Add sale request Failed !", Toast.LENGTH_SHORT);
+                                toast.show();
 
-                        @Override
-                        protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                            String responseString = "";
-                            if (response != null) {
-                                responseString = String.valueOf(response.statusCode);
+
                             }
-                            return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-                        }
-                    };
+                        }) {
+                            @Override
+                            public String getBodyContentType() {
+                                return "application/json; charset=utf-8";
+                            }
 
-                    requestQueue.add(stringRequest);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                            @Override
+                            public byte[] getBody() throws AuthFailureError {
+                                try {
+                                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                                } catch (UnsupportedEncodingException uee) {
+                                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                                    return null;
+                                }
+                            }
+
+                            @Override
+                            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                                String responseString = "";
+                                if (response != null) {
+                                    responseString = String.valueOf(response.statusCode);
+                                }
+                                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                            }
+                        };
+
+                        requestQueue.add(stringRequest);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-
 
         });
 

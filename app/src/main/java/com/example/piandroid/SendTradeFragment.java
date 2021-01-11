@@ -43,6 +43,9 @@ public class SendTradeFragment extends Fragment {
     private SharedPreferences mPreferences;
     final String filename = "BookaholicLogin";
 
+
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -87,8 +90,11 @@ public class SendTradeFragment extends Fragment {
                     }
                     Log.i("JSON ARRAY  ", jsonArray.toString());
 
+                    if(!requests.isEmpty()) {
+                     requests = new ArrayList<>();
+                    }
 
-                    for (int i = 0; i < jsonArray.length(); i++) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
                         Requests alltradesend = new Requests();
                         alltradesend.setId(jsonArray.getJSONObject(i).get("id").toString());
                         alltradesend.setTitle(jsonArray.getJSONObject(i).get("title").toString());

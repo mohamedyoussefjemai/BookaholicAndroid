@@ -19,7 +19,7 @@ public interface UserDao {
     @Delete
     void delete(User user);
 
-    @Query("SELECT * FROM user_table ORDER BY 'id' DESC LIMIT 20")
+    @Query("SELECT * FROM user_table ORDER BY 'id' DESC LIMIT 200")
     List<User> getAll();
 
    // @Query("SELECT * FROM user_table  WHERE email = :email AND password = :password")

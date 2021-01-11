@@ -256,9 +256,11 @@ public class CardViewReceiveSaleAdapter extends RecyclerView.Adapter<CardViewRec
                                     }
                                 };
 
-                                requestQueue.add(stringRequest);
+                                requests.remove(position);
+                                notifyItemRemoved(position);
                                 notifyItemRangeChanged(position, requests.size());
                                 notifyDataSetChanged();
+                                requestQueue.add(stringRequest);
                             }
                         })
                         .setNegativeButton(android.R.string.no, null).show();

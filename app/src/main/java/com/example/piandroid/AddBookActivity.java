@@ -7,12 +7,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -89,7 +92,7 @@ public class AddBookActivity extends AppCompatActivity {
     final String filename = "BookaholicLogin";
     int SELECT_PHOTO = 1;
     Uri uri;
-    Bitmap bitmap;
+    Bitmap bitmap = null;
     private String name = "image";
     private static final int STORAGE_PERMISSION_CODE = 2342;
     private static final int PICK_IMAGE_REQUEST = 22;
@@ -180,167 +183,174 @@ public class AddBookActivity extends AppCompatActivity {
         AddBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (isNetworkAvailable() == false) {
+                    Toast toast = Toast.makeText(AddBookActivity.this, "Need connexion !", Toast.LENGTH_SHORT);
+                    toast.show();
+                } else {
 
 
+                    File filesDir = getApplicationContext().getFilesDir();
+                    File file = new File(filesDir, "image" + ".png");
 
-                File filesDir = getApplicationContext().getFilesDir();
-                File file = new File(filesDir, "image" + ".png");
-
-                OutputStream os;
-                try {
-                    os = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
-                    os.flush();
-                    os.close();
-                } catch (Exception e) {
-                    Log.e(getClass().getSimpleName(), "Error writing bitmap", e);
-                }
-
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos);
-                byte[] bitmapdata = bos.toByteArray();
+                    OutputStream os;
+                    if (bitmap == null) {
+                        Toast toast = Toast.makeText(AddBookActivity.this, "Choose an image !", Toast.LENGTH_SHORT);
+                        toast.show();
+                    } else {
+                        try {
+                            os = new FileOutputStream(file);
 
 
-                FileOutputStream fos = null;
-                try {
-                    fos = new FileOutputStream(file);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    fos.write(bitmapdata);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    fos.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), file);
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
+                            os.flush();
+                            os.close();
 
 
-                MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), reqFile);
-                RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "upload");
-
-                Call<ResponseBody> req = apiService.postImage(body, name);
-
-                req.enqueue(new Callback<ResponseBody>() {
-
-
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-
-                        int length = response.raw().request().url().toString().length();
-                        String imagenamefinal = response.raw().request().url().toString().substring(29,length);
-
-                        Toast.makeText(getApplicationContext(), imagenamefinal, Toast.LENGTH_SHORT).show();
-
-
-                        ////////////////////////////////
-
-                        if (verifFields()) {
-
-                            try {
-
-                                RequestQueue requestQueue = Volley.newRequestQueue(AddBookActivity.this);
-                                final JSONObject jsonBody = new JSONObject();
-                                jsonBody.put("title", title.getText().toString());
-                                jsonBody.put("author", author.getText().toString());
-                                if (visible_int == 0) {
-                                    jsonBody.put("visible", 0);
-                                    jsonBody.put("price", 0);
-                                } else {
-                                    jsonBody.put("visible", 1);
-                                    jsonBody.put("price", price.getText().toString());
-                                }
-
-
-                                jsonBody.put("category", category.getSelectedItem().toString());
-                                jsonBody.put("status", status.getSelectedItem().toString());
-                                jsonBody.put("language", language.getSelectedItem().toString());
-                                jsonBody.put("user", mPreferences.getString("id", null));
-                                jsonBody.put("username", mPreferences.getString("username", null));
-                                jsonBody.put("image",imagenamefinal);
-
-
-                                Log.i("image =======================>", response.raw().request().url().toString());
-
-                                final String mRequestBody = jsonBody.toString();
-                                Log.i("fonction =======================>", mRequestBody);
-
-                                String url = "http://192.168.1.4:3000/books/add-book";
-
-                                StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                                    @Override
-                                    public void onResponse(String response) {
-                                        Log.i("LOG_RESPONSE", response);
-                                        Toast toast = Toast.makeText(AddBookActivity.this, "Add book Done !", Toast.LENGTH_SHORT);
-                                        toast.show();
-                                        Intent intent = new Intent(AddBookActivity.this, MenuActivity.class);
-                                        startActivity(intent);
-
-                                    }
-                                }, new ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        Log.e("LOG_RESPONSE", error.toString());
-                                        Toast toast = Toast.makeText(AddBookActivity.this, "Add book Failed !", Toast.LENGTH_SHORT);
-                                        toast.show();
-
-
-                                    }
-                                }) {
-                                    @Override
-                                    public String getBodyContentType() {
-                                        return "application/json; charset=utf-8";
-                                    }
-
-                                    @Override
-                                    public byte[] getBody() throws AuthFailureError {
-                                        try {
-                                            return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                                        } catch (UnsupportedEncodingException uee) {
-                                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                                            return null;
-                                        }
-                                    }
-
-                                    @Override
-                                    protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                                        String responseString = "";
-                                        if (response != null) {
-                                            responseString = String.valueOf(response.statusCode);
-                                        }
-                                        return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-                                    }
-                                };
-
-                                requestQueue.add(stringRequest);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                        } catch (Exception e) {
+                            Log.e(getClass().getSimpleName(), "Error writing bitmap", e);
                         }
-  //////////////////////////
+
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos);
+                        byte[] bitmapdata = bos.toByteArray();
+
+
+                        FileOutputStream fos = null;
+                        try {
+                            fos = new FileOutputStream(file);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            fos.write(bitmapdata);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            fos.flush();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            fos.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(getApplicationContext(), "Request failed", Toast.LENGTH_SHORT).show();
-                        t.printStackTrace();
-                    }
-                });
+                    RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), file);
 
 
+                    MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), reqFile);
+                    RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "upload");
+
+                    Call<ResponseBody> req = apiService.postImage(body, name);
 
 
+                    req.enqueue(new Callback<ResponseBody>() {
 
+
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+
+                            int length = response.raw().request().url().toString().length();
+                            String imagenamefinal = response.raw().request().url().toString().substring(31, length);
+
+
+                            ////////////////////////////////
+
+                            if (verifFields()) {
+
+                                try {
+
+                                    RequestQueue requestQueue = Volley.newRequestQueue(AddBookActivity.this);
+                                    final JSONObject jsonBody = new JSONObject();
+                                    jsonBody.put("title", title.getText().toString());
+                                    jsonBody.put("author", author.getText().toString());
+                                    if (visible_int == 0) {
+                                        jsonBody.put("visible", 0);
+                                        jsonBody.put("price", 0);
+                                    } else {
+                                        jsonBody.put("visible", 1);
+                                        jsonBody.put("price", price.getText().toString());
+                                    }
+
+
+                                    jsonBody.put("category", category.getSelectedItem().toString());
+                                    jsonBody.put("status", status.getSelectedItem().toString());
+                                    jsonBody.put("language", language.getSelectedItem().toString());
+                                    jsonBody.put("user", mPreferences.getString("id", null));
+                                    jsonBody.put("username", mPreferences.getString("username", null));
+                                    jsonBody.put("image", imagenamefinal);
+
+
+                                    Log.i("image =======================>", response.raw().request().url().toString());
+
+                                    final String mRequestBody = jsonBody.toString();
+                                    Log.i("fonction =======================>", mRequestBody);
+
+                                    String url = "http://192.168.1.4:3000/books/add-book";
+
+                                    StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            Log.i("LOG_RESPONSE", response);
+                                            Toast toast = Toast.makeText(AddBookActivity.this, "Add book Done !", Toast.LENGTH_SHORT);
+                                            toast.show();
+                                            Intent intent = new Intent(AddBookActivity.this, MenuActivity.class);
+                                            startActivity(intent);
+
+                                        }
+                                    }, new ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+                                            Log.e("LOG_RESPONSE", error.toString());
+                                            Toast toast = Toast.makeText(AddBookActivity.this, "Add book Failed !", Toast.LENGTH_SHORT);
+                                            toast.show();
+
+
+                                        }
+                                    }) {
+                                        @Override
+                                        public String getBodyContentType() {
+                                            return "application/json; charset=utf-8";
+                                        }
+
+                                        @Override
+                                        public byte[] getBody() throws AuthFailureError {
+                                            try {
+                                                return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                                            } catch (UnsupportedEncodingException uee) {
+                                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                                                return null;
+                                            }
+                                        }
+
+                                        @Override
+                                        protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                                            String responseString = "";
+                                            if (response != null) {
+                                                responseString = String.valueOf(response.statusCode);
+                                            }
+                                            return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                                        }
+                                    };
+
+                                    requestQueue.add(stringRequest);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            //////////////////////////
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            Toast.makeText(getApplicationContext(), "Request failed", Toast.LENGTH_SHORT).show();
+                            t.printStackTrace();
+                        }
+                    });
+
+                }
             }
 
         });
@@ -544,5 +554,12 @@ public class AddBookActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

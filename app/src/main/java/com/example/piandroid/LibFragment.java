@@ -151,6 +151,9 @@ public class LibFragment extends Fragment implements OnTouchListener {
                         }
                         Log.i("JSON ARRAY  ", jsonArray.toString());
 
+                        if(!mainbooks.isEmpty()) {
+                            mainbooks = new ArrayList<>();
+                        }
 
                         for (int i = 0; i < jsonArray.length(); i++) {
                             MainBook book = new MainBook();
@@ -255,6 +258,12 @@ public class LibFragment extends Fragment implements OnTouchListener {
             try {
                 if (JsonArray != null) {
                     mJSONArray = new JSONArray(JsonArray);
+
+                    if(!mainbooks.isEmpty()) {
+                        mainbooks = new ArrayList<>();
+                    }
+
+
                     for (int i = 0; i < mJSONArray.length(); i++) {
                         MainBook book = new MainBook();
                         book.setId(mJSONArray.getJSONObject(i).get("id").toString());

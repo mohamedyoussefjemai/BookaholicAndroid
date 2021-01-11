@@ -105,6 +105,10 @@ public class FavoriteFragment extends Fragment {
                         }
                         Log.i("JSON ARRAY  ", jsonArray.toString());
 
+                        if(!mainbooks.isEmpty()) {
+                            mainbooks = new ArrayList<>();
+                        }
+
                         for (int i = 0; i < jsonArray.length(); i++) {
                             MainBook book = new MainBook();
                             book.setId(jsonArray.getJSONObject(i).get("book").toString());
@@ -206,6 +210,11 @@ public class FavoriteFragment extends Fragment {
             try {
                 if (JsonArray != null) {
                     mJSONArray = new JSONArray(JsonArray);
+
+                    if(!mainbooks.isEmpty()) {
+                        mainbooks = new ArrayList<>();
+                    }
+
                     for (int i = 0; i < mJSONArray.length(); i++) {
                         MainBook book = new MainBook();
                         book.setId(mJSONArray.getJSONObject(i).get("book").toString());

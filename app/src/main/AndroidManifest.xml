@@ -14,9 +14,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/logo_white_mini"
+        android:icon="@drawable/logoblanc"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/logo_white_mini"
+        android:roundIcon="@drawable/logoblanc"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"

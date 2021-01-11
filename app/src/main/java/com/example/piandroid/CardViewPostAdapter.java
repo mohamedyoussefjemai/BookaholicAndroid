@@ -233,7 +233,7 @@ public class CardViewPostAdapter extends RecyclerView.Adapter<CardViewPostAdapte
                                             Log.i("LOG_RESPONSE", response);
 
                                             //toast login in
-                                            Toast toast = Toast.makeText(context, "Book Deleted !", Toast.LENGTH_SHORT);
+                                            Toast toast = Toast.makeText(context, "Book Hided !", Toast.LENGTH_SHORT);
                                             toast.show();
                                         }
 
@@ -243,7 +243,7 @@ public class CardViewPostAdapter extends RecyclerView.Adapter<CardViewPostAdapte
                                         public void onErrorResponse(VolleyError error) {
 
                                             Log.e("LOG_RESPONSE", error.toString());
-                                            Toast toast = Toast.makeText(context, "Error Delete book !", Toast.LENGTH_SHORT);
+                                            Toast toast = Toast.makeText(context, "Error Hided book !", Toast.LENGTH_SHORT);
                                             toast.show();
                                         }
 

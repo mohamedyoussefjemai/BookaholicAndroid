@@ -261,6 +261,8 @@ public class CardViewReceiveTradeAdapter extends RecyclerView.Adapter<CardViewRe
                                 };
 
                                 requestQueue.add(stringRequest);
+                                requests.remove(position);
+                                notifyItemRemoved(position);
                                 notifyItemRangeChanged(position, requests.size());
                                 notifyDataSetChanged();
                             }

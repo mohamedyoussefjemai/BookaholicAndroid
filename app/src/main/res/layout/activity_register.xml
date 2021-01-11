@@ -56,6 +56,8 @@
             android:layout_marginEnd="39.5dp"
             android:background="@drawable/rectangle"
             android:drawableEnd="@mipmap/user"
+            android:paddingLeft="25dp"
+
             android:hint="Username :"
             android:shadowRadius="10" />
 
@@ -77,6 +79,8 @@
             android:background="@drawable/rectangle"
             android:drawableEnd="@mipmap/agenda"
             android:hint="Double click here"
+            android:paddingLeft="25dp"
+
             android:shadowRadius="10"
 
             />
@@ -99,6 +103,8 @@
             android:background="@drawable/rectangle"
             android:drawableEnd="@mipmap/email"
             android:hint="Email :"
+            android:paddingLeft="25dp"
+
             android:inputType="textEmailAddress"
             android:shadowRadius="10"
 
@@ -109,6 +115,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20.5dp"
+
             android:layout_marginEnd="39.5dp"
             android:text="@string/password"
             android:textAppearance="@style/password" />
@@ -129,6 +136,8 @@
                 android:layout_marginEnd="39.5dp"
                 android:background="@drawable/rectangle"
                 android:hint="Password :"
+                android:paddingLeft="25dp"
+
                 android:inputType="textPassword"
                 android:shadowRadius="10"
                 />
@@ -153,6 +162,8 @@
             android:background="@drawable/rectangle"
             android:hint="Confirm password :"
             android:inputType="textPassword"
+            android:paddingLeft="25dp"
+
             android:shadowRadius="10" />
 
         <TextView
@@ -173,6 +184,7 @@
             android:background="@drawable/rectangle"
             android:drawableEnd="@mipmap/map"
             android:hint="Your adresse :"
+            android:paddingLeft="25dp"
             android:shadowRadius="10"
 
             />
@@ -227,6 +239,7 @@
             android:layout_marginEnd="39.5dp"
             android:background="@drawable/rectangle"
             android:drawableEnd="@drawable/facebook"
+            android:paddingLeft="25dp"
             android:hint="Your facebook id :"
             android:visibility="invisible"
 

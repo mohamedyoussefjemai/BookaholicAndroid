@@ -113,6 +113,10 @@ public class CardViewFavoriteAdapter extends RecyclerView.Adapter<CardViewFavori
                     Context context = v.getContext();
                     Intent intent = new Intent(context, ShowBookActivity.class);
                     intent.putExtra("idBook", idBook);
+                    intent.putExtra("idUser", mainbooks.get(position).getUser());
+                    intent.putExtra("receiver", mainbooks.get(position).getUsername());
+                    intent.putExtra("titlechange", mainbooks.get(position).getTitle());
+                    intent.putExtra("hide", "false");
                     context.startActivity(intent);
                 }
             }

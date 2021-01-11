@@ -66,6 +66,7 @@ import retrofit2.Retrofit;
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
 public class UpdateBookActivity extends AppCompatActivity {
 
     ApiService apiService;
@@ -82,7 +83,7 @@ public class UpdateBookActivity extends AppCompatActivity {
     final String filename = "BookaholicLogin";
     int SELECT_PHOTO = 1;
     Uri uri;
-    Bitmap bitmap;
+    Bitmap bitmap = null;
     private static final int STORAGE_PERMISSION_CODE = 2342;
     private static final int PICK_IMAGE_REQUEST = 22;
 
@@ -121,8 +122,6 @@ public class UpdateBookActivity extends AppCompatActivity {
 
         askPermissions();
         initRetrofitClient();
-
-
 
 
         price_text = findViewById(R.id.price_text);
@@ -230,42 +229,47 @@ public class UpdateBookActivity extends AppCompatActivity {
                 File file = new File(filesDir, "image" + ".png");
 
                 OutputStream os;
-                try {
-                    os = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
-                    os.flush();
-                    os.close();
-                } catch (Exception e) {
-                    Log.e(getClass().getSimpleName(), "Error writing bitmap", e);
-                }
+                if (bitmap == null) {
+                    Toast toast = Toast.makeText(UpdateBookActivity.this, "Choose an image !", Toast.LENGTH_SHORT);
+                    toast.show();
+                } else {
 
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos);
-                byte[] bitmapdata = bos.toByteArray();
+                    try {
+                        os = new FileOutputStream(file);
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
+                        os.flush();
+                        os.close();
+                    } catch (Exception e) {
+                        Log.e(getClass().getSimpleName(), "Error writing bitmap", e);
+                    }
+
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos);
+                    byte[] bitmapdata = bos.toByteArray();
 
 
-                FileOutputStream fos = null;
-                try {
-                    fos = new FileOutputStream(file);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                    FileOutputStream fos = null;
+                    try {
+                        fos = new FileOutputStream(file);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        fos.write(bitmapdata);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        fos.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        fos.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-                try {
-                    fos.write(bitmapdata);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    fos.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
                 RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), file);
 
 
@@ -281,95 +285,95 @@ public class UpdateBookActivity extends AppCompatActivity {
                     public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
 
                         int length = response.raw().request().url().toString().length();
-                        String imagenamefinal = response.raw().request().url().toString().substring(29,length);
+                        String imagenamefinal = response.raw().request().url().toString().substring(31, length);
 
-                     //   Toast.makeText(getApplicationContext(), imagenamefinal, Toast.LENGTH_SHORT).show();
+                        //   Toast.makeText(getApplicationContext(), imagenamefinal, Toast.LENGTH_SHORT).show();
 
 
-                if (verifFields()) {
+                        if (verifFields()) {
 
-                    try {
+                            try {
 
-                        RequestQueue requestQueue = Volley.newRequestQueue(UpdateBookActivity.this);
-                        JSONObject jsonBody = new JSONObject();
-                        jsonBody.put("title", title.getText().toString());
-                        jsonBody.put("author", author.getText().toString());
-                        if (visible_int == 0) {
-                            jsonBody.put("visible", 0);
-                            jsonBody.put("price", 0);
-                        } else {
-                            jsonBody.put("visible", 1);
-                            jsonBody.put("price", price.getText().toString());
+                                RequestQueue requestQueue = Volley.newRequestQueue(UpdateBookActivity.this);
+                                JSONObject jsonBody = new JSONObject();
+                                jsonBody.put("title", title.getText().toString());
+                                jsonBody.put("author", author.getText().toString());
+                                if (visible_int == 0) {
+                                    jsonBody.put("visible", 0);
+                                    jsonBody.put("price", 0);
+                                } else {
+                                    jsonBody.put("visible", 1);
+                                    jsonBody.put("price", price.getText().toString());
+                                }
+
+                                jsonBody.put("category", category.getSelectedItem().toString());
+                                jsonBody.put("status", status.getSelectedItem().toString());
+                                jsonBody.put("language", language.getSelectedItem().toString());
+                                jsonBody.put("user", mPreferences.getString("id", null));
+                                jsonBody.put("username", mPreferences.getString("username", null));
+                                jsonBody.put("image", imagenamefinal);
+
+                                final String mRequestBody = jsonBody.toString();
+                                Log.i("fonction =======================>", mRequestBody);
+
+                                String url = "http://192.168.1.4:3000/books/update-book/" + id;
+                                Log.i("id for update =======================>", id);
+
+                                Log.i("url update  =======================>", mRequestBody);
+
+
+                                StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        Log.i("LOG_RESPONSE", response);
+                                        Toast toast = Toast.makeText(UpdateBookActivity.this, "Update book Done !", Toast.LENGTH_SHORT);
+                                        toast.show();
+                                        Intent intent = new Intent(UpdateBookActivity.this, MenuActivity.class);
+                                        startActivity(intent);
+
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.e("LOG_RESPONSE", error.toString());
+                                        Toast toast = Toast.makeText(UpdateBookActivity.this, "Update book Failed !", Toast.LENGTH_SHORT);
+                                        toast.show();
+
+
+                                    }
+                                }) {
+                                    @Override
+                                    public String getBodyContentType() {
+                                        return "application/json; charset=utf-8";
+                                    }
+
+                                    @Override
+                                    public byte[] getBody() throws AuthFailureError {
+                                        try {
+                                            return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                                        } catch (UnsupportedEncodingException uee) {
+                                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                                            return null;
+                                        }
+                                    }
+
+                                    @Override
+                                    protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                                        String responseString = "";
+                                        if (response != null) {
+                                            responseString = String.valueOf(response.statusCode);
+                                        }
+                                        return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                                    }
+                                };
+
+                                requestQueue.add(stringRequest);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
 
-                        jsonBody.put("category", category.getSelectedItem().toString());
-                        jsonBody.put("status", status.getSelectedItem().toString());
-                        jsonBody.put("language", language.getSelectedItem().toString());
-                        jsonBody.put("user", mPreferences.getString("id", null));
-                        jsonBody.put("username", mPreferences.getString("username", null));
-                        jsonBody.put("image",imagenamefinal);
-
-                        final String mRequestBody = jsonBody.toString();
-                        Log.i("fonction =======================>", mRequestBody);
-
-                        String url = "http://192.168.1.4:3000/books/update-book/" + id;
-                        Log.i("id for update =======================>", id);
-
-                        Log.i("url update  =======================>", mRequestBody);
-
-
-                        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                Log.i("LOG_RESPONSE", response);
-                                Toast toast = Toast.makeText(UpdateBookActivity.this, "Update book Done !", Toast.LENGTH_SHORT);
-                                toast.show();
-                                Intent intent = new Intent(UpdateBookActivity.this, MenuActivity.class);
-                                startActivity(intent);
-
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("LOG_RESPONSE", error.toString());
-                                Toast toast = Toast.makeText(UpdateBookActivity.this, "Update book Failed !", Toast.LENGTH_SHORT);
-                                toast.show();
-
-
-                            }
-                        }) {
-                            @Override
-                            public String getBodyContentType() {
-                                return "application/json; charset=utf-8";
-                            }
-
-                            @Override
-                            public byte[] getBody() throws AuthFailureError {
-                                try {
-                                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                                } catch (UnsupportedEncodingException uee) {
-                                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                                    return null;
-                                }
-                            }
-
-                            @Override
-                            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                                String responseString = "";
-                                if (response != null) {
-                                    responseString = String.valueOf(response.statusCode);
-                                }
-                                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-                            }
-                        };
-
-                        requestQueue.add(stringRequest);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
-                }
-
-            }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
@@ -377,9 +381,6 @@ public class UpdateBookActivity extends AppCompatActivity {
                         t.printStackTrace();
                     }
                 });
-
-
-
 
 
             }
@@ -456,11 +457,13 @@ public class UpdateBookActivity extends AppCompatActivity {
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
         return encodedImage;
     }
+
     private void requestStoragePermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
             return;
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
     }
+
     private boolean hasPermission(String permission) {
      /*   if (canMakeSmores()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -502,7 +505,6 @@ public class UpdateBookActivity extends AppCompatActivity {
 
         apiService = new Retrofit.Builder().baseUrl("http://192.168.1.4:3000/upload/").client(client).build().create(ApiService.class);
     }
-
 
 
     private String getPath(Uri uri) {

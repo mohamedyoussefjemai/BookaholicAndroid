@@ -183,7 +183,7 @@ public class UserImageActivity extends AppCompatActivity {
                     public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
 
                         int length = response.raw().request().url().toString().length();
-                        final String imagenamefinal = response.raw().request().url().toString().substring(29, length);
+                        final String imagenamefinal = response.raw().request().url().toString().substring(31, length);
 
                         ////////////////////////////////
 

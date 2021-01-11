@@ -86,7 +86,9 @@ public class ReceiveTradeFragment extends Fragment {
                         e.printStackTrace();
                     }
                     Log.i("JSON ARRAY  ", jsonArray.toString());
-
+                    if(!requests.isEmpty()) {
+                        requests = new ArrayList<>();
+                    }
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         Requests alltradesend = new Requests();

@@ -70,6 +70,7 @@ public class CardViewLibAdapter extends RecyclerView.Adapter<CardViewLibAdapter.
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         //left row
         Glide.with(context).load("http://192.168.1.4:3000/get/image/" + mainbooks.get(position).getImage()).apply(option).into(holder.imageView);
+        /*
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,7 +86,7 @@ public class CardViewLibAdapter extends RecyclerView.Adapter<CardViewLibAdapter.
                     context.startActivity(intent);
                 }
             }
-        });
+        });*/
         holder.textView8.setText("Title : " + mainbooks.get(position).getTitle());
         holder.textView.setText("Author : " + mainbooks.get(position).getAuthor());
         holder.textView4.setText("Price : " + mainbooks.get(position).getPrice() + " DT");

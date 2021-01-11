@@ -88,7 +88,9 @@ public class SendSaleFragment extends Fragment {
                     }
                     Log.i("JSON ARRAY  ", jsonArray.toString());
 
-
+                    if(!requests.isEmpty()) {
+                        requests = new ArrayList<>();
+                    }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         Requests alltradesend = new Requests();
                         alltradesend.setId(jsonArray.getJSONObject(i).get("id").toString());

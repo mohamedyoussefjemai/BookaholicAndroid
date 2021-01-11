@@ -70,7 +70,7 @@ public class ShowBookActivity extends AppCompatActivity {
                 Intent intent = new Intent(context, AddTradeActivity.class);
 
                 String receiver = getIntent().getStringExtra("receiver");
-                Log.i("receiver : ", receiver);
+//                Log.i("receiver : ", receiver);
                 intent.putExtra("receiver", receiver);
                 intent.putExtra("titlechange", getIntent().getStringExtra("titlechange"));
                 context.startActivity(intent);
@@ -86,6 +86,8 @@ public class ShowBookActivity extends AppCompatActivity {
                 String receiver = getIntent().getStringExtra("receiver");
                 Log.i("receiver : ", receiver);
                 intent.putExtra("receiver", receiver);
+                String str = price.getText().toString().substring(0,price.getText().toString().length()-2);
+                intent.putExtra("priceSale",str);
                 intent.putExtra("titlechange", getIntent().getStringExtra("titlechange"));
                 context.startActivity(intent);
             }

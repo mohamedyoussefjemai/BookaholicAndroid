@@ -57,6 +57,7 @@
             android:layout_marginStart="20.5dp"
             android:layout_marginEnd="39.5dp"
             android:background="@drawable/rectangle"
+            android:paddingLeft="25dp"
             android:shadowRadius="10"
             android:entries="@array/category__arrays"
             android:prompt="@string/category__prompt"/>
@@ -101,6 +102,7 @@
             android:drawableRight="@mipmap/money"
             android:hint="Price :"
             android:visibility="invisible"
+            android:paddingLeft="25dp"
             android:shadowRadius="10" />
 
         <Button

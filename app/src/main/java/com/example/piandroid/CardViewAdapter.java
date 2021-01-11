@@ -167,7 +167,7 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHo
                         String visiblefav = "1";
                         String languagefav = mainbooks.get(position).getLanguage();
                         String userfav = mPreferences.getString("id", null);
-                        String usernamefav = mPreferences.getString("username", null);
+                        String usernamefav = mainbooks.get(position).getUsername();
                         String imagefav = mainbooks.get(position).getImage();
 
 

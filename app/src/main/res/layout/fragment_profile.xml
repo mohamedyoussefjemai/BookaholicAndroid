@@ -43,10 +43,20 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
-                    android:weightSum="8"
+                    android:weightSum="15"
                     android:orientation="horizontal">
 
+                    <ImageButton
+                        android:layout_weight="7"
+                        android:id="@+id/btn_edit_hidden"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="invisible"
+                        android:background="@color/colorOrange"
+                        android:clickable="true"
+                        android:src="@drawable/iconedit" />
                     <TextView
+                        android:layout_marginLeft="10dp"
                         android:layout_weight="1"
                         android:id="@+id/name_text"
                         android:layout_width="match_parent"
@@ -193,6 +203,8 @@
                     android:background="@drawable/rectangle"
                     android:layout_weight="1"
                     android:hint="Tap to change mail address"
+                    android:paddingLeft="25dp"
+
                     android:inputType="textEmailAddress"
                     android:shadowRadius="10" />
 
@@ -224,8 +236,10 @@
                     android:layout_marginEnd="39.5dp"
                     android:layout_weight="1"
                     android:background="@drawable/rectangle"
+                    android:paddingLeft="25dp"
+                    android:digits="0123456789"
+                    android:inputType="phone"
                     android:hint="Tap to change phone number"
-                    android:inputType="textEmailAddress"
                     android:shadowRadius="10" />
 
                 <ImageButton
@@ -258,6 +272,8 @@
                     android:layout_marginEnd="39.5dp"
                     android:background="@drawable/rectangle"
                     android:hint="Tap to change your adress"
+                    android:paddingLeft="25dp"
+
                     android:inputType="textEmailAddress"
                     android:layout_weight="1"
                     android:shadowRadius="10" />
@@ -292,6 +308,8 @@
                     android:layout_weight="1"
                     android:background="@drawable/rectangle"
                     android:hint="Tap to change your facebook id"
+                    android:paddingLeft="25dp"
+
                     android:shadowRadius="10" />
 
                 <ImageButton

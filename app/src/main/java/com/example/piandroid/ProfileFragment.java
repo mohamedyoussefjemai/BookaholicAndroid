@@ -131,6 +131,8 @@ public class ProfileFragment extends Fragment {
 
         super.onViewCreated(view, savedInstanceState);
 
+
+
         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -152,15 +154,21 @@ public class ProfileFragment extends Fragment {
         address = (EditText) view.findViewById(R.id.adresse);
         messenger = (EditText) view.findViewById(R.id.messenger);
 
+
+        messenger.setHint("");
         messenger.setHint(mPreferences.getString("messenger", null));
 
-
+        name_text.setText("");
         name_text.setText(mPreferences.getString("username", null));
         //    email_txt.setText(mPreferences.getString("email", null));
+        email.setHint("");
         email.setHint(mPreferences.getString("email", null));
         //   adresse_txt.setText(mPreferences.getString("address", null));
+        address.setHint("");
         address.setHint(mPreferences.getString("address", null));
         //  phone_txt.setText(mPreferences.getString("phone", null));
+        phone.setHint("");
+
         phone.setHint(mPreferences.getString("phone", null));
 
         //image action
@@ -169,7 +177,10 @@ public class ProfileFragment extends Fragment {
         btn_update_all = (Button) view.findViewById(R.id.updateall);
         icon_trade_text = view.findViewById(R.id.icon_trade_text);
         icon_sale_text = view.findViewById(R.id.icon_sale_text);
+
+        icon_trade.setText("");
         icon_trade.setText(mPreferences.getString("trade", "").toString());
+        icon_sale.setText("");
         icon_sale.setText(mPreferences.getString("sale", "").toString());
 
 
@@ -190,7 +201,7 @@ public class ProfileFragment extends Fragment {
 
         //choose image
 
-        if (mPreferences.getString("image", null) == null) {
+        if (mPreferences.getString("image", null).equals("null")) {
             btn_image.setBackgroundResource(R.drawable.bookmale2);
         } else {
             String nameImage = mPreferences.getString("image", null);
